@@ -709,13 +709,16 @@ body {
 }
 
 @media (max-width: 768px) {
-  .cv-hero { padding: 100px 24px 60px; }
-  .hero-stats { gap: 20px; }
+  .cv-hero { padding: 100px 24px 60px; min-height: auto; }
+  .hero-stats { gap: 20px; flex-wrap: wrap; }
   .stat-num { font-size: 28px; }
-  .topic-item { grid-template-columns: 40px 1fr; }
+  .topic-item { grid-template-columns: 40px 1fr; gap: 12px; }
   .topic-code { display: none; }
-  .arch-timeline { gap: 6px; }
+  .arch-timeline { gap: 6px; padding: 16px; }
+  .arch-node { min-width: 90px; padding: 10px; }
   .cv-main { padding: 48px 16px 80px; }
+  .hero-title { font-size: clamp(48px, 12vw, 72px); }
+  .hero-sub { font-size: 16px; margin-bottom: 32px; }
 }
 
 @media (max-width: 480px) {

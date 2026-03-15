@@ -118,4 +118,13 @@
   .gan-dynamic { flex-direction: column; }
   .gd-box.generator { border-right: none; border-bottom: 1px solid rgba(255,255,255,.07); }
   .gd-arrows { flex-direction: row; padding: 12px 0; }
+  .gen-process-bar, .vlm-arch-strip, .prompt-anatomy { 
+    gap: 4px; 
+    padding: 8px 0;
+  }
+  .gpb-step, .vas-block, .pa-block {
+    padding: 8px 12px;
+    font-size: 10px;
+    min-width: auto;
+  }
 }
