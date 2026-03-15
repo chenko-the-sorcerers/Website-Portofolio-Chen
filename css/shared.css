@@ -101,25 +101,30 @@ footer{border-top:1px solid var(--card-border);padding:64px 32px 40px;position:r
 
 @media(max-width:768px){
   /* Nav */
+  nav { height: 64px; }
+  .nav-inner { padding: 0 16px; justify-content: space-between; }
   .nav-links{
     display:none;
-    position:absolute;top:56px;left:0;right:0;
-    background:rgba(0,0,0,.97);
-    backdrop-filter:blur(20px);
-    -webkit-backdrop-filter:blur(20px);
+    position:absolute;top:64px;left:0;right:0;
+    background:rgba(0,0,0,.98);
+    backdrop-filter:blur(24px);
+    -webkit-backdrop-filter:blur(24px);
     flex-direction:column;
-    padding:8px 0 16px;
-    gap:0;
+    padding:16px 0;
+    gap:4px;
     border-bottom:1px solid var(--card-border);
     z-index:999;
+    max-height: calc(100vh - 64px);
+    overflow-y: auto;
   }
   .nav-links.open{display:flex;}
-  .nav-links a{padding:13px 24px;border-radius:0;font-size:14px;}
-  .nav-links a.active::after{left:24px;transform:none;}
-  .nav-hamburger{display:flex;}
+  .nav-links a{padding:14px 24px;border-radius:0;font-size:15px;width: 100%;}
+  .nav-links a.active::after{left:24px;transform:none;bottom: 50%; margin-bottom: -2px;}
+  .nav-hamburger{display:flex; order: 2; margin-left: 8px;}
   .nav-cta{display:none;}
   /* Keep lang button visible on mobile */
-  #langBtn{display:flex!important;margin-right:4px;}
+  #langBtn{display:flex!important; order: 3; margin-right: 0; padding: 6px 10px; font-size: 11px;}
+  .nav-logo { order: 1; flex: 1; }
   /* Footer */
   .footer-top{grid-template-columns:1fr;gap:32px;}
   .footer-bottom{flex-direction:column;align-items:flex-start;gap:8px;text-align:left;}

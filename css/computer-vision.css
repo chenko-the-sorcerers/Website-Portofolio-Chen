@@ -709,16 +709,21 @@ body {
 }
 
 @media (max-width: 768px) {
-  .cv-hero { padding: 100px 24px 60px; min-height: auto; }
-  .hero-stats { gap: 20px; flex-wrap: wrap; }
-  .stat-num { font-size: 28px; }
-  .topic-item { grid-template-columns: 40px 1fr; gap: 12px; }
+  .cv-hero { padding: 120px 20px 60px; min-height: auto; }
+  .hero-stats { gap: 24px; flex-wrap: wrap; margin-top: 20px; }
+  .stat { flex: 1 1 100px; }
+  .stat-num { font-size: 32px; }
+  .stat-div { display: none; }
+  .topic-item { grid-template-columns: 1fr; gap: 16px; padding: 24px 0; }
+  .topic-icon { width: 40px; height: 40px; font-size: 18px; }
   .topic-code { display: none; }
-  .arch-timeline { gap: 6px; padding: 16px; }
-  .arch-node { min-width: 90px; padding: 10px; }
-  .cv-main { padding: 48px 16px 80px; }
-  .hero-title { font-size: clamp(48px, 12vw, 72px); }
-  .hero-sub { font-size: 16px; margin-bottom: 32px; }
+  .arch-timeline { gap: 8px; padding: 16px; margin: 0 -16px 32px; border-radius: 0; }
+  .arch-node { min-width: 100px; padding: 12px; }
+  .cv-main { padding: 40px 16px 80px; }
+  .hero-title { font-size: clamp(42px, 11vw, 64px); line-height: 1.0; margin-bottom: 20px; }
+  .hero-sub { font-size: 15px; line-height: 1.6; margin-bottom: 32px; opacity: 0.9; }
+  .module-header { margin-bottom: 32px; padding-bottom: 24px; }
+  .module-title { font-size: 28px; }
 }
 
 @media (max-width: 480px) {
