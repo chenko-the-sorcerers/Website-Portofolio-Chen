@@ -1,54 +1,23 @@
 {
-  "cleanUrls": true,
-  "trailingSlash": false,
   "rewrites": [
-    { "source": "/projects",                        "destination": "/pages/projects/index.html" },
-    { "source": "/experience",                      "destination": "/pages/experience/index.html" },
-    { "source": "/education",                       "destination": "/pages/education/index.html" },
-    { "source": "/skills",                          "destination": "/pages/skills/index.html" },
-    { "source": "/achievements",                    "destination": "/pages/achievements/index.html" },
-    { "source": "/talks",                           "destination": "/pages/talks/index.html" },
-    { "source": "/volunteering",                    "destination": "/pages/volunteering/index.html" },
-    { "source": "/contact",                         "destination": "/pages/contact/index.html" },
-
-    { "source": "/ai-lab",                          "destination": "/pages/ai-lab/index.html" },
-    { "source": "/ai-lab/computer-vision",          "destination": "/pages/ai-lab/computer-vision.html" },
-    { "source": "/ai-lab/generative-ai",            "destination": "/pages/ai-lab/generative-ai.html" },
-    { "source": "/ai-lab/machine-learning",         "destination": "/pages/ai-lab/machine-learning.html" },
-    { "source": "/ai-lab/nlp",                      "destination": "/pages/ai-lab/nlp.html" },
-    { "source": "/ai-lab/pixel-anatomy",            "destination": "/pages/ai-lab/pixel-anatomy.html" },
-    { "source": "/ai-lab/filtering-kernels",        "destination": "/pages/ai-lab/filtering-kernels.html" },
-    { "source": "/ai-lab/image-processing-opencv",  "destination": "/pages/ai-lab/image-processing-opencv.html" },
-    { "source": "/ai-lab/morphological-transforms", "destination": "/pages/ai-lab/morphological-transforms.html" },
-    { "source": "/ai-lab/cnn-why",                  "destination": "/pages/ai-lab/cnn-why.html" },
-    { "source": "/ai-lab/cnn-intro",                "destination": "/pages/ai-lab/cnn-intro.html" },
-    { "source": "/ai-lab/cnn-relu",                 "destination": "/pages/ai-lab/cnn-relu.html" },
-    { "source": "/ai-lab/cnn-fc",                   "destination": "/pages/ai-lab/cnn-fc.html" },
-    { "source": "/ai-lab/cnn-hands",                "destination": "/pages/ai-lab/cnn-hands.html" },
-    { "source": "/ai-lab/cnn-arch",                 "destination": "/pages/ai-lab/cnn-arch.html" },
-    { "source": "/ai-lab/cnn-arch-builder",         "destination": "/pages/ai-lab/cnn-arch-builder.html" },
-    { "source": "/ai-lab/ml-intro",                 "destination": "/pages/ai-lab/ml-intro.html" },
-    { "source": "/ai-lab/ml-hypothesis",            "destination": "/pages/ai-lab/ml-hypothesis.html" },
-    { "source": "/ai-lab/ml-bias-variance",         "destination": "/pages/ai-lab/ml-bias-variance.html" },
-    { "source": "/ai-lab/ml-vc-dim",                "destination": "/pages/ai-lab/ml-vc-dim.html" },
-    { "source": "/ai-lab/tokenization",             "destination": "/pages/ai-lab/tokenization.html" },
-    { "source": "/ai-lab/preprocessing",            "destination": "/pages/ai-lab/preprocessing.html" },
-    { "source": "/ai-lab/pos-ner",                  "destination": "/pages/ai-lab/pos-ner.html" },
-    { "source": "/ai-lab/bow",                      "destination": "/pages/ai-lab/bow.html" },
-    { "source": "/ai-lab/tfidf",                    "destination": "/pages/ai-lab/tfidf.html" }
-  ],
-  "headers": [
-    {
-      "source": "/css/(.*)",
-      "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
-    },
-    {
-      "source": "/js/(.*)",
-      "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
-    },
-    {
-      "source": "/assets/(.*)",
-      "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
-    }
+    { "source": "/projects",      "destination": "/pages/projects/index.html" },
+    { "source": "/projects/",     "destination": "/pages/projects/index.html" },
+    { "source": "/contact",       "destination": "/pages/contact/index.html" },
+    { "source": "/contact/",      "destination": "/pages/contact/index.html" },
+    { "source": "/experience",    "destination": "/pages/experience/index.html" },
+    { "source": "/experience/",   "destination": "/pages/experience/index.html" },
+    { "source": "/education",     "destination": "/pages/education/index.html" },
+    { "source": "/education/",    "destination": "/pages/education/index.html" },
+    { "source": "/achievements",  "destination": "/pages/achievements/index.html" },
+    { "source": "/achievements/", "destination": "/pages/achievements/index.html" },
+    { "source": "/talks",         "destination": "/pages/talks/index.html" },
+    { "source": "/talks/",        "destination": "/pages/talks/index.html" },
+    { "source": "/skills",        "destination": "/pages/skills/index.html" },
+    { "source": "/skills/",       "destination": "/pages/skills/index.html" },
+    { "source": "/ai-lab",        "destination": "/pages/ai-lab/index.html" },
+    { "source": "/ai-lab/",       "destination": "/pages/ai-lab/index.html" },
+    { "source": "/ai-lab/:path",  "destination": "/pages/ai-lab/:path.html" },
+    { "source": "/volunteering",  "destination": "/pages/volunteering/index.html" },
+    { "source": "/volunteering/", "destination": "/pages/volunteering/index.html" }
   ]
 }
