@@ -1,269 +1,150 @@
-# 📁 Project Structure — Marchel Andrian Shevchenko Portfolio
+# Marchel Andrian Shevchenko - Personal Portfolio
 
-> Vanilla HTML/CSS/JS · Deploy target: Vercel/Netlify · Scale: Static → Backend/API ready
+Welcome to the official repository for my personal portfolio website. This project showcases my skills, experience, and projects in the field of web development and artificial intelligence. It is built with pure HTML, CSS, and JavaScript, demonstrating a strong foundation in core web technologies. The site is designed to be clean, fast, and easily maintainable.
 
----
-
-## Filosofi Struktur
-
-| Prinsip | Penerapan |
-|---|---|
-| **Separation of Concerns** | HTML = struktur, CSS = style, JS = behaviour, dipisah per folder |
-| **DRY** | `shared.css` & `shared.js` untuk komponen yang muncul di semua halaman |
-| **Page-based routing** | Setiap halaman = folder sendiri dengan `index.html` di dalamnya |
-| **API-ready** | Folder `api/` disiapkan sejak awal, Netlify/Vercel Functions compatible |
-| **Maintainable** | Setiap folder punya tanggung jawab yang jelas dan terisolasi |
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fchenko-the-sorcerers%2FWebsite-Portofolio-Chen)
 
 ---
 
-## Struktur Direktori
+## ✨ Features
+
+- **Pure Vanilla Stack**: No frameworks or libraries are used, ensuring a lightweight and fast-loading experience.
+- **Responsive Design**: Fully responsive layout that adapts to various screen sizes, from mobile devices to desktops.
+- **Dynamic Content**: Page content is loaded from local JSON files, making it easy to update information without touching the HTML structure.
+- **Clean URL Structure**: Uses a page-based routing system with `vercel.json` to provide clean, user-friendly URLs (e.g., `/projects/` instead of `/projects.html`).
+    - **AI Lab Section**: A dedicated section to explore and demonstrate various AI and Machine Learning concepts with interactive examples, featuring interactive modules and explanations.
+
+---
+
+## 🧠 AI Lab Modules
+
+The AI Lab is a dynamic section of the portfolio dedicated to showcasing interactive demonstrations and explanations of various Artificial Intelligence and Machine Learning concepts. Each module provides insights into fundamental algorithms and techniques.
+
+| Module | Description |
+| :--- | :--- |
+| [AI Lab Home](pages/ai-lab/index.html) | Overview and introduction to the AI Lab. |
+| [Bag of Words (BoW)](pages/ai-lab/bow.html) | Explores the Bag of Words model for text representation in NLP. |
+| [CNN Architecture](pages/ai-lab/cnn-arch.html) | Delves into the architecture of Convolutional Neural Networks. |
+| [CNN Architecture Builder](pages/ai-lab/cnn-arch-builder.html) | An interactive tool to build and visualize CNN architectures. |
+| [CNN Fully Connected Layers](pages/ai-lab/cnn-fc.html) | Focuses on the role of fully connected layers in CNNs. |
+| [CNN Hands-on](pages/ai-lab/cnn-hands.html) | Practical exercises and demonstrations of CNNs. |
+| [CNN Introduction](pages/ai-lab/cnn-intro.html) | An introductory guide to Convolutional Neural Networks. |
+| [CNN ReLU Activation](pages/ai-lab/cnn-relu.html) | Explains the Rectified Linear Unit (ReLU) activation function in CNNs. |
+| [CNN Why?](pages/ai-lab/cnn-why.html) | Discusses the advantages and applications of CNNs. |
+| [Computer Vision](pages/ai-lab/computer-vision.html) | An overview of Computer Vision concepts and applications. |
+| [Filtering Kernels](pages/ai-lab/filtering-kernels.html) | Demonstrates the use of filtering kernels in image processing. |
+| [Generative AI](pages/ai-lab/generative-ai.html) | Introduction to Generative Artificial Intelligence models. |
+| [Image Processing with OpenCV](pages/ai-lab/image-processing-opencv.html) | Practical examples of image processing using OpenCV. |
+| [Machine Learning](pages/ai-lab/machine-learning.html) | General introduction to Machine Learning principles. |
+| [ML Hypothesis](pages/ai-lab/ml-hypothesis.html) | Explores the concept of hypothesis in Machine Learning. |
+| [ML Introduction](pages/ai-lab/ml-intro.html) | Basic introduction to Machine Learning. |
+| [Natural Language Processing (NLP)](pages/ai-lab/nlp.html) | Overview of Natural Language Processing techniques. |
+| [Pixel Anatomy](pages/ai-lab/pixel-anatomy.html) | Understanding the fundamental structure of digital images. |
+| [POS Tagging & NER](pages/ai-lab/pos-ner.html) | Explains Part-of-Speech Tagging and Named Entity Recognition in NLP. |
+| [Preprocessing](pages/ai-lab/preprocessing.html) | Discusses data preprocessing techniques in ML. |
+| [Tokenization](pages/ai-lab/tokenization.html) | Details the process of tokenization in NLP. |
+
+---
+
+## 🚀 Getting Started
+- **Serverless Ready**: The structure includes an `/api` directory, ready for backend functionality using Vercel or Netlify serverless functions.
+
+---
+
+## 🛠️ Tech Stack
+
+- **Frontend**: HTML5, CSS3, JavaScript (ES6+)
+- **Deployment**: Vercel
+- **Development**: Visual Studio Code, Git & GitHub
+
+---
+
+## 📁 Project Structure
+
+The project follows a clear and organized structure based on the principles of **Separation of Concerns** and **Don't Repeat Yourself (DRY)**.
 
 ```
-portfolio/
+/home/ubuntu/repo/
 │
-├── 📄 index.html                        # Entry point (root)
-│
-├── 📁 pages/                            # Semua halaman selain home
-│   ├── 📁 about/
-│   │   └── index.html
-│   ├── 📁 projects/
-│   │   └── index.html
-│   ├── 📁 experience/
-│   │   └── index.html
-│   ├── 📁 education/
-│   │   └── index.html
-│   ├── 📁 skills/
-│   │   └── index.html
-│   ├── 📁 achievements/
-│   │   └── index.html
-│   ├── 📁 talks/
-│   │   └── index.html
-│   ├── 📁 volunteering/
-│   │   └── index.html
-│   ├── 📁 ai-lab/
-│   │   └── index.html
-│   └── 📁 contact/
-│       └── index.html
-│
-├── 📁 css/                              # Semua stylesheet
-│   ├── shared.css                       # Nav, footer, cursor, reset — dipakai semua halaman
-│   ├── index.css                        # CSS khusus homepage
-│   ├── projects.css
-│   ├── experience.css
-│   ├── education.css
-│   ├── skills.css
-│   ├── achievements.css
-│   ├── talks.css
-│   ├── volunteering.css
-│   ├── ai-lab.css
-│   └── contact.css
-│
-├── 📁 js/                               # Semua JavaScript
-│   ├── shared.js                        # Cursor, hamburger, nav scroll — dipakai semua halaman
-│   ├── lang.js                          # i18n / language switcher (sudah ada)
-│   ├── index.js                         # JS khusus homepage
-│   ├── projects.js
-│   ├── experience.js
-│   ├── education.js
-│   ├── skills.js
-│   ├── achievements.js
-│   ├── talks.js
-│   ├── volunteering.js
-│   ├── ai-lab.js
-│   └── contact.js
-│
-├── 📁 assets/                           # File statis
-│   ├── 📁 images/                       # Foto, thumbnail, OG image
-│   │   ├── profile.jpg
-│   │   ├── og-image.jpg                 # Open Graph default
-│   │   └── 📁 projects/                # Screenshot per project
-│   ├── 📁 icons/                        # SVG icons / favicon
-│   │   ├── favicon.ico
-│   │   ├── favicon.svg
-│   │   └── apple-touch-icon.png
-│   └── 📁 docs/                         # CV, sertifikat, dll yang bisa didownload
-│       └── cv-marchel.pdf
-│
-├── 📁 api/                              # Backend/serverless functions (Vercel/Netlify ready)
-│   ├── 📄 README.md                     # Dokumentasi endpoint
-│   ├── contact.js                       # POST /api/contact → kirim email (form contact)
-│   └── views.js                         # GET/POST /api/views → page view counter (opsional)
-│
-├── 📁 data/                             # Data statis dalam JSON (pengganti hardcode di HTML)
-│   ├── projects.json                    # List project
-│   ├── experience.json                  # List pengalaman kerja
-│   ├── education.json                   # List pendidikan
-│   ├── skills.json                      # List skills & level
-│   ├── achievements.json                # List pencapaian
-│   ├── talks.json                       # List talks/speaking
-│   ├── volunteering.json                # List volunteering
-│   └── i18n/                            # Data terjemahan
-│       ├── en.json
-│       └── id.json
-│
-├── 📁 components/                       # Potongan HTML reusable (untuk di-include manual)
-│   ├── nav.html                         # Navbar markup
-│   ├── footer.html                      # Footer markup
-│   └── cursor.html                      # Cursor markup
-│
-├── 📁 docs/                             # Dokumentasi proyek (untuk developer)
-│   ├── STRUCTURE.md                     # ← file ini
-│   ├── CHANGELOG.md                     # Riwayat perubahan
-│   ├── ROADMAP.md                       # Rencana fitur ke depan
-│   └── API.md                           # Dokumentasi endpoint api/
-│
-├── 📄 netlify.toml                      # Config Netlify (redirects, headers, functions)
-│   atau
-├── 📄 vercel.json                       # Config Vercel (redirects, rewrites, functions)
-│
-├── 📄 .gitignore
-└── 📄 README.md                         # Dokumentasi publik proyek
+├── 📄 index.html              # Main landing page
+├── 📁 pages/                  # All other pages (About, Projects, etc.)
+├── 📁 css/                    # Stylesheets (shared and page-specific)
+├── 📁 js/                     # JavaScript files (shared and page-specific)
+├── 📁 assets/                 # Static files (images, icons, documents)
+├── 📁 data/                   # JSON files for dynamic page content
+├── 📁 components/             # Reusable HTML snippets (nav, footer)
+├── 📁 api/                    # Serverless functions (e.g., for contact form)
+├── 📄 vercel.json             # Vercel deployment configuration
+└── 📄 README.md               # This file
 ```
 
----
+### Key Directories
 
-## Penjelasan Per Folder
-
-### `pages/`
-Setiap halaman menggunakan pola **folder + `index.html`** agar URL-nya clean:
-
-| File lama | URL lama | URL baru |
-|---|---|---|
-| `projects.html` | `/projects.html` | `/projects/` |
-| `contact.html` | `/contact.html` | `/contact/` |
-| `ai-lab.html` | `/ai-lab.html` | `/ai-lab/` |
-
-Path ke CSS & JS dari dalam `pages/namahalaman/index.html` menggunakan path absolut:
-```html
-<link rel="stylesheet" href="/css/shared.css">
-<link rel="stylesheet" href="/css/projects.css">
-<script src="/js/shared.js"></script>
-<script src="/js/projects.js"></script>
-```
+| Directory | Description |
+| :--- | :--- |
+| `pages/` | Contains the individual pages of the website, each in its own sub-directory for clean routing. |
+| `css/` | Holds all CSS files. `shared.css` contains styles used across all pages, while page-specific styles are in their own files (e.g., `projects.css`). |
+| `js/` | Contains all JavaScript files. `shared.js` handles logic for common elements like the navigation and cursor, while page-specific scripts manage dynamic content loading. |
+| `data/` | Stores website content in JSON format. This allows for easy updates to projects, experiences, and skills without modifying the HTML. |
+| `api/` | Prepared for serverless functions. For example, `api/contact.js` could handle form submissions. |
 
 ---
 
-### `css/`
-| File | Isi |
-|---|---|
-| `shared.css` | `:root` variables, reset, nav, footer, cursor, scrollbar, utility classes |
-| `[page].css` | Style yang hanya dipakai di halaman tersebut |
+## 🚀 Getting Started
+
+To get a local copy up and running, follow these simple steps.
+
+### Prerequisites
+
+You need a modern web browser and a local web server to handle the routing correctly.
+
+### Installation & Running Locally
+
+1.  **Clone the repository:**
+    ```sh
+    git clone https://github.com/chenko-the-sorcerers/Website-Portofolio-Chen.git
+    ```
+
+2.  **Navigate to the project directory:**
+    ```sh
+    cd Website-Portofolio-Chen
+    ```
+
+3.  **Start a local server.**
+    A simple way is to use the `serve` package.
+    ```sh
+    # Install serve globally if you haven't already
+    npm install -g serve
+
+    # Run the server with the custom config
+    serve -c serve.json
+    ```
+    This will start a server, and you can view the site at `http://localhost:3000`.
 
 ---
 
-### `js/`
-| File | Isi |
-|---|---|
-| `shared.js` | Cursor logic, hamburger menu, nav scroll effect, active nav link |
-| `lang.js` | Language switcher (sudah ada, tidak diubah) |
-| `[page].js` | Logic yang hanya dipakai di halaman tersebut |
+## ⚙️ Deployment
+
+This project is optimized for deployment on **Vercel**. The `vercel.json` file in the root directory contains all the necessary configuration, including rewrite rules for clean URLs.
+
+To deploy your own version:
+
+1.  Fork this repository.
+2.  Click the "Deploy with Vercel" button at the top of this README.
+3.  Follow the on-screen instructions to link your GitHub account and deploy the project.
 
 ---
 
-### `api/`
-Serverless functions, compatible dengan **Vercel** (`/api/*.js`) dan **Netlify** (`netlify/functions/`).
+## 🤝 Contributing
 
-| File | Method | Fungsi |
-|---|---|---|
-| `contact.js` | `POST /api/contact` | Terima form contact, kirim email via Resend/Nodemailer |
-| `views.js` | `GET/POST /api/views` | Baca/tulis page view counter |
-
-> Untuk Netlify, pindahkan ke `netlify/functions/` dan sesuaikan `netlify.toml`.
+Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](https://github.com/chenko-the-sorcerers/Website-Portofolio-Chen/issues).
 
 ---
 
-### `data/`
-Konten halaman disimpan sebagai JSON agar mudah diupdate tanpa menyentuh HTML.
-JS per-halaman fetch data ini dan render ke DOM.
+## 📄 License
 
-```
-Alur: data/projects.json → js/projects.js → pages/projects/index.html
-```
+This project is open-source and available under the [MIT License](LICENSE).
 
 ---
 
-### `components/`
-Karena Vanilla HTML tidak punya component system, file di sini adalah **referensi markup**
-yang di-copy ke setiap halaman, atau bisa di-fetch via JS:
-
-```js
-// Contoh: load nav via fetch
-fetch('/components/nav.html').then(r => r.text()).then(html => {
-  document.getElementById('nav-placeholder').innerHTML = html;
-});
-```
-
----
-
-## Urutan Pengerjaan (Recommended)
-
-```
-Phase 1 — Fondasi
-  [ ] Buat struktur folder lengkap
-  [ ] Pindahkan CSS ke css/ dan JS ke js/ (sudah selesai via refactor_assets.py)
-  [ ] Pindahkan semua halaman ke pages/namahalaman/index.html
-  [ ] Update semua href internal ke path absolut (/pages/..., /css/..., /js/...)
-  [ ] Setup vercel.json / netlify.toml
-
-Phase 2 — Komponen & Data
-  [ ] Ekstrak nav & footer ke components/
-  [ ] Pindahkan data hardcode ke data/*.json
-  [ ] Update JS per halaman untuk fetch dari data/
-
-Phase 3 — API
-  [ ] Setup api/contact.js (form contact)
-  [ ] Test deploy ke Vercel/Netlify
-
-Phase 4 — Polish
-  [ ] Tambah assets/ (favicon, OG image, CV)
-  [ ] Isi docs/CHANGELOG.md dan docs/ROADMAP.md
-  [ ] Audit performa & SEO
-```
-
----
-
-## Config Deployment
-
-### `vercel.json` (minimal)
-```json
-{
-  "cleanUrls": true,
-  "trailingSlash": false,
-  "rewrites": [
-    { "source": "/api/:path*", "destination": "/api/:path*" }
-  ]
-}
-```
-
-### `netlify.toml` (minimal)
-```toml
-[build]
-  publish = "."
-  functions = "netlify/functions"
-
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
-```
-
----
-
-## Status Tracking
-
-| Item | Status | Catatan |
-|---|---|---|
-| CSS dipisah ke `css/` | ✅ Done | via `refactor_assets.py` |
-| JS dipisah ke `js/` | ✅ Done | via `refactor_assets.py` |
-| Halaman dipindah ke `pages/` | ⬜ Todo | |
-| Path diupdate ke absolut | ⬜ Todo | |
-| `vercel.json` / `netlify.toml` | ⬜ Todo | |
-| `components/` nav & footer | ⬜ Todo | |
-| `data/*.json` | ⬜ Todo | |
-| `api/contact.js` | ⬜ Todo | |
-| `assets/` lengkap | ⬜ Todo | |
-| Deploy pertama | ⬜ Todo | |
-
----
-
-*Last updated: 2026-03-14*
+*This README was generated with the assistance of Manus AI.*
