@@ -709,21 +709,26 @@ body {
 }
 
 @media (max-width: 768px) {
-  .cv-hero { padding: 120px 20px 60px; min-height: auto; }
-  .hero-stats { gap: 24px; flex-wrap: wrap; margin-top: 20px; }
-  .stat { flex: 1 1 100px; }
-  .stat-num { font-size: 32px; }
-  .stat-div { display: none; }
-  .topic-item { grid-template-columns: 1fr; gap: 16px; padding: 24px 0; }
-  .topic-icon { width: 40px; height: 40px; font-size: 18px; }
+  .cv-hero { padding: 120px 24px 48px; min-height: auto; display: block; }
+  .hero-inner { max-width: 100%; }
+  .hero-title { font-size: 52px; letter-spacing: -2.5px; line-height: 0.92; margin-bottom: 24px; }
+  .hero-sub { font-size: 16px; line-height: 1.7; margin-bottom: 32px; max-width: 100%; }
+  .hero-stats { gap: 0; justify-content: flex-start; margin-top: 0; }
+  .stat { padding: 0 16px; flex: none; text-align: left; }
+  .stat:first-child { padding-left: 0; }
+  .stat-num { font-size: 28px; }
+  .stat-div { display: block; width: 1px; height: 24px; }
+  .cv-main { padding: 32px 20px 64px; display: block; }
+  .cv-content { gap: 56px; }
+  .module-header { flex-direction: column; gap: 12px; margin-bottom: 24px; padding-bottom: 16px; }
+  .module-num-badge { width: 44px; height: 44px; font-size: 12px; }
+  .module-title { font-size: 24px; letter-spacing: -0.5px; }
+  .topic-item { grid-template-columns: 40px 1fr; gap: 14px; padding: 18px; border: 1px solid var(--border); border-radius: 12px; margin-bottom: 8px; }
+  .topic-icon { width: 36px; height: 36px; font-size: 16px; margin-top: 0; }
+  .topic-body { width: 100%; }
   .topic-code { display: none; }
-  .arch-timeline { gap: 8px; padding: 16px; margin: 0 -16px 32px; border-radius: 0; }
-  .arch-node { min-width: 100px; padding: 12px; }
-  .cv-main { padding: 40px 16px 80px; }
-  .hero-title { font-size: clamp(42px, 11vw, 64px); line-height: 1.0; margin-bottom: 20px; }
-  .hero-sub { font-size: 15px; line-height: 1.6; margin-bottom: 32px; opacity: 0.9; }
-  .module-header { margin-bottom: 32px; padding-bottom: 24px; }
-  .module-title { font-size: 28px; }
+  .arch-timeline { padding: 14px 16px; margin: 0 0 24px; border-radius: 12px; }
+  .arch-node { min-width: 88px; padding: 10px; }
 }
 
 @media (max-width: 480px) {
