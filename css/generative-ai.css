@@ -114,6 +114,12 @@
 .pa-plus { font-size: 16px; color: rgba(255,255,255,.25); flex-shrink: 0; }
 
 /* ── Responsive ──────────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .gen-process-bar { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .vlm-arch-strip { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .prompt-anatomy { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+}
+
 @media (max-width: 768px) {
   .gan-dynamic { flex-direction: column; }
   .gd-box.generator { border-right: none; border-bottom: 1px solid rgba(255,255,255,.07); }
@@ -121,10 +127,71 @@
   .gen-process-bar, .vlm-arch-strip, .prompt-anatomy { 
     gap: 4px; 
     padding: 8px 0;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
   }
   .gpb-step, .vas-block, .pa-block {
     padding: 8px 12px;
     font-size: 10px;
     min-width: auto;
   }
+  .level-badges { gap: 4px; margin-bottom: 6px; }
+  .lvl { font-size: 8px; padding: 2px 6px; }
+  .gen-path-guide { margin-top: 6px; }
+  .gpg-item { gap: 6px; margin-bottom: 8px; }
+  .gpg-badge { font-size: 8px; padding: 2px 5px; }
+  .gpg-text { font-size: 10px; }
+}
+
+@media (max-width: 480px) {
+  .gan-dynamic { flex-direction: column; }
+  .gd-box { padding: 14px 16px; }
+  .gd-box.generator { border-right: none; border-bottom: 1px solid rgba(255,255,255,.07); }
+  .gd-label { font-size: 13px; margin-bottom: 3px; }
+  .gd-desc { font-size: 10px; }
+  .gd-arrows { flex-direction: row; padding: 10px 0; gap: 6px; }
+  .gd-arrow-top, .gd-arrow-bot { font-size: 10px; }
+  .gen-process-bar { 
+    gap: 3px; 
+    padding: 6px 0;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: 0 0 20px;
+  }
+  .gpb-step {
+    padding: 6px 10px;
+    font-size: 9px;
+    min-width: 60px;
+  }
+  .gpb-arrow { font-size: 12px; }
+  .vlm-arch-strip { 
+    gap: 3px; 
+    padding: 6px 0;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: 0 0 20px;
+  }
+  .vas-block {
+    padding: 6px 10px;
+    font-size: 9px;
+  }
+  .vas-arrow { font-size: 14px; }
+  .prompt-anatomy { 
+    gap: 3px; 
+    padding: 6px 0;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: 0 0 20px;
+  }
+  .pa-block {
+    padding: 6px 10px;
+    font-size: 9px;
+  }
+  .pa-plus { font-size: 14px; }
+  .level-badges { gap: 3px; margin-bottom: 4px; }
+  .lvl { font-size: 7px; padding: 2px 5px; }
+  .gen-path-guide { margin-top: 4px; }
+  .gpg-item { gap: 4px; margin-bottom: 6px; }
+  .gpg-badge { font-size: 7px; padding: 2px 4px; }
+  .gpg-text { font-size: 9px; }
 }

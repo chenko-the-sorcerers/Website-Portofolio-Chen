@@ -706,32 +706,90 @@ body {
   .compare-grid { grid-template-columns: 1fr; }
   .compare-vs { display: none; }
   .hero-chip { display: none; }
+  .arch-timeline { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .deploy-pipeline { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 }
 
 @media (max-width: 768px) {
-  .cv-hero { padding: 120px 24px 48px; min-height: auto; display: block; }
+  .cv-hero { padding: 80px 20px 40px; min-height: auto; display: block; }
   .hero-inner { max-width: 100%; }
-  .hero-title { font-size: 52px; letter-spacing: -2.5px; line-height: 0.92; margin-bottom: 24px; }
-  .hero-sub { font-size: 16px; line-height: 1.7; margin-bottom: 32px; max-width: 100%; }
-  .hero-stats { gap: 0; justify-content: flex-start; margin-top: 0; }
-  .stat { padding: 0 16px; flex: none; text-align: left; }
+  .hero-title { font-size: 44px; letter-spacing: -2px; line-height: 0.95; margin-bottom: 20px; }
+  .hero-breadcrumb { font-size: 10px; margin-bottom: 20px; }
+  .hero-tag-row { gap: 8px; margin-bottom: 16px; }
+  .hero-tag { font-size: 10px; padding: 4px 10px; }
+  .hero-sub { font-size: 15px; line-height: 1.6; margin-bottom: 28px; max-width: 100%; }
+  .hero-stats { flex-wrap: wrap; gap: 16px; justify-content: flex-start; margin-top: 0; }
+  .stat { padding: 0 12px; flex: none; text-align: left; }
   .stat:first-child { padding-left: 0; }
-  .stat-num { font-size: 28px; }
-  .stat-div { display: block; width: 1px; height: 24px; }
-  .cv-main { padding: 32px 20px 64px; display: block; }
-  .cv-content { gap: 56px; }
+  .stat-num { font-size: 24px; }
+  .stat-div { height: 20px; }
+  .cv-main { padding: 40px 16px 60px; display: block; }
+  .cv-content { gap: 48px; }
   .module-header { flex-direction: column; gap: 12px; margin-bottom: 24px; padding-bottom: 16px; }
   .module-num-badge { width: 44px; height: 44px; font-size: 12px; }
-  .module-title { font-size: 24px; letter-spacing: -0.5px; }
-  .topic-item { grid-template-columns: 40px 1fr; gap: 14px; padding: 18px; border: 1px solid var(--border); border-radius: 12px; margin-bottom: 8px; }
-  .topic-icon { width: 36px; height: 36px; font-size: 16px; margin-top: 0; }
+  .module-title { font-size: 22px; letter-spacing: -0.5px; }
+  .module-sub { font-size: 14px; }
+  .topic-item { grid-template-columns: 1fr; gap: 12px; padding: 16px; border: 1px solid var(--border); border-radius: 10px; margin-bottom: 12px; }
+  .topic-icon { width: 32px; height: 32px; font-size: 16px; margin-top: 0; }
   .topic-body { width: 100%; }
+  .topic-name { font-size: 16px; }
+  .topic-desc { font-size: 13px; }
   .topic-code { display: none; }
-  .arch-timeline { padding: 14px 16px; margin: 0 0 24px; border-radius: 12px; }
-  .arch-node { min-width: 88px; padding: 10px; }
+  .arch-timeline { padding: 12px 14px; margin: 0 0 20px; border-radius: 10px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .arch-node { min-width: 80px; padding: 8px 12px; font-size: 12px; }
+  .arch-year { font-size: 9px; }
+  .arch-name { font-size: 12px; }
+  .deploy-pipeline { padding: 16px 12px; margin-bottom: 24px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .dp-step { padding: 12px 16px; min-width: 80px; font-size: 10px; }
+  .dp-icon { font-size: 20px; }
+  .compare-grid { gap: 12px; }
+  .compare-card { padding: 16px; }
+  .ccard-title { font-size: 14px; }
+  .ccard-desc { font-size: 12px; }
+  .nmc-title { font-size: 28px; }
+  .nmc-desc { font-size: 14px; }
 }
 
 @media (max-width: 480px) {
-  .module-header { flex-direction: column; gap: 16px; }
-  .hero-title { font-size: 52px; }
+  .cv-hero { padding: 60px 16px 32px; }
+  .hero-title { font-size: 36px; letter-spacing: -1.5px; line-height: 1; margin-bottom: 16px; }
+  .hero-breadcrumb { font-size: 9px; margin-bottom: 16px; }
+  .hero-tag-row { gap: 6px; margin-bottom: 12px; }
+  .hero-tag { font-size: 9px; padding: 3px 8px; }
+  .hero-sub { font-size: 14px; line-height: 1.5; margin-bottom: 20px; }
+  .hero-stats { gap: 12px; }
+  .stat { padding: 0 8px; }
+  .stat-num { font-size: 20px; }
+  .stat-label { font-size: 9px; }
+  .stat-div { height: 16px; }
+  .cv-main { padding: 24px 12px 40px; }
+  .cv-content { gap: 32px; }
+  .module-header { gap: 10px; margin-bottom: 16px; padding-bottom: 12px; }
+  .module-num-badge { width: 36px; height: 36px; font-size: 11px; }
+  .module-title { font-size: 18px; }
+  .module-sub { font-size: 13px; }
+  .topic-item { padding: 12px; margin-bottom: 8px; }
+  .topic-icon { width: 28px; height: 28px; font-size: 14px; }
+  .topic-name { font-size: 14px; }
+  .topic-desc { font-size: 12px; margin-bottom: 10px; }
+  .topic-tags { gap: 4px; }
+  .ttag { font-size: 9px; padding: 2px 6px; }
+  .arch-timeline { padding: 8px 10px; margin: 0 0 16px; }
+  .arch-node { min-width: 70px; padding: 6px 8px; font-size: 10px; }
+  .arch-year { font-size: 8px; }
+  .arch-name { font-size: 11px; }
+  .deploy-pipeline { padding: 12px 10px; margin-bottom: 16px; }
+  .dp-step { padding: 10px 12px; min-width: 70px; font-size: 9px; }
+  .dp-icon { font-size: 18px; }
+  .dp-arrow { font-size: 14px; }
+  .compare-grid { gap: 10px; }
+  .compare-card { padding: 12px; }
+  .ccard-title { font-size: 13px; }
+  .ccard-desc { font-size: 11px; }
+  .ccard-list { gap: 4px; }
+  .ccard-list li { font-size: 11px; }
+  .nmc-label { font-size: 10px; }
+  .nmc-title { font-size: 24px; }
+  .nmc-desc { font-size: 13px; }
+  .nmc-btn { padding: 12px 24px; font-size: 14px; }
 }
