@@ -101,30 +101,60 @@ footer{border-top:1px solid var(--card-border);padding:64px 32px 40px;position:r
 
 @media(max-width:768px){
   /* Nav */
-  nav { height: 64px; }
-  .nav-inner { padding: 0 16px; justify-content: space-between; }
   .nav-links{
-    display:none;
-    position:absolute;top:64px;left:0;right:0;
-    background:rgba(0,0,0,.98);
-    backdrop-filter:blur(24px);
-    -webkit-backdrop-filter:blur(24px);
-    flex-direction:column;
-    padding:16px 0;
-    gap:4px;
-    border-bottom:1px solid var(--card-border);
-    z-index:999;
-    max-height: calc(100vh - 64px);
+    display: flex;
+    position: fixed;
+    top: 56px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.98);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    flex-direction: column;
+    padding: 24px 0;
+    gap: 4px;
+    z-index: 999;
+    transform: translateY(-100%);
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     overflow-y: auto;
   }
-  .nav-links.open{display:flex;}
-  .nav-links a{padding:14px 24px;border-radius:0;font-size:15px;width: 100%;}
-  .nav-links a.active::after{left:24px;transform:none;bottom: 50%; margin-bottom: -2px;}
-  .nav-hamburger{display:flex; order: 2; margin-left: 8px;}
-  .nav-cta{display:none;}
+  .nav-links.open {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: all;
+  }
+  .nav-links a {
+    padding: 16px 32px;
+    border-radius: 0;
+    font-size: 16px;
+    font-weight: 500;
+    width: 100%;
+    display: block;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+  }
+  .nav-links a.active::after {
+    left: 32px;
+    bottom: 12px;
+    transform: none;
+    width: 6px;
+    height: 6px;
+  }
+  .nav-hamburger {
+    display: flex;
+    z-index: 1001;
+  }
+  .nav-cta {
+    display: none;
+  }
+  /* Prevent body scroll when menu is open */
+  body.menu-open {
+    overflow: hidden;
+  }
   /* Keep lang button visible on mobile */
-  #langBtn{display:flex!important; order: 3; margin-right: 0; padding: 6px 10px; font-size: 11px;}
-  .nav-logo { order: 1; flex: 1; }
+  #langBtn{display:flex!important;margin-right:4px;}
   /* Footer */
   .footer-top{grid-template-columns:1fr;gap:32px;}
   .footer-bottom{flex-direction:column;align-items:flex-start;gap:8px;text-align:left;}
