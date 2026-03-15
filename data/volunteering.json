@@ -1,0 +1,70 @@
+[
+  {
+    "org": "NVIDIA Deep Learning Institute",
+    "role": "Certified Instructor & Ambassador",
+    "period": "2025 – Present",
+    "location": "Indonesia",
+    "icon": "💚",
+    "desc": "Delivering NVIDIA-certified AI and Deep Learning courses across Indonesian universities and institutions. Part of the NVIDIA Deep Learning Grant program.",
+    "tags": [
+      "Teaching",
+      "AI",
+      "NVIDIA",
+      "Certification"
+    ]
+  },
+  {
+    "org": "UNDP Indonesia",
+    "role": "Youth AI Advocate",
+    "period": "2025",
+    "location": "Jakarta, Indonesia",
+    "icon": "🌍",
+    "desc": "Representing Indonesian youth in AI policy discussions and advocating for ethical AI development in developing nations.",
+    "tags": [
+      "Policy",
+      "Youth",
+      "AI Ethics",
+      "UN"
+    ]
+  },
+  {
+    "org": "Coding Collective",
+    "role": "Community Lead & Mentor",
+    "period": "2025",
+    "location": "Singapore (Remote)",
+    "icon": "👥",
+    "desc": "Leading the Indonesian chapter of Coding Collective — empowering 500+ AI practitioners through workshops, mentoring sessions, and open-source collaboration.",
+    "tags": [
+      "Mentoring",
+      "Community",
+      "Open Source"
+    ]
+  },
+  {
+    "org": "University of Technology Yogyakarta",
+    "role": "Teaching Assistant — ML, Big Data, Database",
+    "period": "2023 – 2025",
+    "location": "Yogyakarta, Indonesia",
+    "icon": "🎓",
+    "desc": "Assisted professors in delivering Machine Learning, Big Data Analytics, and Database Systems courses. Mentored 200+ undergraduate students.",
+    "tags": [
+      "Teaching",
+      "Academia",
+      "ML",
+      "Mentoring"
+    ]
+  },
+  {
+    "org": "Open Source Nusantara",
+    "role": "Core Contributor",
+    "period": "2023 – Present",
+    "location": "Remote",
+    "icon": "🤝",
+    "desc": "Contributing to open-source tools and datasets for Indonesian language processing, including corpus building for low-resource Nusantara languages.",
+    "tags": [
+      "Open Source",
+      "NLP",
+      "Community"
+    ]
+  }
+]

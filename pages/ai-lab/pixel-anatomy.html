@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pixel Anatomy — Computer Vision | AI Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/shared.css">
+<link rel="stylesheet" href="/css/pixel-anatomy.css">
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-follower" id="cursor-follower"></div>
+<div id="nav-placeholder"></div>
+
+<div class="read-progress"><div id="readBar"></div></div>
+
+<!-- Pyodide loading overlay -->
+<div class="py-loading" id="pyLoading">
+  <div class="py-loading-inner">
+    <div class="py-spinner"></div>
+    <div class="py-loading-text">Loading Python runtime...</div>
+    <div class="py-loading-sub">Pyodide (Python 3.11 via WebAssembly)</div>
+  </div>
+</div>
+
+<div class="lesson-layout">
+
+  <!-- ═══ SIDEBAR ═══ -->
+  <aside class="lesson-sidebar" id="lessonSidebar">
+    <div class="sb-top">
+      <a href="/pages/ai-lab/computer-vision.html" class="sb-back">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 3L5 8l5 5"/></svg>
+        Computer Vision
+      </a>
+      <div class="sb-studying">
+        <div class="sb-studying-label">Sedang belajar</div>
+        <div class="sb-studying-path">
+          <span class="sbp-item">AI Lab</span>
+          <span class="sbp-sep">›</span>
+          <span class="sbp-item">Computer Vision</span>
+          <span class="sbp-sep">›</span>
+          <span class="sbp-item active">Digital Image Fundamentals</span>
+        </div>
+      </div>
+      <div class="sb-chapter">Module 1 · Digital Image Fundamentals</div>
+      <div class="sb-lesson-title">Pixel Anatomy</div>
+      <div class="sb-tags">
+        <span class="sb-tag">Foundation</span>
+        <span class="sb-tag interactive">Interactive</span>
+        <span class="sb-tag coding">🐍 Python</span>
+      </div>
+    </div>
+
+    <nav class="lesson-nav">
+      <div class="nav-section-label">Dalam lesson ini</div>
+      <a href="#sec-what" class="lnav-item active" data-sec="sec-what"><span class="lnav-dot"></span><span class="lnav-text">What is a pixel?</span><span class="lnav-num">01</span></a>
+      <a href="#sec-coords" class="lnav-item" data-sec="sec-coords"><span class="lnav-dot"></span><span class="lnav-text">Coordinates</span><span class="lnav-num">02</span></a>
+      <a href="#sec-rgb" class="lnav-item" data-sec="sec-rgb"><span class="lnav-dot"></span><span class="lnav-text">RGB channels</span><span class="lnav-num">03</span></a>
+      <a href="#sec-colorspaces" class="lnav-item" data-sec="sec-colorspaces"><span class="lnav-dot"></span><span class="lnav-text">Color spaces</span><span class="lnav-num">04</span></a>
+      <a href="#sec-math" class="lnav-item" data-sec="sec-math"><span class="lnav-dot"></span><span class="lnav-text">The math</span><span class="lnav-num">05</span></a>
+      <a href="#sec-playground" class="lnav-item" data-sec="sec-playground"><span class="lnav-dot"></span><span class="lnav-text">Full Playground</span><span class="lnav-num">06</span></a>
+      <a href="#sec-quiz" class="lnav-item" data-sec="sec-quiz"><span class="lnav-dot"></span><span class="lnav-text">Quiz + Coding</span><span class="lnav-num">07</span></a>
+    </nav>
+
+    <div class="sb-progress">
+      <div class="sb-prog-label"><span>Progress</span><span id="progPct">0%</span></div>
+      <div class="sb-prog-track"><div class="sb-prog-fill" id="progFill"></div></div>
+    </div>
+
+    <div class="sb-module-nav">
+      <div class="nav-section-label" style="padding:0 8px;margin-bottom:8px">Module 1 · semua topik</div>
+      <a href="pixel-anatomy.html" class="smn-item current"><span class="smn-dot done"></span><span>Pixel Anatomy</span></a>
+      <a href="#" class="smn-item locked"><span class="smn-dot"></span><span>Image Processing with OpenCV</span><span class="smn-lock">🔒</span></a>
+      <a href="#" class="smn-item locked"><span class="smn-dot"></span><span>Filtering &amp; Kernels</span><span class="smn-lock">🔒</span></a>
+      <a href="#" class="smn-item locked"><span class="smn-dot"></span><span>Morphological Transforms</span><span class="smn-lock">🔒</span></a>
+    </div>
+  </aside>
+
+  <!-- ═══ MAIN ═══ -->
+  <main class="lesson-main">
+    <div class="lesson-topbar">
+      <div class="ltb-left">
+        <button class="ltb-menu" id="menuBtn" onclick="toggleSidebar()">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg>
+        </button>
+        <span class="ltb-crumb">Pixel Anatomy</span>
+        <span class="py-status" id="pyStatus">⏳ Loading Python...</span>
+      </div>
+      <div class="ltb-right">
+        <a href="/pages/ai-lab/computer-vision.html" class="ltb-btn">← Back to CV</a>
+        <a href="#sec-quiz" class="ltb-btn primary">Take Quiz</a>
+      </div>
+    </div>
+
+    <div class="lesson-body">
+
+      <!-- ─── SEC 1 ─── -->
+      <section class="lesson-sec" id="sec-what">
+        <div class="sec-header">
+          <span class="sec-num">01</span>
+          <div><h2 class="sec-title">What is a pixel?</h2><p class="sec-sub">The atomic unit of every digital image</p></div>
+        </div>
+        <div class="prose">An image is nothing magical — it is a <strong>2D array (matrix) of pixels</strong>. Each pixel stores intensity values as integers from <code>0</code> to <code>255</code>.</div>
+        <div class="callout info"><span class="callout-icon">💡</span><div>A 1920×1080 Full HD image contains <strong>2,073,600 pixels</strong>. With 3 channels, that's over <strong>6.2 million numbers</strong>.</div></div>
+        <div class="widget-card">
+          <div class="widget-label">Interactive · Hover or tap any pixel to inspect it</div>
+          <div class="pixel-inspector">
+            <canvas id="pixelCanvas" width="280" height="280"></canvas>
+            <div class="px-info-panel">
+              <div class="px-swatch" id="pxSwatch"></div>
+              <div class="px-stats">
+                <div class="px-stat"><span class="px-stat-label">Position</span><span class="px-stat-val" id="pxPos">(—, —)</span><span class="px-stat-sub">col, row</span></div>
+                <div class="px-stat"><span class="px-stat-label">Hex</span><span class="px-stat-val mono" id="pxHex">#——</span></div>
+                <div class="px-stat"><span class="px-stat-label">Grayscale</span><span class="px-stat-val" id="pxGray">—</span><span class="px-stat-sub">0–255</span></div>
+              </div>
+              <div class="ch-bars">
+                <div class="ch-row"><span class="ch-lbl red">R</span><div class="ch-track"><div class="ch-fill" id="chR" style="--c:#ef4444"></div></div><span class="ch-num" id="chRv">0</span></div>
+                <div class="ch-row"><span class="ch-lbl green">G</span><div class="ch-track"><div class="ch-fill" id="chG" style="--c:#22c55e"></div></div><span class="ch-num" id="chGv">0</span></div>
+                <div class="ch-row"><span class="ch-lbl blue">B</span><div class="ch-track"><div class="ch-fill" id="chB" style="--c:#3b82f6"></div></div><span class="ch-num" id="chBv">0</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="code-block">
+          <div class="cb-label">numpy</div>
+<pre><code><span class="kw">import</span> numpy <span class="kw">as</span> np
+img = np.<span class="fn">zeros</span>((<span class="num">480</span>, <span class="num">640</span>, <span class="num">3</span>), dtype=np.uint8)
+print(img.shape)   <span class="cm"># (480, 640, 3)</span>
+print(img.dtype)   <span class="cm"># uint8</span>
+pixel = img[<span class="num">80</span>, <span class="num">120</span>]  <span class="cm"># [B, G, R]</span></code></pre>
+        </div>
+        <div class="challenge-card" id="ch-1">
+          <div class="challenge-header"><span class="challenge-badge">🐍 Mini Challenge</span><span class="challenge-title">Create an image array and inspect it</span></div>
+          <div class="challenge-desc">Complete the blanks to create a 100×200 image with 3 channels and print its shape, dtype, and total pixels.</div>
+          <div class="challenge-editor">
+            <div class="editor-tabs"><span class="editor-tab active">solution.py</span></div>
+            <div class="code-editor-wrap"><textarea class="code-editor" id="ce-1" spellcheck="false">import numpy as np
+
+# Create a 100×200 color image (height=100, width=200)
+img = np.zeros((___, ___, ___), dtype=np.uint8)
+
+# Print the shape
+print("Shape:", ___.shape)
+
+# Print the dtype
+print("Dtype:", ___.___)
+
+# Total number of pixels?
+total_pixels = ___ * ___
+print("Total pixels:", total_pixels)</textarea></div>
+            <div class="editor-actions">
+              <button class="run-btn" onclick="runChallenge('ce-1','out-1','check-1')">▶ Run</button>
+              <button class="hint-btn" onclick="toggleHint('hint-1')">💡 Hint</button>
+              <button class="reset-btn" onclick="resetChallenge('ce-1',1)">↺ Reset</button>
+            </div>
+          </div>
+          <div class="hint-box" id="hint-1" style="display:none"><strong>Hints:</strong><br>• <code>np.zeros((height, width, channels))</code> — order matters!<br>• height=100, width=200, channels=3<br>• <code>img.shape</code> returns a tuple, <code>img.dtype</code> returns dtype</div>
+          <div class="output-wrap" id="out-1" style="display:none"><div class="output-label">Output</div><pre class="output-pre" id="out-1-pre"></pre></div>
+          <div class="check-result" id="check-1" style="display:none"></div>
+          <div class="expected-box"><span class="expected-label">Expected:</span><code>Shape: (100, 200, 3)<br>Dtype: uint8<br>Total pixels: 20000</code></div>
+        </div>
+      </section>
+
+      <!-- ─── SEC 2 ─── -->
+      <section class="lesson-sec" id="sec-coords">
+        <div class="sec-header">
+          <span class="sec-num">02</span>
+          <div><h2 class="sec-title">Coordinate system</h2><p class="sec-sub">Top-left origin, row-major indexing</p></div>
+        </div>
+        <div class="prose">Unlike Cartesian math, image coordinates use a <strong>top-left origin</strong>. NumPy indexes as <code>img[row, col]</code> — reversing the usual x,y order.</div>
+        <div class="callout warn"><span class="callout-icon">⚠️</span><div>OpenCV uses <code>img[y, x]</code> but many geometry functions take <code>(x, y)</code> tuples. Always check the convention.</div></div>
+        <div class="widget-card">
+          <div class="widget-label">Interactive · Move cursor over the grid</div>
+          <canvas id="coordCanvas" style="width:100%;display:block;cursor:crosshair;border-radius:8px"></canvas>
+          <div class="coord-readout mono" id="coordReadout">img[y=—, x=—]   →   pixel coordinates</div>
+        </div>
+        <div class="two-col">
+          <div class="code-block"><div class="cb-label">indexing</div>
+<pre><code><span class="cm"># top-left</span>
+top_left = img[<span class="num">0</span>, <span class="num">0</span>]
+<span class="cm"># bottom-right</span>
+h, w = img.shape[:<span class="num">2</span>]
+br = img[h<span class="op">-</span><span class="num">1</span>, w<span class="op">-</span><span class="num">1</span>]
+<span class="cm"># region of interest</span>
+roi = img[<span class="num">50</span>:<span class="num">150</span>, <span class="num">100</span>:<span class="num">200</span>]</code></pre></div>
+          <div class="info-card"><div class="ic-title">Memory layout</div><p>Images are stored in <strong>row-major order</strong>. Iterating rows is cache-friendly; columns is not.</p></div>
+        </div>
+        <div class="challenge-card" id="ch-2">
+          <div class="challenge-header"><span class="challenge-badge">🐍 Mini Challenge</span><span class="challenge-title">Access specific pixels by coordinate</span></div>
+          <div class="challenge-desc">Access the correct pixels using NumPy row-column indexing.</div>
+          <div class="challenge-editor">
+            <div class="editor-tabs"><span class="editor-tab active">solution.py</span></div>
+            <div class="code-editor-wrap"><textarea class="code-editor" id="ce-2" spellcheck="false">import numpy as np
+
+img = np.arange(300, dtype=np.uint8).reshape(10, 10, 3)
+
+# Access pixel at column=3, row=2 (img[row, col])
+pixel = img[___, ___]
+print("Pixel at (col=3, row=2):", pixel)
+
+# Get height and width
+h, w = img.shape[___]
+print(f"Height: {h}, Width: {w}")
+
+# Access center pixel (row=5, col=5)
+center = img[___, ___]
+print("Center pixel:", center)</textarea></div>
+            <div class="editor-actions">
+              <button class="run-btn" onclick="runChallenge('ce-2','out-2','check-2')">▶ Run</button>
+              <button class="hint-btn" onclick="toggleHint('hint-2')">💡 Hint</button>
+              <button class="reset-btn" onclick="resetChallenge('ce-2',2)">↺ Reset</button>
+            </div>
+          </div>
+          <div class="hint-box" id="hint-2" style="display:none"><strong>Hints:</strong><br>• <code>img[row, col]</code> — row dulu, baru col<br>• col=3, row=2 → <code>img[2, 3]</code><br>• <code>img.shape[:2]</code> ambil (height, width) saja</div>
+          <div class="output-wrap" id="out-2" style="display:none"><div class="output-label">Output</div><pre class="output-pre" id="out-2-pre"></pre></div>
+          <div class="check-result" id="check-2" style="display:none"></div>
+          <div class="expected-box"><span class="expected-label">Expected:</span><code>Pixel at (col=3, row=2): [60 61 62]<br>Height: 10, Width: 10<br>Center pixel: [150 151 152]</code></div>
+        </div>
+      </section>
+
+      <!-- ─── SEC 3 ─── -->
+      <section class="lesson-sec" id="sec-rgb">
+        <div class="sec-header">
+          <span class="sec-num">03</span>
+          <div><h2 class="sec-title">RGB channels</h2><p class="sec-sub">Three matrices stacked into one 3D array</p></div>
+        </div>
+        <div class="prose">A color image is actually <strong>three separate grayscale matrices</strong> — R, G, B — stacked into shape <code>(H, W, 3)</code>.</div>
+        <div class="widget-card">
+          <div class="widget-label">Interactive · The same image split across 3 channels</div>
+          <canvas id="rgbCanvas" style="width:100%;display:block;border-radius:8px"></canvas>
+          <div class="rgb-labels"><span>Original</span><span style="color:#ef4444">R channel</span><span style="color:#22c55e">G channel</span><span style="color:#3b82f6">B channel</span></div>
+        </div>
+        <div class="callout danger"><span class="callout-icon">🚨</span><div><strong>Critical:</strong> OpenCV loads as <strong>BGR</strong> not RGB. Index 0=Blue, 1=Green, 2=Red.</div></div>
+        <div class="code-block"><div class="cb-label">channels</div>
+<pre><code>r_channel = img[:, :, <span class="num">2</span>]  <span class="cm"># BGR: index 2 = Red</span>
+g_channel = img[:, :, <span class="num">1</span>]
+b_channel = img[:, :, <span class="num">0</span>]</code></pre></div>
+        <div class="challenge-card" id="ch-3">
+          <div class="challenge-header"><span class="challenge-badge">🐍 Mini Challenge</span><span class="challenge-title">Split and manipulate RGB channels</span></div>
+          <div class="challenge-desc">Create pure color pixels and extract channels from a mixed color.</div>
+          <div class="challenge-editor">
+            <div class="editor-tabs"><span class="editor-tab active">solution.py</span></div>
+            <div class="code-editor-wrap"><textarea class="code-editor" id="ce-3" spellcheck="false">import numpy as np
+
+# Pure red pixel [R, G, B]
+red_pixel = np.array([___, ___, ___], dtype=np.uint8)
+print("Red pixel:", red_pixel)
+
+# Pure green pixel
+green_pixel = np.array([___, ___, ___], dtype=np.uint8)
+print("Green pixel:", green_pixel)
+
+# Mixed pixel R=100, G=150, B=200
+pixel = np.array([100, 150, 200], dtype=np.uint8)
+r = pixel[___]
+g = pixel[___]
+b = pixel[___]
+print(f"R={r}, G={g}, B={b}")
+
+# Grayscale
+gray = int(0.299 * r + 0.587 * g + 0.114 * b)
+print("Grayscale:", gray)</textarea></div>
+            <div class="editor-actions">
+              <button class="run-btn" onclick="runChallenge('ce-3','out-3','check-3')">▶ Run</button>
+              <button class="hint-btn" onclick="toggleHint('hint-3')">💡 Hint</button>
+              <button class="reset-btn" onclick="resetChallenge('ce-3',3)">↺ Reset</button>
+            </div>
+          </div>
+          <div class="hint-box" id="hint-3" style="display:none"><strong>Hints:</strong><br>• Pure red → <code>[255, 0, 0]</code><br>• Pure green → <code>[0, 255, 0]</code><br>• Channel index (RGB array): R=0, G=1, B=2</div>
+          <div class="output-wrap" id="out-3" style="display:none"><div class="output-label">Output</div><pre class="output-pre" id="out-3-pre"></pre></div>
+          <div class="check-result" id="check-3" style="display:none"></div>
+          <div class="expected-box"><span class="expected-label">Expected:</span><code>Red pixel: [255   0   0]<br>Green pixel: [  0 255   0]<br>R=100, G=150, B=200<br>Grayscale: 152</code></div>
+        </div>
+      </section>
+
+      <!-- ─── SEC 4 ─── -->
+      <section class="lesson-sec" id="sec-colorspaces">
+        <div class="sec-header">
+          <span class="sec-num">04</span>
+          <div><h2 class="sec-title">Color spaces</h2><p class="sec-sub">Different coordinate systems for the same color</p></div>
+        </div>
+        <div class="prose">A color space is a <strong>mathematical coordinate system</strong> for describing colors — each optimized for a different task.</div>
+        <div class="cs-grid">
+          <div class="cs-card" style="--cs-accent:#ef4444"><div class="cs-card-top"><span class="cs-name">RGB</span><span class="cs-use">Screens</span></div><div class="cs-channels"><div class="cs-ch"><span>R</span><span>0–255</span></div><div class="cs-ch"><span>G</span><span>0–255</span></div><div class="cs-ch"><span>B</span><span>0–255</span></div></div><div class="cs-desc">Additive model — mixes light.</div><code class="cs-code">cv2.COLOR_BGR2RGB</code></div>
+          <div class="cs-card" style="--cs-accent:#f59e0b"><div class="cs-card-top"><span class="cs-name">HSV</span><span class="cs-use">Color tracking</span></div><div class="cs-channels"><div class="cs-ch"><span>H</span><span>0–179°</span></div><div class="cs-ch"><span>S</span><span>0–255</span></div><div class="cs-ch"><span>V</span><span>0–255</span></div></div><div class="cs-desc">Separates hue from brightness.</div><code class="cs-code">cv2.COLOR_BGR2HSV</code></div>
+          <div class="cs-card" style="--cs-accent:#8b5cf6"><div class="cs-card-top"><span class="cs-name">LAB</span><span class="cs-use">Color diff</span></div><div class="cs-channels"><div class="cs-ch"><span>L</span><span>0–100</span></div><div class="cs-ch"><span>a</span><span>±128</span></div><div class="cs-ch"><span>b</span><span>±128</span></div></div><div class="cs-desc">Perceptually uniform.</div><code class="cs-code">cv2.COLOR_BGR2LAB</code></div>
+          <div class="cs-card" style="--cs-accent:#6b7280"><div class="cs-card-top"><span class="cs-name">Grayscale</span><span class="cs-use">Classical CV</span></div><div class="cs-channels"><div class="cs-ch"><span>L</span><span>0–255</span></div></div><div class="cs-desc">Single channel. Reduces data 3×.</div><code class="cs-code">cv2.COLOR_BGR2GRAY</code></div>
+        </div>
+        <div class="challenge-card" id="ch-4">
+          <div class="challenge-header"><span class="challenge-badge">🐍 Mini Challenge</span><span class="challenge-title">Implement RGB → Grayscale manually</span></div>
+          <div class="challenge-desc">Implement the ITU-R BT.601 formula without any library functions.</div>
+          <div class="challenge-editor">
+            <div class="editor-tabs"><span class="editor-tab active">solution.py</span></div>
+            <div class="code-editor-wrap"><textarea class="code-editor" id="ce-4" spellcheck="false">def rgb_to_gray(r, g, b):
+    """
+    Formula: gray = 0.299*R + 0.587*G + 0.114*B
+    Returns an integer (0-255).
+    """
+    gray = ___ * r + ___ * g + ___ * b
+    return int(gray)
+
+print(rgb_to_gray(255, 0, 0))     # Pure red
+print(rgb_to_gray(0, 255, 0))     # Pure green
+print(rgb_to_gray(0, 0, 255))     # Pure blue
+print(rgb_to_gray(255, 255, 255)) # White
+print(rgb_to_gray(0, 0, 0))       # Black
+print(rgb_to_gray(100, 150, 200)) # Mixed</textarea></div>
+            <div class="editor-actions">
+              <button class="run-btn" onclick="runChallenge('ce-4','out-4','check-4')">▶ Run</button>
+              <button class="hint-btn" onclick="toggleHint('hint-4')">💡 Hint</button>
+              <button class="reset-btn" onclick="resetChallenge('ce-4',4)">↺ Reset</button>
+            </div>
+          </div>
+          <div class="hint-box" id="hint-4" style="display:none"><strong>Hints:</strong><br>• <code>gray = 0.299*R + 0.587*G + 0.114*B</code><br>• Green diberi bobot tertinggi — mata paling sensitif ke hijau</div>
+          <div class="output-wrap" id="out-4" style="display:none"><div class="output-label">Output</div><pre class="output-pre" id="out-4-pre"></pre></div>
+          <div class="check-result" id="check-4" style="display:none"></div>
+          <div class="expected-box"><span class="expected-label">Expected:</span><code>76<br>149<br>29<br>255<br>0<br>152</code></div>
+        </div>
+      </section>
+
+      <!-- ─── SEC 5 ─── -->
+      <section class="lesson-sec" id="sec-math">
+        <div class="sec-header">
+          <span class="sec-num">05</span>
+          <div><h2 class="sec-title">The math — live calculator</h2><p class="sec-sub">Adjust RGB and watch every formula compute in real time</p></div>
+        </div>
+        <div class="widget-card">
+          <div class="widget-label">Interactive · Adjust RGB sliders</div>
+          <div class="calc-preview" id="calcPreview"></div>
+          <div class="calc-sliders">
+            <div class="csl-row"><span class="csl-lbl red">R</span><input type="range" min="0" max="255" value="64" id="slR" oninput="updateCalc()"><span class="csl-val" id="svR">64</span></div>
+            <div class="csl-row"><span class="csl-lbl green">G</span><input type="range" min="0" max="255" value="128" id="slG" oninput="updateCalc()"><span class="csl-val" id="svG">128</span></div>
+            <div class="csl-row"><span class="csl-lbl blue">B</span><input type="range" min="0" max="255" value="200" id="slB" oninput="updateCalc()"><span class="csl-val" id="svB">200</span></div>
+          </div>
+          <div class="calc-results" id="calcResults"></div>
+        </div>
+        <div class="widget-card" style="margin-top:16px">
+          <div class="widget-label">Step-by-step: grayscale conversion</div>
+          <div class="code-block" style="margin:0"><pre><code id="mathSteps">—</code></pre></div>
+        </div>
+        <div class="challenge-card" id="ch-5">
+          <div class="challenge-header"><span class="challenge-badge">🐍 Mini Challenge</span><span class="challenge-title">Build RGB → HSV converter</span></div>
+          <div class="challenge-desc">Implement RGB to HSV conversion. H in degrees (0–360), S and V are 0–1.</div>
+          <div class="challenge-editor">
+            <div class="editor-tabs"><span class="editor-tab active">solution.py</span></div>
+            <div class="code-editor-wrap"><textarea class="code-editor" id="ce-5" spellcheck="false">def rgb_to_hsv(r, g, b):
+    r, g, b = r/255, g/255, b/255
+    cmax = max(r, g, b)
+    cmin = min(r, g, b)
+    delta = ___ - ___       # cmax - cmin
+
+    v = ___                 # just cmax
+    s = 0 if cmax == 0 else ___ / ___   # delta / cmax
+
+    if delta == 0:
+        h = 0
+    elif cmax == r:
+        h = 60 * (((g - b) / delta) % 6)
+    elif cmax == g:
+        h = 60 * (((b - r) / delta) + ___)  # + 2
+    else:
+        h = 60 * (((r - g) / delta) + ___)  # + 4
+
+    return round(h, 1), round(s, 3), round(v, 3)
+
+print(rgb_to_hsv(255, 0, 0))    # Red
+print(rgb_to_hsv(0, 255, 0))    # Green
+print(rgb_to_hsv(0, 0, 255))    # Blue
+print(rgb_to_hsv(255, 255, 0))  # Yellow</textarea></div>
+            <div class="editor-actions">
+              <button class="run-btn" onclick="runChallenge('ce-5','out-5','check-5')">▶ Run</button>
+              <button class="hint-btn" onclick="toggleHint('hint-5')">💡 Hint</button>
+              <button class="reset-btn" onclick="resetChallenge('ce-5',5)">↺ Reset</button>
+            </div>
+          </div>
+          <div class="hint-box" id="hint-5" style="display:none"><strong>Hints:</strong><br>• <code>delta = cmax - cmin</code>, <code>v = cmax</code>, <code>s = delta/cmax</code><br>• Green branch: +2, Blue branch: +4</div>
+          <div class="output-wrap" id="out-5" style="display:none"><div class="output-label">Output</div><pre class="output-pre" id="out-5-pre"></pre></div>
+          <div class="check-result" id="check-5" style="display:none"></div>
+          <div class="expected-box"><span class="expected-label">Expected:</span><code>(0.0, 1.0, 1.0)<br>(120.0, 1.0, 1.0)<br>(240.0, 1.0, 1.0)<br>(60.0, 1.0, 1.0)</code></div>
+        </div>
+      </section>
+
+      <!-- ─── SEC 6: PLAYGROUND ─── -->
+      <section class="lesson-sec" id="sec-playground">
+        <div class="sec-header">
+          <span class="sec-num">06</span>
+          <div><h2 class="sec-title">Full Python Playground</h2><p class="sec-sub">Eksperimen bebas — tulis Python apapun</p></div>
+        </div>
+        <div class="prose">Python 3.11 + NumPy langsung di browser via <strong>Pyodide</strong>. Tidak ada batas — explore sesukamu.</div>
+        <div class="playground-card">
+          <div class="playground-toolbar">
+            <div class="pg-toolbar-left">
+              <span class="pg-title">🐍 Python 3.11 · NumPy ready</span>
+              <span class="py-ready-dot" id="pgReadyDot"></span>
+            </div>
+            <div class="pg-toolbar-right">
+              <button class="pg-snippet-btn" onclick="loadSnippet('pixels')">Pixels</button>
+              <button class="pg-snippet-btn" onclick="loadSnippet('channels')">Channels</button>
+              <button class="pg-snippet-btn" onclick="loadSnippet('grayscale')">Grayscale</button>
+              <button class="pg-snippet-btn" onclick="loadSnippet('stats')">Stats</button>
+            </div>
+          </div>
+          <div class="code-editor-wrap">
+            <textarea class="code-editor playground-editor" id="playground-editor" spellcheck="false">import numpy as np
+
+# Create a sample 5x5 RGB image
+img = np.random.randint(0, 256, (5, 5, 3), dtype=np.uint8)
+
+print("Image shape:", img.shape)
+print("Image dtype:", img.dtype)
+print("\nFirst row of pixels:")
+print(img[0])
+print("\nPixel at center (row=2, col=2):")
+print(img[2, 2])
+
+r_mean = img[:,:,0].mean()
+g_mean = img[:,:,1].mean()
+b_mean = img[:,:,2].mean()
+print(f"\nChannel means — R:{r_mean:.1f} G:{g_mean:.1f} B:{b_mean:.1f}")</textarea>
+          </div>
+          <div class="playground-actions">
+            <button class="run-btn large" onclick="runPlayground()">▶ Run Code</button>
+            <button class="reset-btn" onclick="resetPlayground()">↺ Reset</button>
+            <span class="pg-note">Ctrl+Enter to run</span>
+          </div>
+          <div class="output-wrap" id="pg-output" style="display:none"><div class="output-label">Output</div><pre class="output-pre" id="pg-output-pre"></pre></div>
+        </div>
+      </section>
+
+      <!-- ─── SEC 7: QUIZ ─── -->
+      <section class="lesson-sec" id="sec-quiz">
+        <div class="sec-header">
+          <span class="sec-num">07</span>
+          <div><h2 class="sec-title">Quiz + Coding Challenge</h2><p class="sec-sub">Teori + praktik — selesaikan keduanya untuk lulus</p></div>
+        </div>
+
+        <div class="quiz-block-title">Part A · Multiple Choice</div>
+        <div id="quizContainer"></div>
+
+        <div class="quiz-block-title" style="margin-top:40px">Part B · Coding Challenge</div>
+        <div class="prose" style="margin-bottom:20px">3 soal coding — fill in the blank, fix the bug, dan vectorized operation.</div>
+
+        <!-- CQ 1 -->
+        <div class="challenge-card" id="cq-1">
+          <div class="challenge-header"><span class="challenge-badge quiz-badge">📝 Coding Quiz 1 · Fix the bug</span><span class="challenge-title">Wrong pixel access — fix the coordinates</span></div>
+          <div class="challenge-desc">Kode ini mengakses pixel yang salah karena row dan col tertukar. Perbaiki.</div>
+          <div class="challenge-editor">
+            <div class="editor-tabs"><span class="editor-tab active">buggy.py</span></div>
+            <div class="code-editor-wrap"><textarea class="code-editor" id="cq-1-editor" spellcheck="false">import numpy as np
+
+img = np.zeros((10, 10, 3), dtype=np.uint8)
+img[3, 5] = [255, 0, 0]   # Red at row=3, col=5
+img[7, 2] = [0, 255, 0]   # Green at row=7, col=2
+
+# BUG: row and col are swapped — fix these two lines
+red_pixel   = img[5, 3]
+green_pixel = img[2, 7]
+
+print("Red pixel:", red_pixel)
+print("Green pixel:", green_pixel)</textarea></div>
+            <div class="editor-actions">
+              <button class="run-btn" onclick="runChallenge('cq-1-editor','cq-1-out','cq-1-check')">▶ Run &amp; Check</button>
+              <button class="reset-btn" onclick="resetCodingQuiz(1)">↺ Reset</button>
+            </div>
+          </div>
+          <div class="output-wrap" id="cq-1-out" style="display:none"><div class="output-label">Output</div><pre class="output-pre" id="cq-1-out-pre"></pre></div>
+          <div class="check-result" id="cq-1-check" style="display:none"></div>
+          <div class="expected-box"><span class="expected-label">Expected:</span><code>Red pixel: [255   0   0]<br>Green pixel: [  0 255   0]</code></div>
+        </div>
+
+        <!-- CQ 2 -->
+        <div class="challenge-card" id="cq-2">
+          <div class="challenge-header"><span class="challenge-badge quiz-badge">📝 Coding Quiz 2 · Fill in the blank</span><span class="challenge-title">Compute image statistics</span></div>
+          <div class="challenge-desc">Lengkapi kode untuk menghitung statistik dasar dari sebuah image array.</div>
+          <div class="challenge-editor">
+            <div class="editor-tabs"><span class="editor-tab active">solution.py</span></div>
+            <div class="code-editor-wrap"><textarea class="code-editor" id="cq-2-editor" spellcheck="false">import numpy as np
+
+np.random.seed(42)
+img = np.random.randint(0, 256, (100, 100, 3), dtype=np.uint8)
+
+# Total pixels (height * width)
+total = ___ * ___
+print("Total pixels:", total)
+
+# Mean value of entire image
+mean_val = round(float(img.___()),  2)
+print("Mean value:", mean_val)
+
+print("Min:", int(img.___()))
+print("Max:", int(img.___()))
+
+# Shape of red channel (index 0 for RGB array)
+r_shape = img[:, :, ___].shape
+print("Red channel shape:", r_shape)</textarea></div>
+            <div class="editor-actions">
+              <button class="run-btn" onclick="runChallenge('cq-2-editor','cq-2-out','cq-2-check')">▶ Run &amp; Check</button>
+              <button class="reset-btn" onclick="resetCodingQuiz(2)">↺ Reset</button>
+            </div>
+          </div>
+          <div class="output-wrap" id="cq-2-out" style="display:none"><div class="output-label">Output</div><pre class="output-pre" id="cq-2-out-pre"></pre></div>
+          <div class="check-result" id="cq-2-check" style="display:none"></div>
+          <div class="expected-box"><span class="expected-label">Expected:</span><code>Total pixels: 10000<br>Mean value: 127.51<br>Min: 0<br>Max: 255<br>Red channel shape: (100, 100)</code></div>
+        </div>
+
+        <!-- CQ 3 -->
+        <div class="challenge-card" id="cq-3">
+          <div class="challenge-header"><span class="challenge-badge quiz-badge">📝 Coding Quiz 3 · Vectorized</span><span class="challenge-title">Apply grayscale to full image — no loops</span></div>
+          <div class="challenge-desc">Apply grayscale formula ke seluruh image sekaligus menggunakan NumPy vectorized operations.</div>
+          <div class="challenge-editor">
+            <div class="editor-tabs"><span class="editor-tab active">solution.py</span></div>
+            <div class="code-editor-wrap"><textarea class="code-editor" id="cq-3-editor" spellcheck="false">import numpy as np
+
+img = np.array([
+    [[255, 0,   0  ], [0,   255, 0  ], [0,   0,   255]],
+    [[255, 255, 0  ], [0,   255, 255], [255, 0,   255]],
+    [[255, 255, 255], [128, 128, 128], [0,   0,   0  ]]
+], dtype=np.float32)
+
+# Vectorized grayscale: 0.299*R + 0.587*G + 0.114*B
+# img[:,:,0]=R  img[:,:,1]=G  img[:,:,2]=B
+gray = (___ * img[:,:,0] + ___ * img[:,:,1] + ___ * img[:,:,2])
+gray = gray.astype(np.uint8)
+print(gray)</textarea></div>
+            <div class="editor-actions">
+              <button class="run-btn" onclick="runChallenge('cq-3-editor','cq-3-out','cq-3-check')">▶ Run &amp; Check</button>
+              <button class="reset-btn" onclick="resetCodingQuiz(3)">↺ Reset</button>
+            </div>
+          </div>
+          <div class="output-wrap" id="cq-3-out" style="display:none"><div class="output-label">Output</div><pre class="output-pre" id="cq-3-out-pre"></pre></div>
+          <div class="check-result" id="cq-3-check" style="display:none"></div>
+          <div class="expected-box"><span class="expected-label">Expected:</span><code>[[ 76 149  29]<br> [226 178 105]<br> [255 128   0]]</code></div>
+        </div>
+
+        <div class="final-score-card" id="finalScore" style="display:none">
+          <div class="fs-title">Lesson Complete! 🎉</div>
+          <div class="fs-scores" id="fsScores"></div>
+          <div class="fs-msg" id="fsMsg"></div>
+        </div>
+
+        <div class="next-lesson-cta" id="nextLesson" style="display:none">
+          <div class="nlc-inner">
+            <span class="nlc-label">Next lesson</span>
+            <h3 class="nlc-title">Image Processing with OpenCV →</h3>
+            <p class="nlc-desc">Loading, resizing, cropping, and bitwise operations.</p>
+            <a href="#" class="nlc-btn">Continue</a>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<div id="footer-placeholder"></div>
+
+<script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
+<script src="/js/shared.js"></script>
+<script src="/js/lang.js"></script>
+<script src="/js/pixel-anatomy.js"></script>
+</body>
+</html>

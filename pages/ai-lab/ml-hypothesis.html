@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hipotesis, Model & Ruang Fitur — AI Lab | Marchel Andrian Shevchenko</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/shared.css">
+<link rel="stylesheet" href="/css/lesson-base.css">
+<link rel="stylesheet" href="/css/ml-hypothesis.css">
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-follower" id="cursor-follower"></div>
+<div id="nav-placeholder"></div>
+<div class="read-progress"><div id="readBar"></div></div>
+
+<div class="lesson-layout">
+
+  <!-- ═══ SIDEBAR ═══ -->
+  <aside class="lesson-sidebar" id="lessonSidebar">
+    <div class="sb-top">
+      <a href="/pages/ai-lab/machine-learning.html" class="sb-back">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 3L5 8l5 5"/></svg>
+        Machine Learning
+      </a>
+      <div class="sb-studying">
+        <div class="sb-studying-label">Sedang belajar</div>
+        <div class="sb-studying-path">
+          <span class="sbp-item">AI Lab</span>
+          <span class="sbp-sep">›</span>
+          <span class="sbp-item">Machine Learning</span>
+          <span class="sbp-sep">›</span>
+          <span class="sbp-item active">Pengantar ML</span>
+        </div>
+      </div>
+      <div class="sb-chapter">Modul 1 · Pengantar Machine Learning</div>
+      <div class="sb-lesson-title">Hipotesis, Model & Ruang Fitur</div>
+      <div class="sb-tags">
+        <span class="sb-tag">Teori</span>
+        <span class="sb-tag interactive">📐 Matematis</span>
+      </div>
+    </div>
+
+    <div class="lesson-nav">
+      <div class="nav-section-label">Dalam lesson ini</div>
+      <a href="#sec-vektor" class="lnav-item active" data-sec="sec-vektor">
+        <span class="lnav-dot"></span><span class="lnav-text">Vektor Fitur & Ruang Input</span><span class="lnav-num">01</span>
+      </a>
+      <a href="#sec-hipotesis" class="lnav-item" data-sec="sec-hipotesis">
+        <span class="lnav-dot"></span><span class="lnav-text">Hipotesis h: X → Y</span><span class="lnav-num">02</span>
+      </a>
+      <a href="#sec-model" class="lnav-item" data-sec="sec-model">
+        <span class="lnav-dot"></span><span class="lnav-text">Model & Ruang Hipotesis H</span><span class="lnav-num">03</span>
+      </a>
+      <a href="#sec-parameter" class="lnav-item" data-sec="sec-parameter">
+        <span class="lnav-dot"></span><span class="lnav-text">Parametrisasi Model</span><span class="lnav-num">04</span>
+      </a>
+      <a href="#sec-versi" class="lnav-item" data-sec="sec-versi">
+        <span class="lnav-dot"></span><span class="lnav-text">Ruang Inaˇcica (Version Space)</span><span class="lnav-num">05</span>
+      </a>
+      <a href="#sec-bias" class="lnav-item" data-sec="sec-bias">
+        <span class="lnav-dot"></span><span class="lnav-text">Induktif Bias</span><span class="lnav-num">06</span>
+      </a>
+    </div>
+
+    <div class="sb-progress">
+      <div class="sb-prog-label"><span>Progress</span><span id="progPct">0%</span></div>
+      <div class="sb-prog-track"><div class="sb-prog-fill" id="progFill"></div></div>
+    </div>
+
+    <div class="sb-module-nav">
+      <div class="nav-section-label" style="padding:0 8px;margin-bottom:8px">Modul 1 · Pengantar ML</div>
+      <a href="/pages/ai-lab/ml-intro.html" class="smn-item"><span class="smn-dot done"></span><span>Apa itu Machine Learning?</span></a>
+      <a href="/pages/ai-lab/ml-hypothesis.html" class="smn-item current"><span class="smn-dot done"></span><span>Hipotesis & Model</span></a>
+      <a href="/pages/ai-lab/ml-vc-dim.html" class="smn-item locked"><span class="smn-dot"></span><span>VC-Dimension</span><span class="smn-lock">🔒</span></a>
+      <a href="/pages/ai-lab/ml-bias-variance.html" class="smn-item locked"><span class="smn-dot"></span><span>Bias-Variance Tradeoff</span><span class="smn-lock">🔒</span></a>
+    </div>
+  </aside>
+
+  <!-- ═══ MAIN ═══ -->
+  <main class="lesson-main">
+    <div class="lesson-topbar">
+      <div class="ltb-left">
+        <button class="ltb-menu" id="menuBtn" onclick="toggleSidebar()">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg>
+        </button>
+        <span class="ltb-crumb">Hipotesis, Model & Ruang Fitur</span>
+      </div>
+      <div class="ltb-right">
+        <a href="/pages/ai-lab/ml-intro.html" class="ltb-btn">← Apa itu ML?</a>
+        <a href="/pages/ai-lab/ml-vc-dim.html" class="ltb-btn primary">Berikutnya: VC-Dimension →</a>
+      </div>
+    </div>
+
+    <div class="lesson-body">
+
+      <!-- ═══ SEC 1: VEKTOR FITUR ═══ -->
+      <section class="lesson-sec" id="sec-vektor">
+        <div class="sec-header">
+          <span class="sec-num">01</span>
+          <div>
+            <h2 class="sec-title">Vektor Fitur & Ruang Input</h2>
+            <p class="sec-sub">Bagaimana ML merepresentasikan "dunia" sebagai angka</p>
+          </div>
+        </div>
+
+        <div class="prose">
+          Sebelum algoritma apapun bisa belajar, data harus direpresentasikan dalam bentuk yang bisa diproses secara matematis.
+          ML merepresentasikan setiap <strong>contoh latih</strong> sebagai sebuah <strong>vektor fitur</strong> — titik dalam ruang berdimensi tinggi.
+        </div>
+
+        <div class="def-box">
+          <div class="def-label">Definisi · Contoh Latih (Training Example)</div>
+          <div class="def-eq">
+            <span class="math-term blue">x</span>
+            <span class="math-op">=</span>
+            <span class="math-term">(x₁, x₂, …, xₙ)ᵀ</span>
+            <span class="math-op">∈</span>
+            <span class="math-term green">ℝⁿ</span>
+          </div>
+          <div class="def-note">dimana n = jumlah fitur (dimensi), setiap xᵢ adalah nilai fitur ke-i</div>
+        </div>
+
+        <div class="prose">
+          Semua contoh membentuk sebuah <strong>ruang input</strong> (input space) atau <strong>ruang contoh</strong> (instance space) X.
+          Setiap titik dalam X merepresentasikan satu kemungkinan contoh.
+        </div>
+
+        <!-- Interactive feature vector demo -->
+        <div class="worked-box">
+          <div class="wb-badge">🎯 Contoh Konkret · Fitur = Angka</div>
+          <div class="wb-title">Dari Objek Nyata ke Vektor Fitur</div>
+
+          <div class="fv-demo">
+            <div class="fv-tabs">
+              <button class="fv-tab active" onclick="switchDemo('rumah')">🏠 Rumah</button>
+              <button class="fv-tab" onclick="switchDemo('email')">📧 Email</button>
+              <button class="fv-tab" onclick="switchDemo('pasien')">🏥 Pasien</button>
+            </div>
+
+            <div class="fv-content" id="demo-rumah">
+              <div class="fv-split">
+                <div class="fv-left">
+                  <div class="fv-object">🏠</div>
+                  <div class="fv-object-label">Rumah di Jakarta Selatan</div>
+                  <div class="fv-attrs">
+                    <div class="fv-attr"><span class="fva-key">Luas bangunan</span><span class="fva-val">120 m²</span></div>
+                    <div class="fv-attr"><span class="fva-key">Jumlah kamar</span><span class="fva-val">3</span></div>
+                    <div class="fv-attr"><span class="fva-key">Jarak ke pusat kota</span><span class="fva-val">8.5 km</span></div>
+                    <div class="fv-attr"><span class="fva-key">Usia bangunan</span><span class="fva-val">12 tahun</span></div>
+                    <div class="fv-attr"><span class="fva-key">Ada garasi?</span><span class="fva-val">Ya (1)</span></div>
+                  </div>
+                </div>
+                <div class="fv-arrow-col">
+                  <div class="fv-transform-label">encode</div>
+                  <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><path d="M8 16h16M18 10l6 6-6 6" stroke="#2997ff" stroke-width="2" stroke-linecap="round"/></svg>
+                </div>
+                <div class="fv-right">
+                  <div class="fv-vector-label">x ∈ ℝ⁵</div>
+                  <div class="fv-vector">
+                    <div class="fv-vec-row"><span class="fvr-idx">x₁</span><span class="fvr-name">luas</span><span class="fvr-val blue">120.0</span><div class="fvr-bar" style="width:60%"></div></div>
+                    <div class="fv-vec-row"><span class="fvr-idx">x₂</span><span class="fvr-name">kamar</span><span class="fvr-val blue">3.0</span><div class="fvr-bar" style="width:30%"></div></div>
+                    <div class="fv-vec-row"><span class="fvr-idx">x₃</span><span class="fvr-name">jarak</span><span class="fvr-val blue">8.5</span><div class="fvr-bar" style="width:42%"></div></div>
+                    <div class="fv-vec-row"><span class="fvr-idx">x₄</span><span class="fvr-name">usia</span><span class="fvr-val blue">12.0</span><div class="fvr-bar" style="width:24%"></div></div>
+                    <div class="fv-vec-row"><span class="fvr-idx">x₅</span><span class="fvr-name">garasi</span><span class="fvr-val green">1.0</span><div class="fvr-bar green-bar" style="width:100%"></div></div>
+                  </div>
+                  <div class="fv-target">
+                    <span class="fvt-label">Target y =</span>
+                    <span class="fvt-val">Rp 2.4 M</span>
+                    <span class="fvt-type">(regresi)</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="fv-content hidden" id="demo-email">
+              <div class="fv-split">
+                <div class="fv-left">
+                  <div class="fv-object">📧</div>
+                  <div class="fv-object-label">Email masuk</div>
+                  <div class="fv-attrs">
+                    <div class="fv-attr"><span class="fva-key">Jumlah kata "gratis"</span><span class="fva-val">5</span></div>
+                    <div class="fv-attr"><span class="fva-key">Jumlah tanda seru</span><span class="fva-val">8</span></div>
+                    <div class="fv-attr"><span class="fva-key">Pengirim dikenal?</span><span class="fva-val">Tidak (0)</span></div>
+                    <div class="fv-attr"><span class="fva-key">Ada link?</span><span class="fva-val">Ya (1)</span></div>
+                    <div class="fv-attr"><span class="fva-key">Panjang subjek</span><span class="fva-val">42 karakter</span></div>
+                  </div>
+                </div>
+                <div class="fv-arrow-col">
+                  <div class="fv-transform-label">encode</div>
+                  <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><path d="M8 16h16M18 10l6 6-6 6" stroke="#2997ff" stroke-width="2" stroke-linecap="round"/></svg>
+                </div>
+                <div class="fv-right">
+                  <div class="fv-vector-label">x ∈ ℝ⁵</div>
+                  <div class="fv-vector">
+                    <div class="fv-vec-row"><span class="fvr-idx">x₁</span><span class="fvr-name">kata gratis</span><span class="fvr-val red">5.0</span><div class="fvr-bar red-bar" style="width:50%"></div></div>
+                    <div class="fv-vec-row"><span class="fvr-idx">x₂</span><span class="fvr-name">tanda !</span><span class="fvr-val red">8.0</span><div class="fvr-bar red-bar" style="width:80%"></div></div>
+                    <div class="fv-vec-row"><span class="fvr-idx">x₃</span><span class="fvr-name">dikenal</span><span class="fvr-val purple">0.0</span><div class="fvr-bar" style="width:0%"></div></div>
+                    <div class="fv-vec-row"><span class="fvr-idx">x₄</span><span class="fvr-name">ada link</span><span class="fvr-val red">1.0</span><div class="fvr-bar red-bar" style="width:100%"></div></div>
+                    <div class="fv-vec-row"><span class="fvr-idx">x₅</span><span class="fvr-name">pjg subjek</span><span class="fvr-val blue">42.0</span><div class="fvr-bar" style="width:42%"></div></div>
+                  </div>
+                  <div class="fv-target spam">
+                    <span class="fvt-label">Target y =</span>
+                    <span class="fvt-val">SPAM (1)</span>
+                    <span class="fvt-type">(klasifikasi)</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="fv-content hidden" id="demo-pasien">
+              <div class="fv-split">
+                <div class="fv-left">
+                  <div class="fv-object">🏥</div>
+                  <div class="fv-object-label">Data pasien</div>
+                  <div class="fv-attrs">
+                    <div class="fv-attr"><span class="fva-key">Usia</span><span class="fva-val">54 tahun</span></div>
+                    <div class="fv-attr"><span class="fva-key">Tekanan darah</span><span class="fva-val">145 mmHg</span></div>
+                    <div class="fv-attr"><span class="fva-key">Kolesterol</span><span class="fva-val">240 mg/dL</span></div>
+                    <div class="fv-attr"><span class="fva-key">Merokok?</span><span class="fva-val">Ya (1)</span></div>
+                    <div class="fv-attr"><span class="fva-key">BMI</span><span class="fva-val">28.4</span></div>
+                  </div>
+                </div>
+                <div class="fv-arrow-col">
+                  <div class="fv-transform-label">encode</div>
+                  <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><path d="M8 16h16M18 10l6 6-6 6" stroke="#2997ff" stroke-width="2" stroke-linecap="round"/></svg>
+                </div>
+                <div class="fv-right">
+                  <div class="fv-vector-label">x ∈ ℝ⁵</div>
+                  <div class="fv-vector">
+                    <div class="fv-vec-row"><span class="fvr-idx">x₁</span><span class="fvr-name">usia</span><span class="fvr-val blue">54.0</span><div class="fvr-bar" style="width:54%"></div></div>
+                    <div class="fv-vec-row"><span class="fvr-idx">x₂</span><span class="fvr-name">tekanan</span><span class="fvr-val red">145.0</span><div class="fvr-bar red-bar" style="width:72%"></div></div>
+                    <div class="fv-vec-row"><span class="fvr-idx">x₃</span><span class="fvr-name">kolesterol</span><span class="fvr-val red">240.0</span><div class="fvr-bar red-bar" style="width:80%"></div></div>
+                    <div class="fv-vec-row"><span class="fvr-idx">x₄</span><span class="fvr-name">rokok</span><span class="fvr-val red">1.0</span><div class="fvr-bar red-bar" style="width:100%"></div></div>
+                    <div class="fv-vec-row"><span class="fvr-idx">x₅</span><span class="fvr-name">BMI</span><span class="fvr-val blue">28.4</span><div class="fvr-bar" style="width:47%"></div></div>
+                  </div>
+                  <div class="fv-target danger">
+                    <span class="fvt-label">Target y =</span>
+                    <span class="fvt-val">Risiko Tinggi (1)</span>
+                    <span class="fvt-type">(klasifikasi)</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="insight-callout">
+          <div class="ic-icon">💡</div>
+          <div class="ic-body">
+            <strong>Asumsi IID:</strong> Semua algoritma ML mengasumsikan bahwa data latih diambil secara <strong>i.i.d.</strong> (independent and identically distributed) — setiap contoh diambil secara independen dari distribusi yang sama P(x, y). Ini berarti urutan data tidak penting, dan tidak ada dependensi antar contoh.
+          </div>
+        </div>
+
+        <!-- 2D input space visualization -->
+        <div class="worked-box">
+          <div class="wb-badge">📊 Visualisasi · Ruang Input 2 Dimensi</div>
+          <div class="wb-title">X = ℝ² — Setiap titik adalah satu contoh</div>
+          <div class="canvas-wrap">
+            <canvas id="inputSpaceCanvas" width="560" height="340"></canvas>
+          </div>
+          <div class="canvas-legend">
+            <span class="cl-item pos">● Kelas positif (y = 1)</span>
+            <span class="cl-item neg">● Kelas negatif (y = 0)</span>
+            <span class="cl-item">Sumbu = fitur x₁ dan x₂</span>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ═══ SEC 2: HIPOTESIS ═══ -->
+      <section class="lesson-sec" id="sec-hipotesis">
+        <div class="sec-header">
+          <span class="sec-num">02</span>
+          <div>
+            <h2 class="sec-title">Hipotesis h: X → Y</h2>
+            <p class="sec-sub">Fungsi yang diinduksi dari data — ini yang dicari oleh algoritma ML</p>
+          </div>
+        </div>
+
+        <div class="prose">
+          Tugas algoritma ML adalah menginduksi sebuah <strong>hipotesis</strong> — fungsi h yang memetakan setiap
+          input x ke output ŷ. Hipotesis adalah "model terlatih" kita.
+          Untuk klasifikasi biner, hipotesis memetakan ke {0, 1}.
+        </div>
+
+        <div class="def-box">
+          <div class="def-label">Definisi · Hipotesis (Klasifikasi Biner)</div>
+          <div class="def-eq">
+            <span class="math-term blue">h</span>
+            <span class="math-op">:</span>
+            <span class="math-term">X</span>
+            <span class="math-op">→</span>
+            <span class="math-term purple">{0, 1}</span>
+          </div>
+          <div class="def-note-grid">
+            <div class="dng-row"><code>h(x) = 1</code><span>→ x diprediksi masuk kelas C (positif)</span></div>
+            <div class="dng-row"><code>h(x) = 0</code><span>→ x diprediksi tidak masuk kelas C (negatif)</span></div>
+          </div>
+        </div>
+
+        <div class="two-defs">
+          <div class="tdef-card">
+            <div class="tdef-title">Hipotesis Konsisten</div>
+            <div class="tdef-body">
+              <p>Hipotesis h <strong>konsisten</strong> dengan contoh latih (x, y) jika <code>h(x) = y</code>.</p>
+              <p>Konsisten dengan semua data D:</p>
+              <div class="tdef-formula">
+                Consistent(h, D) ⟺ ∀(x,y) ∈ D: h(x) = y
+              </div>
+            </div>
+          </div>
+          <div class="tdef-card">
+            <div class="tdef-title">Empirical Error E(h|D)</div>
+            <div class="tdef-body">
+              <p>Fraksi contoh latih yang salah diklasifikasikan:</p>
+              <div class="tdef-formula">
+                E(h|D) = (1/N) · Σᵢ 𝟙[h(x⁽ⁱ⁾) ≠ y⁽ⁱ⁾]
+              </div>
+              <p>Hipotesis konsisten ⟺ E(h|D) = 0</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Interactive: drag points, see hypothesis change -->
+        <div class="worked-box">
+          <div class="wb-badge">🎛️ Interactive · Error Hipotesis</div>
+          <div class="wb-title">Visualisasi: Hipotesis Linear di Ruang 2D</div>
+          <div class="hypo-demo">
+            <div class="hypo-canvas-wrap">
+              <canvas id="hypothesisCanvas" width="500" height="340"></canvas>
+              <div class="hypo-overlay">
+                <div class="hypo-stat">
+                  FP: <span id="fpCount" class="stat-red">0</span>
+                </div>
+                <div class="hypo-stat">
+                  FN: <span id="fnCount" class="stat-orange">0</span>
+                </div>
+                <div class="hypo-stat">
+                  E(h|D): <span id="errorRate" class="stat-val">0%</span>
+                </div>
+              </div>
+            </div>
+            <div class="hypo-controls">
+              <div class="hc-label">Putar garis pemisah:</div>
+              <input type="range" id="slAngle" min="0" max="180" value="90">
+              <div class="hc-val" id="angleVal">90°</div>
+              <div class="hc-label" style="margin-top:12px">Geser garis:</div>
+              <input type="range" id="slOffset" min="-120" max="120" value="0">
+              <div class="hc-desc">
+                Coba temukan garis yang memisahkan ● dan ● sempurna (E = 0%).
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="insight-callout">
+          <div class="ic-icon">⚠️</div>
+          <div class="ic-body">
+            <strong>False Positives vs False Negatives:</strong>
+            Contoh yang diprediksi <strong>positif tapi sebenarnya negatif</strong> = <em>False Positive (FP)</em>.
+            Contoh yang diprediksi <strong>negatif tapi sebenarnya positif</strong> = <em>False Negative (FN)</em>.
+            Dalam domain seperti deteksi kanker, FN jauh lebih berbahaya dari FP.
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ═══ SEC 3: MODEL ═══ -->
+      <section class="lesson-sec" id="sec-model">
+        <div class="sec-header">
+          <span class="sec-num">03</span>
+          <div>
+            <h2 class="sec-title">Model & Ruang Hipotesis H</h2>
+            <p class="sec-sub">Bukan satu fungsi — tapi seluruh keluarga fungsi yang mungkin</p>
+          </div>
+        </div>
+
+        <div class="prose">
+          Hipotesis tidak diciptakan dari nol. Kita <em>memilih</em> dari kumpulan fungsi yang telah ditentukan sebelumnya.
+          Kumpulan ini disebut <strong>model</strong> atau <strong>ruang hipotesis H</strong>.
+          Pilihan H adalah keputusan desain terpenting dalam ML — ini adalah bentuk "pengetahuan awal" kita tentang masalah.
+        </div>
+
+        <div class="def-box accent-purple">
+          <div class="def-label">Definisi · Model (Ruang Hipotesis)</div>
+          <div class="def-eq">
+            <span class="math-term purple">H</span>
+            <span class="math-op">=</span>
+            <span class="math-term">{ h | h : X → Y }</span>
+          </div>
+          <div class="def-note">Kumpulan semua hipotesis yang mungkin — algoritma mencari h* ∈ H yang terbaik</div>
+        </div>
+
+        <!-- Model zoo — different H choices -->
+        <div class="model-zoo">
+          <div class="mz-title">Pilihan Model H yang Berbeda untuk Ruang 2D</div>
+          <div class="mz-grid">
+
+            <div class="mz-card" onclick="showModel('linear')">
+              <canvas class="mz-canvas" id="mz-linear" width="160" height="120"></canvas>
+              <div class="mz-name">Model Linear</div>
+              <div class="mz-desc">H = garis lurus (hyperplane)</div>
+              <div class="mz-capacity low">Kapasitas Rendah</div>
+            </div>
+
+            <div class="mz-card" onclick="showModel('rect')">
+              <canvas class="mz-canvas" id="mz-rect" width="160" height="120"></canvas>
+              <div class="mz-name">Model Persegi Panjang</div>
+              <div class="mz-desc">H = persegi panjang axis-aligned</div>
+              <div class="mz-capacity mid">Kapasitas Sedang</div>
+            </div>
+
+            <div class="mz-card" onclick="showModel('circle')">
+              <canvas class="mz-canvas" id="mz-circle" width="160" height="120"></canvas>
+              <div class="mz-name">Model Lingkaran</div>
+              <div class="mz-desc">H = lingkaran dengan radius r</div>
+              <div class="mz-capacity mid">Kapasitas Sedang</div>
+            </div>
+
+            <div class="mz-card" onclick="showModel('poly')">
+              <canvas class="mz-canvas" id="mz-poly" width="160" height="120"></canvas>
+              <div class="mz-name">Model Polinomial</div>
+              <div class="mz-desc">H = kurva derajat tinggi</div>
+              <div class="mz-capacity high">Kapasitas Tinggi</div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="insight-callout">
+          <div class="ic-icon">🔑</div>
+          <div class="ic-body">
+            <strong>Kapasitas Model:</strong> Semakin besar H, semakin banyak fungsi yang bisa direpresentasikan, semakin tinggi kapasitas model.
+            Model dengan kapasitas terlalu rendah → <em>underfitting</em>. Terlalu tinggi → <em>overfitting</em>.
+            Memilih H yang tepat adalah inti dari ML.
+          </div>
+        </div>
+
+        <!-- Key distinction -->
+        <div class="distinction-box">
+          <div class="dist-col model-col">
+            <div class="dist-icon">🗃️</div>
+            <div class="dist-title">Model H</div>
+            <div class="dist-sub">Keluarga / kelas fungsi</div>
+            <div class="dist-body">
+              Contoh: "semua garis lurus di ℝ²"<br>
+              Tidak punya nilai parameter spesifik.<br>
+              Dipilih sebelum training.
+            </div>
+            <div class="dist-formula">H = { h(x|θ) | θ ∈ Θ }</div>
+          </div>
+          <div class="dist-arrow">≠</div>
+          <div class="dist-col hyp-col">
+            <div class="dist-icon">📌</div>
+            <div class="dist-title">Hipotesis h</div>
+            <div class="dist-sub">Satu fungsi konkret</div>
+            <div class="dist-body">
+              Contoh: "garis y = 2x₁ − 3x₂ + 1"<br>
+              Parameter θ sudah ditetapkan.<br>
+              Hasil setelah training.
+            </div>
+            <div class="dist-formula">h = h(x|θ*) untuk θ* spesifik</div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ═══ SEC 4: PARAMETRISASI ═══ -->
+      <section class="lesson-sec" id="sec-parameter">
+        <div class="sec-header">
+          <span class="sec-num">04</span>
+          <div>
+            <h2 class="sec-title">Parametrisasi Model</h2>
+            <p class="sec-sub">Cara praktis mendefinisikan H — melalui parameter θ</p>
+          </div>
+        </div>
+
+        <div class="prose">
+          Mendefinisikan H sebagai "himpunan semua fungsi" terlalu abstrak untuk implementasi.
+          Dalam praktik, kita merepresentasikan model sebagai <strong>fungsi yang diparameterisasi</strong>:
+          <code>h(x|θ)</code>. Training ML = mencari θ* yang optimal.
+        </div>
+
+        <div class="def-box">
+          <div class="def-label">Definisi · Model Terparameterisasi</div>
+          <div class="def-eq">
+            <span class="math-term purple">H</span>
+            <span class="math-op">=</span>
+            <span class="math-term">{ h(·|θ) | θ ∈ Θ }</span>
+          </div>
+          <div class="def-note">θ = vektor parameter, Θ = ruang parameter (semua nilai θ yang mungkin)</div>
+        </div>
+
+        <!-- Model examples table -->
+        <div class="model-table-wrap">
+          <table class="model-table">
+            <thead>
+              <tr>
+                <th>Model H</th>
+                <th>Hipotesis h(x|θ)</th>
+                <th>Parameter θ</th>
+                <th>Jumlah Param</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="mt-name">Regresi Linear</td>
+                <td><code>h(x) = θᵀx + θ₀</code></td>
+                <td><code>θ ∈ ℝⁿ, θ₀ ∈ ℝ</code></td>
+                <td class="mt-num blue">n + 1</td>
+              </tr>
+              <tr>
+                <td class="mt-name">Persegi Panjang (ℝ²)</td>
+                <td><code>h(x) = 𝟙[θ_x1 ≤ x₁ ≤ θ_x2 ∧ θ_y1 ≤ x₂ ≤ θ_y2]</code></td>
+                <td><code>θ = (θ_x1, θ_x2, θ_y1, θ_y2)</code></td>
+                <td class="mt-num blue">4</td>
+              </tr>
+              <tr>
+                <td class="mt-name">Lingkaran (ℝ²)</td>
+                <td><code>h(x) = 𝟙[x₁² + x₂² ≤ θ]</code></td>
+                <td><code>θ ∈ ℝ (radius²)</code></td>
+                <td class="mt-num blue">1</td>
+              </tr>
+              <tr>
+                <td class="mt-name">MLP (1 hidden layer)</td>
+                <td><code>h(x) = σ(W₂·σ(W₁x + b₁) + b₂)</code></td>
+                <td><code>W₁, b₁, W₂, b₂</code></td>
+                <td class="mt-num purple">n·h + h·k + h + k</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Training = optimization -->
+        <div class="worked-box">
+          <div class="wb-badge">⚙️ Training = Optimisasi</div>
+          <div class="wb-title">Tiga Komponen Algoritma ML</div>
+          <div class="three-components">
+            <div class="tc-item">
+              <div class="tc-num">1</div>
+              <div class="tc-content">
+                <div class="tc-title">Model H = { h(·|θ) }</div>
+                <div class="tc-desc">Keluarga fungsi yang diparameterisasi. Menentukan bentuk solusi yang bisa ditemukan.</div>
+                <div class="tc-example">Contoh: H = semua garis lurus → θ = (w, b)</div>
+              </div>
+            </div>
+            <div class="tc-arrow">→</div>
+            <div class="tc-item">
+              <div class="tc-num">2</div>
+              <div class="tc-content">
+                <div class="tc-title">Loss Function L(θ|D)</div>
+                <div class="tc-desc">Mengukur seberapa besar kesalahan prediksi model pada data latih D.</div>
+                <div class="tc-example">Contoh: L = MSE = (1/N)Σ(h(xᵢ) − yᵢ)²</div>
+              </div>
+            </div>
+            <div class="tc-arrow">→</div>
+            <div class="tc-item">
+              <div class="tc-num">3</div>
+              <div class="tc-content">
+                <div class="tc-title">Optimisasi: θ* = argmin L</div>
+                <div class="tc-desc">Cari parameter θ* yang meminimalkan loss. Gradient descent, closed-form solution, dll.</div>
+                <div class="tc-example">Hasil: hipotesis h* = h(·|θ*)</div>
+              </div>
+            </div>
+          </div>
+          <div class="insight-callout" style="margin-top:16px">
+            <div class="ic-icon">🧠</div>
+            <div class="ic-body">
+              Ketiga pilihan ini — model, loss, optimisasi — sepenuhnya menentukan <strong>induktif bias</strong> algoritma.
+              Dua algoritma dengan model yang sama tapi loss berbeda akan menghasilkan hipotesis yang berbeda.
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ═══ SEC 5: VERSION SPACE ═══ -->
+      <section class="lesson-sec" id="sec-versi">
+        <div class="sec-header">
+          <span class="sec-num">05</span>
+          <div>
+            <h2 class="sec-title">Ruang Inaˇcica (Version Space)</h2>
+            <p class="sec-sub">Semua hipotesis yang konsisten dengan data — tidak hanya satu!</p>
+          </div>
+        </div>
+
+        <div class="prose">
+          Satu set data latih D biasanya tidak cukup untuk menentukan <em>satu</em> hipotesis unik.
+          Ada banyak (bahkan tak terhingga) hipotesis dalam H yang konsisten dengan D.
+          Kumpulan semua hipotesis konsisten tersebut disebut <strong>Ruang Inaˇcica</strong> (Version Space).
+        </div>
+
+        <div class="def-box accent-green">
+          <div class="def-label">Definisi · Ruang Inaˇcica (Version Space)</div>
+          <div class="def-eq">
+            <span class="math-term green">VS</span><sub>H,D</sub>
+            <span class="math-op">=</span>
+            <span class="math-term">{ h ∈ H | Consistent(h, D) }</span>
+          </div>
+          <div class="def-note">Himpunan semua hipotesis di H yang konsisten (tidak ada error) pada training data D</div>
+        </div>
+
+        <!-- Version space visualization -->
+        <div class="worked-box">
+          <div class="wb-badge">📐 Visualisasi · Ruang Inaˇcica</div>
+          <div class="wb-title">Model persegi panjang — banyak hipotesis konsisten</div>
+          <div class="vs-demo">
+            <canvas id="versionSpaceCanvas" width="520" height="340"></canvas>
+            <div class="vs-legend">
+              <div class="vsl-item"><span class="vsl-dot pos"></span>Positif (y=1)</div>
+              <div class="vsl-item"><span class="vsl-dot neg"></span>Negatif (y=0)</div>
+              <div class="vsl-item"><span class="vsl-rect s"></span>Hipotesis spesifik (S) — terkecil</div>
+              <div class="vsl-item"><span class="vsl-rect g"></span>Hipotesis umum (G) — terbesar</div>
+              <div class="vsl-item"><span class="vsl-rect vs"></span>Version Space — semua di antara S dan G</div>
+            </div>
+          </div>
+          <div class="vs-insight">
+            <strong>Boundary S (paling spesifik):</strong> persegi panjang terkecil yang masih mencakup semua titik positif.<br>
+            <strong>Boundary G (paling umum):</strong> persegi panjang terbesar yang tidak mencakup titik negatif manapun.<br>
+            <strong>Version Space:</strong> semua persegi panjang antara S dan G — semuanya konsisten dengan D.
+          </div>
+        </div>
+
+        <div class="prose">
+          Fakta bahwa version space sangat besar adalah alasan mengapa kita butuh <strong>induktif bias</strong> —
+          asumsi tambahan untuk memilih satu hipotesis dari sekian banyak yang konsisten.
+        </div>
+
+        <!-- Active learning note -->
+        <div class="insight-callout">
+          <div class="ic-icon">🎯</div>
+          <div class="ic-body">
+            <strong>Active Learning:</strong> Strategi optimal untuk memperkecil version space adalah memilih
+            contoh x yang membagi version space menjadi dua bagian sama besar — yaitu contoh yang
+            diklasifikasikan berbeda oleh setengah hipotesis dalam VS. Dengan strategi ini, dibutuhkan
+            hanya O(log|VS|) pertanyaan untuk menentukan hipotesis benar.
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ═══ SEC 6: INDUKTIF BIAS ═══ -->
+      <section class="lesson-sec" id="sec-bias">
+        <div class="sec-header">
+          <span class="sec-num">06</span>
+          <div>
+            <h2 class="sec-title">Induktif Bias</h2>
+            <p class="sec-sub">Asumsi yang memungkinkan generalisasi — tanpanya, ML tidak mungkin</p>
+          </div>
+        </div>
+
+        <div class="prose">
+          Ini adalah konsep paling fundamental — dan paling sering diabaikan — dalam ML.
+          Pembelajaran tanpa asumsi tambahan adalah <em>mustahil</em>.
+          Fakta ini diformalisasikan dalam <strong>No Free Lunch Theorem</strong>.
+        </div>
+
+        <div class="nfl-box">
+          <div class="nfl-icon">🍽️</div>
+          <div class="nfl-content">
+            <div class="nfl-title">No Free Lunch Theorem</div>
+            <div class="nfl-body">
+              Tidak ada algoritma ML yang secara universal lebih baik dari algoritma lain untuk <em>semua</em> masalah.
+              Jika satu algoritma unggul di satu kelas masalah, pasti ada kelas masalah lain di mana ia lebih buruk.
+              Setiap keunggulan datang dari asumsi (induktif bias) yang sesuai dengan masalah spesifik.
+            </div>
+          </div>
+        </div>
+
+        <!-- Two types of bias -->
+        <div class="bias-types">
+          <div class="bt-card restriction">
+            <div class="bt-num">1</div>
+            <div class="bt-title">Bias Pembatasan</div>
+            <div class="bt-subtitle">(Restriction / Language Bias)</div>
+            <div class="bt-desc">
+              Membatasi ruang hipotesis H — hanya fungsi dari keluarga tertentu yang dipertimbangkan.
+            </div>
+            <div class="bt-example">
+              <div class="bte-label">Contoh:</div>
+              <div class="bte-item">H = hanya garis lurus → tidak bisa belajar XOR</div>
+              <div class="bte-item">H = hanya pohon keputusan dengan max depth 5</div>
+              <div class="bte-item">H = hanya fungsi yang mulus (smooth)</div>
+            </div>
+            <div class="bt-tradeoff">
+              <span class="btt-plus">✓ Lebih mudah dioptimalkan</span>
+              <span class="btt-minus">✗ Mungkin tidak cukup ekspresif</span>
+            </div>
+          </div>
+
+          <div class="bt-card preference">
+            <div class="bt-num">2</div>
+            <div class="bt-title">Bias Preferensi</div>
+            <div class="bt-subtitle">(Preference / Search Bias)</div>
+            <div class="bt-desc">
+              H tidak dibatasi, tapi ada preferensi — hipotesis tertentu diutamakan atas yang lain.
+            </div>
+            <div class="bt-example">
+              <div class="bte-label">Contoh:</div>
+              <div class="bte-item">Pilih hipotesis paling sederhana (Occam's Razor)</div>
+              <div class="bte-item">Pilih hipotesis dengan margin terbesar (SVM)</div>
+              <div class="bte-item">Pilih hipotesis dengan probabilitas posterior tertinggi (Bayes)</div>
+            </div>
+            <div class="bt-tradeoff">
+              <span class="btt-plus">✓ Lebih fleksibel</span>
+              <span class="btt-minus">✗ Harder to optimize (search over all H)</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="insight-callout">
+          <div class="ic-icon">🪒</div>
+          <div class="ic-body">
+            <strong>Occam's Razor dalam ML:</strong> Di antara semua hipotesis yang sama-sama konsisten dengan data,
+            pilihlah yang <em>paling sederhana</em>. Ini bukan hanya prinsip estetis — model lebih sederhana
+            punya lebih sedikit parameter, lebih sulit overfit, dan lebih mudah diinterpretasi.
+            Formalisasi matematisnya adalah <strong>Minimum Description Length (MDL)</strong>.
+          </div>
+        </div>
+
+        <!-- Summary diagram -->
+        <div class="worked-box">
+          <div class="wb-badge">🗺️ Peta Konsep · Hubungan Semua Konsep</div>
+          <div class="wb-title">Dari Data ke Hipotesis — Alur Lengkap</div>
+          <div class="summary-flow">
+            <div class="sf-node data">
+              <div class="sfn-icon">📦</div>
+              <div class="sfn-title">Data D</div>
+              <div class="sfn-desc">{ (x⁽ⁱ⁾, y⁽ⁱ⁾) }ᴺ</div>
+            </div>
+            <div class="sf-arrow">+</div>
+            <div class="sf-node model">
+              <div class="sfn-icon">🗃️</div>
+              <div class="sfn-title">Model H</div>
+              <div class="sfn-desc">{ h(·|θ) }</div>
+            </div>
+            <div class="sf-arrow">+</div>
+            <div class="sf-node bias">
+              <div class="sfn-icon">⚖️</div>
+              <div class="sfn-title">Induktif Bias</div>
+              <div class="sfn-desc">Preferensi / Pembatasan</div>
+            </div>
+            <div class="sf-arrow big">⟹</div>
+            <div class="sf-node hypothesis">
+              <div class="sfn-icon">🎯</div>
+              <div class="sfn-title">Hipotesis h*</div>
+              <div class="sfn-desc">h(·|θ*) optimal</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Next lesson CTA -->
+        <div class="next-lesson-cta">
+          <div class="nlc-inner">
+            <span class="nlc-label">Lesson berikutnya</span>
+            <h3 class="nlc-title">VC-Dimension →</h3>
+            <p class="nlc-desc">Sekarang kamu tahu apa itu Model H dan Hipotesis h. Pertanyaan selanjutnya: berapa kapasitas model? VC-Dimension memberikan jawaban formal — dan menentukan apakah model bisa generalisasi.</p>
+            <a href="/pages/ai-lab/ml-vc-dim.html" class="nlc-btn">Lanjut ke VC-Dimension</a>
+          </div>
+        </div>
+
+      </section>
+
+    </div><!-- /lesson-body -->
+  </main>
+</div><!-- /lesson-layout -->
+
+<div id="footer-placeholder"></div>
+<script src="/js/shared.js"></script>
+<script src="/js/lang.js"></script>
+<script src="/js/ml-hypothesis.js"></script>
+</body>
+</html>

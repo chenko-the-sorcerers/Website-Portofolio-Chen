@@ -1,0 +1,13 @@
+{
+  "rewrites": [
+    {"source":"/experience","destination":"/pages/experience/index.html"},
+    {"source":"/projects","destination":"/pages/projects/index.html"},
+    {"source":"/skills","destination":"/pages/skills/index.html"},
+    {"source":"/education","destination":"/pages/education/index.html"},
+    {"source":"/achievements","destination":"/pages/achievements/index.html"},
+    {"source":"/talks","destination":"/pages/talks/index.html"},
+    {"source":"/volunteering","destination":"/pages/volunteering/index.html"},
+    {"source":"/ai-lab","destination":"/pages/ai-lab/index.html"},
+    {"source":"/contact","destination":"/pages/contact/index.html"}
+  ]
+}

@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VC-Dimension & Kapasitas Model — AI Lab | Marchel Andrian Shevchenko</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/shared.css">
+<link rel="stylesheet" href="/css/lesson-base.css">
+<link rel="stylesheet" href="/css/ml-vc-dim.css">
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-follower" id="cursor-follower"></div>
+<div id="nav-placeholder"></div>
+<div class="read-progress"><div id="readBar"></div></div>
+
+<div class="lesson-layout">
+
+  <!-- ═══ SIDEBAR ═══ -->
+  <aside class="lesson-sidebar" id="lessonSidebar">
+    <div class="sb-top">
+      <a href="/pages/ai-lab/machine-learning.html" class="sb-back">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 3L5 8l5 5"/></svg>
+        Machine Learning
+      </a>
+      <div class="sb-studying">
+        <div class="sb-studying-label">Sedang belajar</div>
+        <div class="sb-studying-path">
+          <span class="sbp-item">AI Lab</span>
+          <span class="sbp-sep">›</span>
+          <span class="sbp-item">Machine Learning</span>
+          <span class="sbp-sep">›</span>
+          <span class="sbp-item active">Pengantar ML</span>
+        </div>
+      </div>
+      <div class="sb-chapter">Modul 1 · Pengantar Machine Learning</div>
+      <div class="sb-lesson-title">VC-Dimension & Kapasitas Model</div>
+      <div class="sb-tags">
+        <span class="sb-tag">Teori</span>
+        <span class="sb-tag interactive">📐 Matematis</span>
+      </div>
+    </div>
+
+    <div class="lesson-nav">
+      <div class="nav-section-label">Dalam lesson ini</div>
+      <a href="#sec-kapasitas" class="lnav-item active" data-sec="sec-kapasitas">
+        <span class="lnav-dot"></span><span class="lnav-text">Kapasitas Model</span><span class="lnav-num">01</span>
+      </a>
+      <a href="#sec-shatter" class="lnav-item" data-sec="sec-shatter">
+        <span class="lnav-dot"></span><span class="lnav-text">Shatter & VC-Dim</span><span class="lnav-num">02</span>
+      </a>
+      <a href="#sec-linear" class="lnav-item" data-sec="sec-linear">
+        <span class="lnav-dot"></span><span class="lnav-text">VC-Dim Model Linear</span><span class="lnav-num">03</span>
+      </a>
+      <a href="#sec-models" class="lnav-item" data-sec="sec-models">
+        <span class="lnav-dot"></span><span class="lnav-text">VC-Dim Berbagai Model</span><span class="lnav-num">04</span>
+      </a>
+      <a href="#sec-worked" class="lnav-item" data-sec="sec-worked">
+        <span class="lnav-dot"></span><span class="lnav-text">Worked Problems</span><span class="lnav-num">05</span>
+      </a>
+      <a href="#sec-generalisasi" class="lnav-item" data-sec="sec-generalisasi">
+        <span class="lnav-dot"></span><span class="lnav-text">VC-Dim & Generalisasi</span><span class="lnav-num">06</span>
+      </a>
+      <a href="#sec-srmvc" class="lnav-item" data-sec="sec-srmvc">
+        <span class="lnav-dot"></span><span class="lnav-text">Structural Risk Minimization</span><span class="lnav-num">07</span>
+      </a>
+    </div>
+
+    <div class="sb-progress">
+      <div class="sb-prog-label"><span>Progress</span><span id="progPct">0%</span></div>
+      <div class="sb-prog-track"><div class="sb-prog-fill" id="progFill"></div></div>
+    </div>
+
+    <div class="sb-module-nav">
+      <div class="nav-section-label" style="padding:0 8px;margin-bottom:8px">Modul 1 · Pengantar ML</div>
+      <a href="/pages/ai-lab/ml-intro.html" class="smn-item"><span class="smn-dot done"></span><span>Apa itu Machine Learning?</span></a>
+      <a href="/pages/ai-lab/ml-hypothesis.html" class="smn-item"><span class="smn-dot done"></span><span>Hipotesis & Model</span></a>
+      <a href="/pages/ai-lab/ml-vc-dim.html" class="smn-item current"><span class="smn-dot done"></span><span>VC-Dimension</span></a>
+      <a href="/pages/ai-lab/ml-bias-variance.html" class="smn-item locked"><span class="smn-dot"></span><span>Bias-Variance Tradeoff</span><span class="smn-lock">🔒</span></a>
+    </div>
+  </aside>
+
+  <!-- ═══ MAIN ═══ -->
+  <main class="lesson-main">
+    <div class="lesson-topbar">
+      <div class="ltb-left">
+        <button class="ltb-menu" id="menuBtn" onclick="toggleSidebar()">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg>
+        </button>
+        <span class="ltb-crumb">VC-Dimension & Kapasitas Model</span>
+      </div>
+      <div class="ltb-right">
+        <a href="/pages/ai-lab/ml-hypothesis.html" class="ltb-btn">← Hipotesis & Model</a>
+        <a href="/pages/ai-lab/ml-bias-variance.html" class="ltb-btn primary">Berikutnya: Bias-Variance →</a>
+      </div>
+    </div>
+
+    <div class="lesson-body">
+
+      <!-- ═══ SEC 1: KAPASITAS ═══ -->
+      <section class="lesson-sec" id="sec-kapasitas">
+        <div class="sec-header">
+          <span class="sec-num">01</span>
+          <div>
+            <h2 class="sec-title">Kapasitas Model</h2>
+            <p class="sec-sub">Tidak semua model sama fleksibelnya — bagaimana kita mengukurnya?</p>
+          </div>
+        </div>
+
+        <div class="prose">
+          Model yang berbeda memiliki <strong>kapasitas</strong> yang berbeda — kemampuan untuk
+          merepresentasikan fungsi yang beragam. Model dengan kapasitas terlalu rendah
+          tidak bisa mempelajari pola yang ada. Model dengan kapasitas terlalu tinggi
+          akan menghafal data latih termasuk noise-nya.
+        </div>
+
+        <!-- Capacity spectrum visual -->
+        <div class="capacity-spectrum">
+          <div class="cs-track">
+            <div class="cs-fill"></div>
+            <div class="cs-marker" style="left:15%">
+              <div class="csm-dot low"></div>
+              <div class="csm-label">Terlalu rendah<br><span>Underfitting</span></div>
+            </div>
+            <div class="cs-marker sweet" style="left:50%">
+              <div class="csm-dot sweet"></div>
+              <div class="csm-label sweet">Optimal ✓<br><span>Generalisasi baik</span></div>
+            </div>
+            <div class="cs-marker" style="left:85%">
+              <div class="csm-dot high"></div>
+              <div class="csm-label right">Terlalu tinggi<br><span>Overfitting</span></div>
+            </div>
+          </div>
+          <div class="cs-axis">
+            <span>Kapasitas Rendah</span>
+            <span>Kapasitas Tinggi</span>
+          </div>
+        </div>
+
+        <div class="prose">
+          Pertanyaannya: bagaimana mengukur kapasitas secara <em>formal</em> dan <em>matematis</em>?
+          Inilah yang dijawab oleh <strong>VC-Dimension</strong> — ukuran kapasitas paling fundamental
+          dalam statistical learning theory.
+        </div>
+
+        <div class="insight-callout">
+          <div class="ic-icon">👨‍🔬</div>
+          <div class="ic-body">
+            <strong>Vladimir Vapnik & Alexey Chervonenkis (1971)</strong> mengembangkan teori ini
+            sebagai fondasi dari <em>Statistical Learning Theory</em>. Kerja mereka kemudian
+            menjadi dasar dari Support Vector Machine (SVM) dan banyak algoritma modern lainnya.
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══ SEC 2: SHATTER ═══ -->
+      <section class="lesson-sec" id="sec-shatter">
+        <div class="sec-header">
+          <span class="sec-num">02</span>
+          <div>
+            <h2 class="sec-title">Shatter & Definisi VC-Dimension</h2>
+            <p class="sec-sub">Konsep "memecah" (shattering) sebagai inti dari VC-dim</p>
+          </div>
+        </div>
+
+        <div class="prose">
+          Untuk memahami VC-Dimension, kita perlu dulu memahami konsep <strong>shatter</strong>.
+          Model H men-shatter N titik jika ia bisa mengklasifikasikan N titik tersebut
+          dengan <em>semua kemungkinan pelabelan</em> yang ada.
+        </div>
+
+        <div class="def-box">
+          <div class="def-label">Definisi · Shatter (Pemecahan)</div>
+          <div class="def-body">
+            Model H <strong>men-shatter</strong> N titik {x⁽¹⁾,...,x⁽ᴺ⁾} jika untuk
+            <em>setiap</em> fungsi pelabelan y: {x⁽¹⁾,...,x⁽ᴺ⁾} → {0,1},
+            terdapat hipotesis h ∈ H yang konsisten dengan pelabelan tersebut.
+          </div>
+          <div class="def-formula">
+            ∀ y: {x⁽¹⁾,...,x⁽ᴺ⁾} → {0,1},  ∃ h ∈ H: h(x⁽ⁱ⁾) = y(x⁽ⁱ⁾) ∀i
+          </div>
+          <div class="def-note">
+            N titik → 2ᴺ kemungkinan pelabelan. H harus bisa handle SEMUA 2ᴺ kemungkinan.
+          </div>
+        </div>
+
+        <div class="def-box accent-blue">
+          <div class="def-label">Definisi · VC-Dimension</div>
+          <div class="def-body">
+            VC-Dimension dari model H, ditulis <strong>VC(H)</strong>, adalah
+            jumlah titik <em>terbesar</em> yang bisa di-shatter oleh H.
+          </div>
+          <div class="def-formula">
+            VC(H) = max{ N | ∃ {x⁽¹⁾,...,x⁽ᴺ⁾} yang bisa di-shatter oleh H }
+          </div>
+        </div>
+
+        <!-- Interactive shatter demo -->
+        <div class="worked-box">
+          <div class="wb-badge">🎛️ Interactive · Lihat Shatter Secara Langsung</div>
+          <div class="wb-title">Model Linear (Garis) — Bisa shatter 3 titik, tidak bisa 4</div>
+
+          <div class="shatter-demo">
+            <div class="sd-controls">
+              <div class="sd-ctrl-label">Jumlah titik:</div>
+              <div class="sd-btns">
+                <button class="sd-btn active" onclick="setPoints(2)">2 titik</button>
+                <button class="sd-btn" onclick="setPoints(3)">3 titik</button>
+                <button class="sd-btn" onclick="setPoints(4)">4 titik</button>
+              </div>
+              <div class="sd-ctrl-label" style="margin-top:12px">Pilih pelabelan:</div>
+              <div class="sd-labelings" id="labelingBtns"></div>
+            </div>
+            <div class="sd-canvas-wrap">
+              <canvas id="shatterCanvas" width="360" height="300"></canvas>
+              <div class="sd-status" id="shatterStatus">
+                <span class="ss-icon" id="ssIcon">✓</span>
+                <span id="ssText">Bisa dipisahkan</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="shatter-summary" id="shatterSummary">
+            <div class="ss-row">
+              <span class="ssr-n">2 titik</span>
+              <span class="ssr-count">4 pelabelan</span>
+              <span class="ssr-result ok">✓ Semua bisa dipisahkan</span>
+            </div>
+            <div class="ss-row">
+              <span class="ssr-n">3 titik</span>
+              <span class="ssr-count">8 pelabelan</span>
+              <span class="ssr-result ok">✓ Semua bisa dipisahkan</span>
+            </div>
+            <div class="ss-row active">
+              <span class="ssr-n">4 titik</span>
+              <span class="ssr-count">16 pelabelan</span>
+              <span class="ssr-result fail">✗ XOR tidak bisa dipisahkan</span>
+            </div>
+          </div>
+          <div class="insight-callout" style="margin-top:12px">
+            <div class="ic-icon">💡</div>
+            <div class="ic-body">
+              Dalam graph lengkap dengan 4 simpul, selalu ada 2 edge yang bersilangan.
+              Jika titik positif di ujung satu edge dan negatif di ujung edge lain yang bersilangan,
+              tidak ada garis lurus yang bisa memisahkannya. Ini membuktikan <strong>VC(H_linear) &lt; 4</strong>.
+            </div>
+          </div>
+        </div>
+
+        <div class="shatter-count-table">
+          <div class="sct-title">Berapa banyak pelabelan yang mungkin?</div>
+          <div class="sct-grid">
+            <div class="sct-header">N titik</div>
+            <div class="sct-header">2ᴺ pelabelan</div>
+            <div class="sct-header">Model Linear bisa?</div>
+            <div class="sct-val">1</div><div class="sct-val">2</div><div class="sct-val ok">✓ Ya</div>
+            <div class="sct-val">2</div><div class="sct-val">4</div><div class="sct-val ok">✓ Ya</div>
+            <div class="sct-val highlight">3</div><div class="sct-val highlight">8</div><div class="sct-val ok highlight">✓ Ya — VC-dim = 3</div>
+            <div class="sct-val">4</div><div class="sct-val">16</div><div class="sct-val fail">✗ Tidak</div>
+            <div class="sct-val">5</div><div class="sct-val">32</div><div class="sct-val fail">✗ Tidak</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══ SEC 3: LINEAR MODEL VC-DIM ═══ -->
+      <section class="lesson-sec" id="sec-linear">
+        <div class="sec-header">
+          <span class="sec-num">03</span>
+          <div>
+            <h2 class="sec-title">VC-Dim Model Linear di ℝⁿ = n+1</h2>
+            <p class="sec-sub">Bukti intuitif mengapa hyperplane di ℝⁿ memiliki VC-dim tepat n+1</p>
+          </div>
+        </div>
+
+        <div class="prose">
+          Ini adalah hasil paling penting dalam teori VC: model linear (hyperplane) di ruang
+          berdimensi n memiliki VC-Dimension tepat <strong>n+1</strong>.
+          Artinya ia bisa men-shatter n+1 titik, tapi tidak bisa men-shatter n+2 titik.
+        </div>
+
+        <!-- Step by step proof intuition -->
+        <div class="worked-box">
+          <div class="wb-badge">📐 Bukti Intuitif — VC(H_linear di ℝⁿ) = n+1</div>
+          <div class="wb-title">Dua langkah: tunjukkan bisa shatter n+1, lalu tidak bisa n+2</div>
+
+          <div class="proof-steps">
+            <div class="ps-part">
+              <div class="psp-header ok">
+                <span class="psp-icon">✓</span>
+                <div>
+                  <div class="psp-title">Bagian 1: H bisa shatter n+1 titik</div>
+                  <div class="psp-sub">Ada konfigurasi n+1 titik yang bisa di-shatter</div>
+                </div>
+              </div>
+              <div class="psp-body">
+                <p>Ambil n+1 titik: vektor basis standar e₁, e₂, ..., eₙ dan titik asal <strong>0</strong>.</p>
+                <p>Untuk setiap pelabelan y ∈ {0,1}ⁿ⁺¹, kita bisa membangun hyperplane pemisah. Menggunakan solusi sistem linear Wᵀxᵢ = yᵢ yang selalu memiliki solusi karena n+1 titik ini linearly independent.</p>
+                <div class="proof-formula">
+                  Titik: {0, e₁, e₂, ..., eₙ} — n+1 titik linearly independent<br>
+                  → Selalu ada hyperplane memisahkan semua 2ⁿ⁺¹ pelabelan
+                </div>
+              </div>
+            </div>
+
+            <div class="ps-part">
+              <div class="psp-header fail">
+                <span class="psp-icon">✗</span>
+                <div>
+                  <div class="psp-title">Bagian 2: H tidak bisa shatter n+2 titik</div>
+                  <div class="psp-sub">Untuk sembarang n+2 titik, selalu ada pelabelan yang tidak bisa dipisahkan</div>
+                </div>
+              </div>
+              <div class="psp-body">
+                <p>Ambil sembarang n+2 titik di ℝⁿ. Karena dimensi ℝⁿ adalah n, pasti ada dependensi linear — satu titik bisa dinyatakan sebagai kombinasi linear titik lain:</p>
+                <div class="proof-formula">
+                  x⁽ᵏ⁾ = Σᵢ αᵢ x⁽ⁱ⁾,  dengan αᵢ ∈ ℝ
+                </div>
+                <p>Pelabelan yang membuat titik-titik dengan koefisien positif (+) dan negatif (−) tidak bisa dipisahkan oleh hyperplane manapun — karena sifat linearitas.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dimension examples -->
+        <div class="dim-examples">
+          <div class="de-item">
+            <div class="de-dim">ℝ¹</div>
+            <div class="de-model">Threshold</div>
+            <div class="de-vc">VC = <strong>2</strong></div>
+            <div class="de-desc">Garis bilangan — bisa shatter 2 titik, tidak 3</div>
+            <canvas class="de-canvas" id="de1" width="200" height="80"></canvas>
+          </div>
+          <div class="de-item">
+            <div class="de-dim">ℝ²</div>
+            <div class="de-model">Garis Lurus</div>
+            <div class="de-vc">VC = <strong>3</strong></div>
+            <div class="de-desc">Bidang — bisa shatter 3 titik, tidak 4 (XOR)</div>
+            <canvas class="de-canvas" id="de2" width="200" height="80"></canvas>
+          </div>
+          <div class="de-item">
+            <div class="de-dim">ℝ³</div>
+            <div class="de-model">Hyperplane</div>
+            <div class="de-vc">VC = <strong>4</strong></div>
+            <div class="de-desc">Ruang 3D — bisa shatter 4 titik, tidak 5</div>
+            <canvas class="de-canvas" id="de3" width="200" height="80"></canvas>
+          </div>
+          <div class="de-item">
+            <div class="de-dim">ℝⁿ</div>
+            <div class="de-model">Hyperplane</div>
+            <div class="de-vc">VC = <strong>n+1</strong></div>
+            <div class="de-desc">Rumus umum: n dimensi → VC = n+1</div>
+            <canvas class="de-canvas" id="den" width="200" height="80"></canvas>
+          </div>
+        </div>
+
+        <div class="insight-callout">
+          <div class="ic-icon">🔗</div>
+          <div class="ic-body">
+            <strong>Hubungan dengan Parameter:</strong> Model linear di ℝⁿ memiliki n+1 parameter
+            (n bobot + 1 bias). VC-dim = n+1 = jumlah parameter. Ini bukan kebetulan — secara
+            umum, model dengan p parameter bebas cenderung memiliki VC-dim ≈ p.
+            Tapi ini <em>bukan aturan pasti</em> — ada model dengan banyak parameter yang VC-dim-nya kecil.
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══ SEC 4: VC-DIM BERBAGAI MODEL ═══ -->
+      <section class="lesson-sec" id="sec-models">
+        <div class="sec-header">
+          <span class="sec-num">04</span>
+          <div>
+            <h2 class="sec-title">VC-Dim Berbagai Model</h2>
+            <p class="sec-sub">Dari model sederhana hingga tak terhingga — perbandingan kapasitas</p>
+          </div>
+        </div>
+
+        <div class="prose">
+          VC-Dimension berbeda-beda untuk setiap keluarga model. Tabel berikut adalah
+          referensi penting yang harus dikuasai setiap ML practitioner.
+        </div>
+
+        <div class="vc-table-wrap">
+          <table class="vc-table">
+            <thead>
+              <tr>
+                <th>Model H</th>
+                <th>Ruang</th>
+                <th>VC(H)</th>
+                <th>Penjelasan</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="vct-model">Threshold (f(x) = 𝟙[x ≥ θ])</td>
+                <td><code>ℝ¹</code></td>
+                <td class="vct-num">1</td>
+                <td>Hanya 1 titik yang bisa di-shatter</td>
+              </tr>
+              <tr>
+                <td class="vct-model">Interval (𝟙[a ≤ x ≤ b])</td>
+                <td><code>ℝ¹</code></td>
+                <td class="vct-num">2</td>
+                <td>Bisa shatter 2 titik, tidak 3</td>
+              </tr>
+              <tr class="vct-highlight">
+                <td class="vct-model">Garis lurus (linear classifier)</td>
+                <td><code>ℝ²</code></td>
+                <td class="vct-num blue">3</td>
+                <td>VC = n+1 = 2+1 = 3</td>
+              </tr>
+              <tr class="vct-highlight">
+                <td class="vct-model">Hyperplane</td>
+                <td><code>ℝⁿ</code></td>
+                <td class="vct-num blue">n+1</td>
+                <td>Rumus umum: VC = dimensi + 1</td>
+              </tr>
+              <tr>
+                <td class="vct-model">Persegi panjang axis-aligned</td>
+                <td><code>ℝ²</code></td>
+                <td class="vct-num purple">4</td>
+                <td>4 parameter (x1,x2,y1,y2) → VC = 4</td>
+              </tr>
+              <tr>
+                <td class="vct-model">Lingkaran di pusat asal</td>
+                <td><code>ℝ²</code></td>
+                <td class="vct-num purple">1</td>
+                <td>Hanya 1 parameter (radius) → kapasitas kecil</td>
+              </tr>
+              <tr>
+                <td class="vct-model">Poligon konveks (k sisi)</td>
+                <td><code>ℝ²</code></td>
+                <td class="vct-num orange">2k</td>
+                <td>Semakin banyak sisi, kapasitas makin besar</td>
+              </tr>
+              <tr>
+                <td class="vct-model">Neural Network (1 hidden, h unit)</td>
+                <td><code>ℝⁿ</code></td>
+                <td class="vct-num orange">O(h·n·log(h·n))</td>
+                <td>Tumbuh dengan jumlah unit tersembunyi</td>
+              </tr>
+              <tr>
+                <td class="vct-model">Lookup table (memorize)</td>
+                <td><code>ℝⁿ</code></td>
+                <td class="vct-num red">∞</td>
+                <td>Bisa shatter sembarang jumlah titik — tapi tidak bisa generalisasi!</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Interactive: compare models -->
+        <div class="worked-box">
+          <div class="wb-badge">🎛️ Interactive · Perbandingan Kapasitas</div>
+          <div class="wb-title">Pilih model — lihat apa yang bisa dan tidak bisa ia shatter</div>
+          <div class="model-compare">
+            <div class="mc-selector">
+              <button class="mc-btn active" onclick="selectModel('line')">Garis (VC=3)</button>
+              <button class="mc-btn" onclick="selectModel('rect')">Persegi (VC=4)</button>
+              <button class="mc-btn" onclick="selectModel('circle')">Lingkaran (VC=1)</button>
+            </div>
+            <div class="mc-canvas-wrap">
+              <canvas id="modelCompareCanvas" width="480" height="280"></canvas>
+            </div>
+            <div class="mc-info" id="mcInfo">
+              <div class="mci-vc">VC-Dim = <span id="mcVcVal">3</span></div>
+              <div class="mci-desc" id="mcDesc">Model garis lurus bisa men-shatter 3 titik (semua 8 pelabelan), tapi tidak bisa men-shatter 4 titik karena XOR tidak linearly separable.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══ SEC 5: WORKED PROBLEMS ═══ -->
+      <section class="lesson-sec" id="sec-worked">
+        <div class="sec-header">
+          <span class="sec-num">05</span>
+          <div>
+            <h2 class="sec-title">Worked Problems — Hitung VC-Dim</h2>
+            <p class="sec-sub">Latihan formal: buktikan VC-dim dengan dua langkah — shatter N, gagal N+1</p>
+          </div>
+        </div>
+
+        <div class="prose">
+          Membuktikan VC(H) = N selalu membutuhkan <strong>dua langkah</strong>:
+          (1) tunjukkan ada konfigurasi N titik yang bisa di-shatter, dan
+          (2) tunjukkan untuk sembarang N+1 titik, selalu ada pelabelan yang tidak bisa dipisahkan.
+          Jika hanya langkah 1, itu hanya membuktikan VC(H) ≥ N.
+        </div>
+
+        <!-- Worked 1: Interval -->
+        <div class="worked-box">
+          <div class="wb-badge">✏️ Contoh 1 · Interval [a, b] di ℝ¹</div>
+          <div class="wb-title">Buktikan VC(H_interval) = 2</div>
+          <div class="wp-proof">
+            <div class="wpp-step">
+              <div class="wpp-num ok">✓</div>
+              <div class="wpp-body">
+                <div class="wpp-title">Langkah 1 — H bisa shatter 2 titik</div>
+                <p>Ambil 2 titik: x₁ &lt; x₂. Ada 4 pelabelan:</p>
+                <div class="wp-table">
+                  <div class="wpt-row header"><span>y₁</span><span>y₂</span><span>Interval yang memisahkan</span><span></span></div>
+                  <div class="wpt-row"><span>0</span><span>0</span><span>[∞, −∞] (kosong)</span><span class="ok">✓</span></div>
+                  <div class="wpt-row"><span>1</span><span>0</span><span>[x₁−ε, x₁+ε]</span><span class="ok">✓</span></div>
+                  <div class="wpt-row"><span>0</span><span>1</span><span>[x₂−ε, x₂+ε]</span><span class="ok">✓</span></div>
+                  <div class="wpt-row"><span>1</span><span>1</span><span>[x₁−ε, x₂+ε]</span><span class="ok">✓</span></div>
+                </div>
+                <p>Semua 2² = 4 pelabelan bisa direpresentasikan → H <em>shatter</em> 2 titik.</p>
+              </div>
+            </div>
+            <div class="wpp-step">
+              <div class="wpp-num fail">✗</div>
+              <div class="wpp-body">
+                <div class="wpp-title">Langkah 2 — H tidak bisa shatter 3 titik</div>
+                <p>Ambil sembarang 3 titik: x₁ &lt; x₂ &lt; x₃. Pertimbangkan pelabelan y = (1, 0, 1):</p>
+                <div class="wp-visual" id="wp-interval-vis">
+                  <canvas id="wpIntervalCanvas" width="500" height="90"></canvas>
+                </div>
+                <p>Agar x₁ positif, interval harus mencakup x₁. Agar x₃ positif, interval harus mencakup x₃. Tapi interval adalah <em>kontinu</em> — jika mencakup x₁ dan x₃, ia <em>pasti</em> mencakup x₂ di antaranya. Kontradiksi dengan y₂ = 0.</p>
+                <div class="proof-formula">
+                  Pelabelan (1,0,1) ≡ XOR-like — tidak bisa direalisasikan oleh interval kontinu apapun.
+                  <br>∴ VC(H_interval) &lt; 3, sehingga VC(H_interval) = 2. □
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Worked 2: Rectangle -->
+        <div class="worked-box">
+          <div class="wb-badge">✏️ Contoh 2 · Persegi Panjang Axis-Aligned di ℝ²</div>
+          <div class="wb-title">Buktikan VC(H_rect) = 4</div>
+          <div class="wp-proof">
+            <div class="wpp-step">
+              <div class="wpp-num ok">✓</div>
+              <div class="wpp-body">
+                <div class="wpp-title">Langkah 1 — H bisa shatter 4 titik</div>
+                <p>Ambil 4 titik membentuk "diamond" (bukan persegi): N, S, E, W.
+                Untuk setiap subset titik yang ingin diberi label 1, ambil persegi panjang terkecil yang mencakup tepat titik-titik tersebut.</p>
+                <canvas id="wpRectCanvas" width="500" height="160"></canvas>
+                <p style="margin-top:8px">Semua 2⁴ = 16 pelabelan bisa direpresentasikan (termasuk ∅ = persegi panjang di luar semua titik).</p>
+              </div>
+            </div>
+            <div class="wpp-step">
+              <div class="wpp-num fail">✗</div>
+              <div class="wpp-body">
+                <div class="wpp-title">Langkah 2 — H tidak bisa shatter 5 titik</div>
+                <p>Ambil sembarang 5 titik. Dari 5 titik tersebut, selalu ada satu yang berada <em>di dalam</em> convex hull dari 4 titik lainnya. Sebut titik tersebut x_mid.</p>
+                <p>Pertimbangkan pelabelan: semua titik luar = 1, x_mid = 0. Persegi panjang apapun yang mencakup 4 titik luar <em>pasti</em> mencakup x_mid juga. Tidak ada persegi panjang yang bisa merealisasikan pelabelan ini.</p>
+                <div class="proof-formula">
+                  ∴ VC(H_rect) &lt; 5, sehingga VC(H_rect) = 4. □
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Worked 3: 1-NN paradox -->
+        <div class="worked-box">
+          <div class="wb-badge">🤯 Contoh 3 · 1-Nearest Neighbor (Paradoks)</div>
+          <div class="wb-title">VC(H_1NN) = ∞ — tapi parameternya 0!</div>
+          <div class="prose" style="margin-bottom:16px">
+            1-NN tidak punya parameter yang dioptimalkan saat training. Tapi VC-dimensinya tak terhingga — ini membuktikan bahwa VC-dim ≠ jumlah parameter.
+          </div>
+          <div class="wp-proof">
+            <div class="wpp-step">
+              <div class="wpp-num ok">✓</div>
+              <div class="wpp-body">
+                <div class="wpp-title">1-NN bisa shatter N titik sembarang untuk N berapa saja</div>
+                <p>Untuk sembarang N titik dengan pelabelan apapun: 1-NN mengklasifikasikan setiap titik sesuai label titik terdekatnya di training set. Jika training set = test set, semua titik diklasifikasikan benar.</p>
+                <div class="proof-formula">
+                  Untuk sembarang {x⁽¹⁾,...,x⁽ᴺ⁾} dan sembarang labeling y:<br>
+                  h_1NN dilatih pada {(x⁽ⁱ⁾, yᵢ)} → h_1NN(x⁽ⁱ⁾) = yᵢ ∀i<br>
+                  ∴ 1-NN shatter sembarang N titik → VC(H_1NN) = ∞
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="paradox-table">
+            <div class="pt-row header"><span>Model</span><span># Parameter</span><span>VC-Dim</span><span>Keterangan</span></div>
+            <div class="pt-row"><span>Linear ℝⁿ</span><span class="mono">n+1</span><span class="mono blue">n+1</span><span>Parameter = VC-dim</span></div>
+            <div class="pt-row"><span>Polynomial degree d</span><span class="mono">C(n+d,d)</span><span class="mono blue">C(n+d,d)</span><span>Sesuai jumlah parameter</span></div>
+            <div class="pt-row highlight"><span>1-Nearest Neighbor</span><span class="mono">0</span><span class="mono red">∞</span><span>0 parameter, kapasitas ∞!</span></div>
+            <div class="pt-row highlight"><span>Lookup Table</span><span class="mono">N</span><span class="mono red">∞</span><span>Menghafal data, tidak generalisasi</span></div>
+            <div class="pt-row"><span>SVM (hard margin)</span><span class="mono">n+1</span><span class="mono green">≤ R²/γ²</span><span>VC-dim bergantung margin γ, bukan n!</span></div>
+          </div>
+          <div class="insight-callout" style="margin-top:16px">
+            <div class="ic-icon">🔑</div>
+            <div class="ic-body">
+              <strong>Pelajaran:</strong> VC-dim mengukur kapasitas <em>fungsional</em>, bukan jumlah parameter.
+              SVM bisa punya VC-dim kecil meski berdimensi tinggi — karena memaksimalkan margin γ
+              secara efektif membatasi kapasitas. Inilah mengapa SVM generalisasi baik di ruang berdimensi tinggi.
+            </div>
+          </div>
+        </div>
+
+        <!-- Growth function & Sauer's lemma -->
+        <div class="worked-box">
+          <div class="wb-badge">📐 Teori Lanjutan · Growth Function & Sauer's Lemma</div>
+          <div class="wb-title">Mengapa VC-dim cukup untuk karakterisasi learnability?</div>
+          <div class="prose" style="margin-bottom:16px">
+            VC-dim bekerja melalui konsep <strong>growth function</strong> — jumlah maksimal pola berbeda
+            yang bisa direalisasikan model pada N titik.
+          </div>
+          <div class="def-box" style="margin:0 0 16px">
+            <div class="def-label">Definisi · Growth Function Π_H(N)</div>
+            <div class="def-body">
+              Π_H(N) = max<sub>{x⁽¹⁾,...,x⁽ᴺ⁾}</sub> |{ (h(x⁽¹⁾),...,h(x⁽ᴺ⁾)) | h ∈ H }|
+            </div>
+            <div class="def-note">Jumlah pola klasifikasi berbeda yang bisa dihasilkan H pada N titik terbaik</div>
+          </div>
+          <div class="sauer-box">
+            <div class="sb-title">Sauer's Lemma (1972)</div>
+            <div class="sb-formula">
+              Jika VC(H) = d, maka: &nbsp; Π_H(N) ≤ Σₖ₌₀ᵈ C(N,k) ≤ (eN/d)ᵈ
+            </div>
+            <div class="sb-insight">
+              <div class="sbi-item">
+                <span class="sbi-label">Jika N ≤ d:</span>
+                <span>Π_H(N) = 2ᴺ — semua pelabelan mungkin (exponential)</span>
+              </div>
+              <div class="sbi-item">
+                <span class="sbi-label">Jika N &gt; d:</span>
+                <span>Π_H(N) ≤ O(Nᵈ) — polynomial dalam N! Growth "patah"</span>
+              </div>
+            </div>
+            <div class="sb-chart-wrap">
+              <canvas id="growthCanvas" width="560" height="180"></canvas>
+            </div>
+            <div class="sb-note">
+              "Patahnya" growth function dari exponential ke polynomial inilah yang memungkinkan generalisasi.
+              Model dengan VC-dim terhingga <em>pasti</em> bisa belajar dengan data yang cukup.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══ SEC 6: GENERALISASI ═══ -->
+      <section class="lesson-sec" id="sec-generalisasi">
+        <div class="sec-header">
+          <span class="sec-num">06</span>
+          <div>
+            <h2 class="sec-title">VC-Dim & Batas Atas Error Generalisasi</h2>
+            <p class="sec-sub">Teorema fundamental: hubungan antara kapasitas, data, dan kemampuan belajar</p>
+          </div>
+        </div>
+
+        <div class="prose">
+          VC-Dimension bukan hanya ukuran teoretis — ia memberikan <strong>batas atas (upper bound)</strong>
+          yang dapat dihitung untuk error generalisasi model kita. Ini adalah jantung dari
+          Statistical Learning Theory.
+        </div>
+
+        <!-- VC bound formula -->
+        <div class="vc-bound-box">
+          <div class="vbb-label">Teorema · VC Generalization Bound</div>
+          <div class="vbb-formula">
+            E*(h) ≤ E(h|D) + √( VC(H)·[log(2N/VC(H)) + 1] − log(η/4) ) / N
+          </div>
+          <div class="vbb-legend">
+            <div class="vbbl-item"><span class="vbbl-sym blue">E*(h)</span><span>Error generalisasi (yang ingin kita minimasi)</span></div>
+            <div class="vbbl-item"><span class="vbbl-sym">E(h|D)</span><span>Empirical error pada training data</span></div>
+            <div class="vbbl-item"><span class="vbbl-sym purple">VC(H)</span><span>VC-Dimension model</span></div>
+            <div class="vbbl-item"><span class="vbbl-sym green">N</span><span>Jumlah training examples</span></div>
+            <div class="vbbl-item"><span class="vbbl-sym orange">η</span><span>Probabilitas bound tidak berlaku (biasanya 0.05)</span></div>
+          </div>
+          <div class="vbb-note">
+            Bound ini berlaku dengan probabilitas ≥ 1−η untuk semua h ∈ H secara simultan.
+          </div>
+        </div>
+
+        <!-- Interactive VC bound calculator -->
+        <div class="worked-box">
+          <div class="wb-badge">🧮 Kalkulator · VC Bound Real-time</div>
+          <div class="wb-title">Lihat bagaimana N dan VC(H) mempengaruhi batas error</div>
+
+          <div class="vc-calc">
+            <div class="vcc-sliders">
+              <div class="vcc-row">
+                <label class="vcc-label">Training examples <span class="vcc-hint">N</span></label>
+                <input type="range" id="slN" min="10" max="2000" step="10" value="100">
+                <span class="vcc-val" id="valN">100</span>
+              </div>
+              <div class="vcc-row">
+                <label class="vcc-label">VC-Dimension <span class="vcc-hint">VC(H)</span></label>
+                <input type="range" id="slVC" min="1" max="50" step="1" value="5">
+                <span class="vcc-val" id="valVC">5</span>
+              </div>
+              <div class="vcc-row">
+                <label class="vcc-label">Empirical error <span class="vcc-hint">E(h|D)</span></label>
+                <input type="range" id="slErr" min="0" max="30" step="1" value="5">
+                <span class="vcc-val" id="valErr">5%</span>
+              </div>
+            </div>
+            <div class="vcc-result">
+              <div class="vcc-res-row">
+                <span class="vcc-res-label">Complexity penalty (VC confidence)</span>
+                <span class="vcc-res-val" id="resComplexity">—</span>
+              </div>
+              <div class="vcc-res-row">
+                <span class="vcc-res-label">Empirical error</span>
+                <span class="vcc-res-val blue" id="resEmpErr">5%</span>
+              </div>
+              <div class="vcc-res-row total">
+                <span class="vcc-res-label">Batas atas error generalisasi</span>
+                <span class="vcc-res-val" id="resTotal">—</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bound visualization chart -->
+          <div class="bound-chart-wrap">
+            <canvas id="boundChart" width="680" height="220"></canvas>
+          </div>
+          <div class="bc-legend">
+            <span class="bcl-item emp">── Empirical error</span>
+            <span class="bcl-item complex">── Complexity penalty</span>
+            <span class="bcl-item bound">── Upper bound generalisasi</span>
+            <span class="bcl-item gen">── True generalization error (approx)</span>
+          </div>
+        </div>
+
+        <div class="vc-insights">
+          <div class="vci-card">
+            <div class="vci-icon">📈</div>
+            <div class="vci-title">Lebih banyak data N → bound lebih ketat</div>
+            <div class="vci-body">Complexity penalty ∝ 1/√N. Dengan N → ∞, bound mendekati empirical error. Ini membenarkan "lebih banyak data selalu membantu".</div>
+          </div>
+          <div class="vci-card">
+            <div class="vci-icon">⬆️</div>
+            <div class="vci-title">VC(H) lebih besar → bound lebih longgar</div>
+            <div class="vci-body">Model dengan kapasitas tinggi punya complexity penalty lebih besar. Bahkan jika empirical error = 0, bound generalisasi bisa sangat besar.</div>
+          </div>
+          <div class="vci-card">
+            <div class="vci-icon">⚖️</div>
+            <div class="vci-title">Tradeoff fundamental</div>
+            <div class="vci-body">Kapasitas lebih besar → empirical error lebih kecil, tapi complexity penalty lebih besar. Kapasitas optimal meminimalkan jumlah keduanya.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══ SEC 6: SRM ═══ -->
+      <section class="lesson-sec" id="sec-srmvc">
+        <div class="sec-header">
+          <span class="sec-num">07</span>
+          <div>
+            <h2 class="sec-title">Structural Risk Minimization (SRM)</h2>
+            <p class="sec-sub">Menggunakan VC-bound untuk memilih model yang optimal</p>
+          </div>
+        </div>
+
+        <div class="prose">
+          VC bound memberikan resep praktis untuk pemilihan model: pilih model yang
+          meminimalkan <em>jumlah</em> empirical error dan complexity penalty. Prinsip ini
+          disebut <strong>Structural Risk Minimization (SRM)</strong>.
+        </div>
+
+        <!-- SRM diagram -->
+        <div class="srm-diagram">
+          <div class="srmd-canvas-wrap">
+            <canvas id="srmCanvas" width="620" height="300"></canvas>
+          </div>
+          <div class="srmd-labels">
+            <div class="srmdl-item emp">── Empirical error E(h|D) — turun seiring kapasitas naik</div>
+            <div class="srmdl-item conf">── VC confidence — naik seiring kapasitas naik</div>
+            <div class="srmdl-item bound">── Upper bound E* = E(h|D) + VC confidence</div>
+            <div class="srmdl-item opt">★ Model optimal H* — minimum upper bound</div>
+          </div>
+        </div>
+
+        <div class="srm-steps">
+          <div class="srms-step">
+            <div class="srms-num">1</div>
+            <div class="srms-content">
+              <div class="srms-title">Susun keluarga model H₁ ⊂ H₂ ⊂ ... ⊂ Hₙ</div>
+              <div class="srms-desc">Urutkan model dari VC-dim kecil ke besar: VC(H₁) ≤ VC(H₂) ≤ ... ≤ VC(Hₙ). Contoh: linear → polynomial degree 2 → degree 3 → ...</div>
+            </div>
+          </div>
+          <div class="srms-step">
+            <div class="srms-num">2</div>
+            <div class="srms-content">
+              <div class="srms-title">Untuk setiap Hₖ, latih hipotesis terbaik hₖ*</div>
+              <div class="srms-desc">hₖ* = argmin E(h|D) untuk h ∈ Hₖ. Hitung empirical error E(hₖ*|D) dan VC confidence Ωₖ = f(VC(Hₖ), N).</div>
+            </div>
+          </div>
+          <div class="srms-step">
+            <div class="srms-num">3</div>
+            <div class="srms-content">
+              <div class="srms-title">Pilih k* yang meminimalkan E(hₖ*|D) + Ωₖ</div>
+              <div class="srms-desc">Model optimal adalah yang meminimalkan batas atas generalisasi, bukan hanya empirical error. Ini secara eksplisit mencegah overfitting.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="insight-callout">
+          <div class="ic-icon">🔑</div>
+          <div class="ic-body">
+            <strong>Mengapa SVM optimal secara VC?</strong> Support Vector Machine secara eksplisit
+            memaksimalkan margin — dan terbukti bahwa memaksimalkan margin ekuivalen dengan
+            meminimalkan VC-dimension yang efektif, yang meminimalkan upper bound generalisasi.
+            Ini adalah alasan matematis mengapa SVM bekerja dengan baik bahkan di dimensi tinggi.
+          </div>
+        </div>
+
+        <div class="vc-limitations">
+          <div class="vcl-title">⚠️ Keterbatasan VC-Dimension</div>
+          <div class="vcl-items">
+            <div class="vcl-item">
+              <span class="vcli-icon">📉</span>
+              <div>
+                <strong>Bound sangat pesimistis</strong> — dalam praktik, model sering generalisasi
+                jauh lebih baik dari yang dijamin bound. VC bound adalah <em>worst-case</em>.
+              </div>
+            </div>
+            <div class="vcl-item">
+              <span class="vcli-icon">🎲</span>
+              <div>
+                <strong>Mengabaikan distribusi data</strong> — VC-dim tidak memperhitungkan
+                bahwa beberapa pelabelan lebih mungkin daripada yang lain.
+              </div>
+            </div>
+            <div class="vcl-item">
+              <span class="vcli-icon">🔢</span>
+              <div>
+                <strong>Sulit dihitung</strong> — untuk model kompleks seperti deep neural network,
+                menghitung VC-dim eksak sangat sulit. Alternatif modern: Rademacher complexity,
+                PAC-Bayes bounds.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Next lesson CTA -->
+        <div class="next-lesson-cta">
+          <div class="nlc-inner">
+            <span class="nlc-label">Lesson berikutnya</span>
+            <h3 class="nlc-title">Bias-Variance Tradeoff →</h3>
+            <p class="nlc-desc">VC-dim memberi kita upper bound teoritis. Bias-Variance decomposition memberi perspektif berbeda — bagaimana error model bisa didekomposisi menjadi komponen yang bisa dianalisis dan diminimasi.</p>
+            <a href="/pages/ai-lab/ml-bias-variance.html" class="nlc-btn">Lanjut ke Bias-Variance</a>
+          </div>
+        </div>
+
+      </section>
+
+    </div><!-- /lesson-body -->
+  </main>
+</div><!-- /lesson-layout -->
+
+<div id="footer-placeholder"></div>
+<script src="/js/shared.js"></script>
+<script src="/js/lang.js"></script>
+<script src="/js/ml-vc-dim.js"></script>
+</body>
+</html>

@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Basic Preprocessing — NLP | AI Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/shared.css">
+<link rel="stylesheet" href="/css/tokenization.css">
+<link rel="stylesheet" href="/css/preprocessing.css">
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-follower" id="cursor-follower"></div>
+<div id="nav-placeholder"></div>
+<div class="read-progress"><div id="readBar"></div></div>
+
+<div class="lesson-layout">
+
+  <!-- ═══ SIDEBAR ═══ -->
+  <aside class="lesson-sidebar" id="lessonSidebar">
+    <div class="sb-top">
+      <a href="/ai-lab/nlp.html" class="sb-back">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 3L5 8l5 5"/></svg>
+        Natural Language Processing
+      </a>
+      <div class="sb-studying">
+        <div class="sb-studying-label">Sedang belajar</div>
+        <div class="sb-studying-path">
+          <span class="sbp-item">AI Lab</span>
+          <span class="sbp-sep">›</span>
+          <span class="sbp-item">NLP</span>
+          <span class="sbp-sep">›</span>
+          <span class="sbp-item active">Basic Preprocessing</span>
+        </div>
+      </div>
+      <div class="sb-chapter">Modul 1 · Text Fundamentals</div>
+      <div class="sb-lesson-title">Basic Preprocessing</div>
+      <div class="sb-tags">
+        <span class="sb-tag">Fondasi</span>
+        <span class="sb-tag">Bahasa Indonesia</span>
+        <span class="sb-tag interactive">🧪 Interaktif</span>
+      </div>
+    </div>
+
+    <nav class="lesson-nav">
+      <div class="nav-section-label">Dalam lesson ini</div>
+      <a href="#sec-pipeline" class="lnav-item active" data-sec="sec-pipeline">
+        <span class="lnav-dot"></span><span class="lnav-text">Pipeline Overview</span><span class="lnav-num">01</span>
+      </a>
+      <a href="#sec-lower" class="lnav-item" data-sec="sec-lower">
+        <span class="lnav-dot"></span><span class="lnav-text">Lowercasing</span><span class="lnav-num">02</span>
+      </a>
+      <a href="#sec-noise" class="lnav-item" data-sec="sec-noise">
+        <span class="lnav-dot"></span><span class="lnav-text">Noise Removal</span><span class="lnav-num">03</span>
+      </a>
+      <a href="#sec-stopword" class="lnav-item" data-sec="sec-stopword">
+        <span class="lnav-dot"></span><span class="lnav-text">Stopword Removal</span><span class="lnav-num">04</span>
+      </a>
+      <a href="#sec-stem" class="lnav-item" data-sec="sec-stem">
+        <span class="lnav-dot"></span><span class="lnav-text">Stemming</span><span class="lnav-num">05</span>
+      </a>
+      <a href="#sec-lemma" class="lnav-item" data-sec="sec-lemma">
+        <span class="lnav-dot"></span><span class="lnav-text">Lemmatization</span><span class="lnav-num">06</span>
+      </a>
+      <a href="#sec-norm" class="lnav-item" data-sec="sec-norm">
+        <span class="lnav-dot"></span><span class="lnav-text">Normalisasi Teks</span><span class="lnav-num">07</span>
+      </a>
+      <a href="#sec-lab" class="lnav-item" data-sec="sec-lab">
+        <span class="lnav-dot"></span><span class="lnav-text">🧪 Pipeline Lab</span><span class="lnav-num">08</span>
+      </a>
+    </nav>
+
+    <div class="sb-progress">
+      <div class="sb-prog-label"><span>Progress</span><span id="progPct">0%</span></div>
+      <div class="sb-prog-track"><div class="sb-prog-fill" id="progFill"></div></div>
+    </div>
+
+    <div class="sb-module-nav">
+      <div class="nav-section-label" style="padding:0 8px;margin-bottom:8px">Modul 1 · Text Fundamentals</div>
+      <a href="/pages/ai-lab/tokenization.html" class="smn-item"><span class="smn-dot done"></span><span>Tokenisasi</span></a>
+      <a href="/pages/ai-lab/preprocessing.html" class="smn-item current"><span class="smn-dot"></span><span>Basic Preprocessing</span></a>
+      <a href="#" class="smn-item locked"><span class="smn-dot"></span><span>POS &amp; NER</span><span class="smn-lock">🔒</span></a>
+    </div>
+  </aside>
+
+  <!-- ═══ MAIN ═══ -->
+  <main class="lesson-main">
+    <div class="lesson-topbar">
+      <div class="ltb-left">
+        <button class="ltb-menu" id="menuBtn" onclick="toggleSidebar()">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg>
+        </button>
+        <span class="ltb-crumb">Basic Preprocessing</span>
+      </div>
+      <div class="ltb-right">
+        <a href="/pages/ai-lab/tokenization.html" class="ltb-btn">← Tokenisasi</a>
+        <a href="#sec-lab" class="ltb-btn primary">🧪 Lab</a>
+      </div>
+    </div>
+
+    <div class="lesson-body">
+
+      <!-- ══════════ SEC 1: PIPELINE ══════════ -->
+      <section class="lesson-sec" id="sec-pipeline">
+        <div class="sec-header">
+          <span class="sec-num">01</span>
+          <div>
+            <h2 class="sec-title">Pipeline Preprocessing</h2>
+            <p class="sec-sub">Urutan transformasi teks sebelum masuk ke model — dan kenapa urutan itu penting</p>
+          </div>
+        </div>
+
+        <div class="prose">
+          Preprocessing bukan sekadar "membersihkan" teks — ini adalah serangkaian transformasi
+          yang <strong>mengubah teks mentah menjadi representasi yang bisa dipelajari model</strong>.
+          Urutan langkah sangat penting: stemming sebelum stopword removal menghasilkan hasil berbeda
+          dibanding sebaliknya.
+        </div>
+
+        <!-- Pipeline visual -->
+        <div class="pipeline-visual">
+          <div class="pv-step" data-step="raw">
+            <div class="pvs-icon">📄</div>
+            <div class="pvs-label">Raw Text</div>
+            <div class="pvs-example">"Saya sdh MAKAN, tapi tdk kenyang!!"</div>
+          </div>
+          <div class="pv-arrow">→</div>
+          <div class="pv-step" data-step="lower">
+            <div class="pvs-icon">🔡</div>
+            <div class="pvs-label">Lowercase</div>
+            <div class="pvs-example">"saya sdh makan, tapi tdk kenyang!!"</div>
+          </div>
+          <div class="pv-arrow">→</div>
+          <div class="pv-step" data-step="noise">
+            <div class="pvs-icon">🧹</div>
+            <div class="pvs-label">Noise Removal</div>
+            <div class="pvs-example">"saya sdh makan tapi tdk kenyang"</div>
+          </div>
+          <div class="pv-arrow">→</div>
+          <div class="pv-step" data-step="norm">
+            <div class="pvs-icon">📝</div>
+            <div class="pvs-label">Normalisasi</div>
+            <div class="pvs-example">"saya sudah makan tapi tidak kenyang"</div>
+          </div>
+          <div class="pv-arrow">→</div>
+          <div class="pv-step" data-step="stop">
+            <div class="pvs-icon">🚫</div>
+            <div class="pvs-label">Stopword</div>
+            <div class="pvs-example">"makan kenyang"</div>
+          </div>
+          <div class="pv-arrow">→</div>
+          <div class="pv-step" data-step="stem">
+            <div class="pvs-icon">✂️</div>
+            <div class="pvs-label">Stemming</div>
+            <div class="pvs-example">"makan kenyang"</div>
+          </div>
+          <div class="pv-arrow">→</div>
+          <div class="pv-step active" data-step="final">
+            <div class="pvs-icon">✅</div>
+            <div class="pvs-label">Final Tokens</div>
+            <div class="pvs-example">["makan", "kenyang"]</div>
+          </div>
+        </div>
+
+        <div class="insight-callout">
+          <div class="ic-icon">⚠️</div>
+          <div class="ic-body">
+            <strong>Urutan penting!</strong> Jika kamu hapus stopword sebelum normalisasi,
+            kata "tdk" tidak akan cocok dengan stopword list yang berisi "tidak".
+            Selalu normalisasi dulu, baru hapus stopword.
+          </div>
+        </div>
+
+        <!-- Which steps to use table -->
+        <div class="worked-box">
+          <div class="wb-badge">📊 Panduan Penggunaan</div>
+          <div class="wb-title">Kapan pakai teknik apa?</div>
+          <div class="use-table-wrap">
+            <table class="use-table">
+              <thead>
+                <tr>
+                  <th>Teknik</th>
+                  <th>Sentiment Analysis</th>
+                  <th>Information Retrieval</th>
+                  <th>Machine Translation</th>
+                  <th>Topic Modeling</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Lowercasing</td><td class="yes">✅</td><td class="yes">✅</td><td class="no">⚠️ hati-hati</td><td class="yes">✅</td></tr>
+                <tr><td>Noise Removal</td><td class="yes">✅</td><td class="yes">✅</td><td class="yes">✅</td><td class="yes">✅</td></tr>
+                <tr><td>Stopword Removal</td><td class="no">❌ bisa hilang nuansa</td><td class="yes">✅</td><td class="no">❌</td><td class="yes">✅</td></tr>
+                <tr><td>Stemming</td><td class="maybe">⚠️</td><td class="yes">✅</td><td class="no">❌</td><td class="yes">✅</td></tr>
+                <tr><td>Lemmatization</td><td class="yes">✅</td><td class="yes">✅</td><td class="no">❌</td><td class="yes">✅</td></tr>
+                <tr><td>Normalisasi</td><td class="yes">✅</td><td class="yes">✅</td><td class="yes">✅</td><td class="yes">✅</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════ SEC 2: LOWERCASING ══════════ -->
+      <section class="lesson-sec" id="sec-lower">
+        <div class="sec-header">
+          <span class="sec-num">02</span>
+          <div>
+            <h2 class="sec-title">Lowercasing</h2>
+            <p class="sec-sub">Langkah paling sederhana — tapi penuh edge cases tersembunyi</p>
+          </div>
+        </div>
+
+        <div class="prose">
+          Mengubah semua huruf ke lowercase memastikan "Makan", "MAKAN", dan "makan" diperlakukan
+          sebagai token yang sama. Tanpa ini, vocabulary model membengkak tidak perlu.
+        </div>
+
+        <div class="worked-box">
+          <div class="wb-badge">📐 Efek pada Vocabulary Size</div>
+          <div class="wb-title">Kenapa lowercasing penting secara kuantitatif?</div>
+          <div class="calc-chain">
+            <div class="calc-step">
+              <div class="cs-num-circle">1</div>
+              <div class="cs-content">
+                <div class="cs-label">Tanpa lowercasing — "makan" muncul sebagai 4 token berbeda</div>
+                <div class="math-line">
+                  <span class="math-term purple">"Makan"</span>
+                  <span class="math-op">+</span>
+                  <span class="math-term purple">"MAKAN"</span>
+                  <span class="math-op">+</span>
+                  <span class="math-term purple">"makan"</span>
+                  <span class="math-op">+</span>
+                  <span class="math-term purple">"Makan."</span>
+                  <span class="math-op">=</span>
+                  <span class="math-result red">4 entri vocabulary</span>
+                </div>
+              </div>
+            </div>
+            <div class="calc-step">
+              <div class="cs-num-circle">2</div>
+              <div class="cs-content">
+                <div class="cs-label">Dengan lowercasing — semua jadi satu</div>
+                <div class="math-line">
+                  <span class="math-term blue">"makan"</span>
+                  <span class="math-op">=</span>
+                  <span class="math-result green">1 entri vocabulary</span>
+                </div>
+                <div class="math-line">
+                  <span class="math-comment">// vocabulary size berkurang, embedding lebih efisien</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Edge cases -->
+        <div class="worked-box">
+          <div class="wb-badge">⚠️ Edge Cases — Jangan Asal Lowercase!</div>
+          <div class="wb-title">Kasus di mana lowercasing merusak makna</div>
+          <div class="edge-cases">
+            <div class="ec-item">
+              <div class="ec-original">US <span class="ec-arrow">→</span> <span class="ec-result wrong">us</span></div>
+              <div class="ec-note">Negara (United States) berubah jadi kata ganti "kita"</div>
+            </div>
+            <div class="ec-item">
+              <div class="ec-original">Apple <span class="ec-arrow">→</span> <span class="ec-result wrong">apple</span></div>
+              <div class="ec-note">Nama perusahaan vs buah apel — berbeda makna</div>
+            </div>
+            <div class="ec-item">
+              <div class="ec-original">Dr. Siti <span class="ec-arrow">→</span> <span class="ec-result wrong">dr. siti</span></div>
+              <div class="ec-note">Named Entity (NER) menjadi tidak bisa dikenali</div>
+            </div>
+            <div class="ec-item">
+              <div class="ec-original">COVID-19 <span class="ec-arrow">→</span> <span class="ec-result ok">covid-19</span></div>
+              <div class="ec-note">Akronim — aman di-lowercase untuk domain umum</div>
+            </div>
+          </div>
+          <div class="insight-callout" style="margin-top:14px;">
+            <div class="ic-icon">💡</div>
+            <div class="ic-body">Untuk task NER atau sentiment yang sensitif terhadap proper noun, gunakan <strong>truecasing</strong> bukan lowercasing — normalisasi kapitalisasi berdasarkan konteks linguistik.</div>
+          </div>
+        </div>
+
+        <!-- Interactive -->
+        <div class="interactive-box" id="lower-demo">
+          <div class="ib-header">
+            <span class="ib-title">✏️ Coba Sendiri — Lowercasing</span>
+          </div>
+          <div class="ib-body">
+            <textarea class="ib-input" id="lowerInput" rows="3" placeholder="Ketik teks dengan berbagai kapitalisasi...">Saya SUKA makan Nasi Goreng di JAKARTA setiap Pagi!</textarea>
+            <div class="ib-actions">
+              <button class="ib-btn primary" onclick="applyLower()">Apply Lowercase</button>
+              <button class="ib-btn" onclick="resetLower()">Reset</button>
+            </div>
+            <div class="ib-result" id="lowerResult" style="display:none">
+              <div class="ibr-label">Output:</div>
+              <div class="ibr-text" id="lowerOutput"></div>
+              <div class="ibr-stats" id="lowerStats"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════ SEC 3: NOISE REMOVAL ══════════ -->
+      <section class="lesson-sec" id="sec-noise">
+        <div class="sec-header">
+          <span class="sec-num">03</span>
+          <div>
+            <h2 class="sec-title">Noise Removal</h2>
+            <p class="sec-sub">Regex patterns untuk membersihkan teks dari karakter tidak relevan</p>
+          </div>
+        </div>
+
+        <div class="prose">
+          "Noise" adalah karakter atau pola yang tidak membawa informasi semantik untuk task kita —
+          punctuation, HTML tags, URL, emoji, angka, whitespace berlebih. Kuncinya:
+          <strong>apa yang noise tergantung pada task-mu</strong>.
+        </div>
+
+        <!-- Regex patterns worked example -->
+        <div class="worked-box">
+          <div class="wb-badge">📐 Regex Patterns — Step by Step</div>
+          <div class="wb-title">Transformasi per pattern pada satu kalimat</div>
+
+          <div class="regex-pipeline" id="regexPipeline">
+            <div class="rp-input">
+              <span class="rp-label">Input:</span>
+              <span class="rp-text">"Harga &lt;b&gt;Rp 50.000&lt;/b&gt; 😊 cek di https://toko.id/item?id=123 #promo"</span>
+            </div>
+
+            <div class="rp-steps">
+              <div class="rp-step" data-pattern="html">
+                <div class="rps-header">
+                  <span class="rps-num">1</span>
+                  <code class="rps-pattern">re.sub(r'&lt;[^&gt;]+&gt;', '', text)</code>
+                  <span class="rps-desc">Hapus HTML tags</span>
+                </div>
+                <div class="rps-result">"Harga Rp 50.000 😊 cek di https://toko.id/item?id=123 #promo"</div>
+              </div>
+
+              <div class="rp-step" data-pattern="url">
+                <div class="rps-header">
+                  <span class="rps-num">2</span>
+                  <code class="rps-pattern">re.sub(r'https?://\S+', '', text)</code>
+                  <span class="rps-desc">Hapus URL</span>
+                </div>
+                <div class="rps-result">"Harga Rp 50.000 😊 cek di  #promo"</div>
+              </div>
+
+              <div class="rp-step" data-pattern="emoji">
+                <div class="rps-header">
+                  <span class="rps-num">3</span>
+                  <code class="rps-pattern">re.sub(r'[^\x00-\x7F]+', '', text)</code>
+                  <span class="rps-desc">Hapus non-ASCII (emoji)</span>
+                </div>
+                <div class="rps-result">"Harga Rp 50.000  cek di  #promo"</div>
+              </div>
+
+              <div class="rp-step" data-pattern="punct">
+                <div class="rps-header">
+                  <span class="rps-num">4</span>
+                  <code class="rps-pattern">re.sub(r'[^\w\s]', '', text)</code>
+                  <span class="rps-desc">Hapus punctuation & special chars</span>
+                </div>
+                <div class="rps-result">"Harga Rp 50000  cek di  promo"</div>
+              </div>
+
+              <div class="rp-step" data-pattern="num">
+                <div class="rps-header">
+                  <span class="rps-num">5</span>
+                  <code class="rps-pattern">re.sub(r'\d+', '', text)</code>
+                  <span class="rps-desc">Hapus angka</span>
+                </div>
+                <div class="rps-result">"Harga Rp   cek di  promo"</div>
+              </div>
+
+              <div class="rp-step" data-pattern="space">
+                <div class="rps-header">
+                  <span class="rps-num">6</span>
+                  <code class="rps-pattern">re.sub(r'\s+', ' ', text).strip()</code>
+                  <span class="rps-desc">Normalize whitespace</span>
+                </div>
+                <div class="rps-result rps-final">"Harga Rp cek di promo"</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- When NOT to remove -->
+        <div class="worked-box">
+          <div class="wb-badge">⚠️ Kapan JANGAN Hapus</div>
+          <div class="wb-title">Noise yang membawa makna — task dependent</div>
+          <div class="no-remove-grid">
+            <div class="nr-item">
+              <div class="nr-char">😊 😢 😡</div>
+              <div class="nr-task">Sentiment Analysis</div>
+              <div class="nr-reason">Emoji membawa sentimen kuat — jangan hapus, encode saja</div>
+            </div>
+            <div class="nr-item">
+              <div class="nr-char">Rp 50.000</div>
+              <div class="nr-task">E-commerce NLP</div>
+              <div class="nr-reason">Angka harga adalah fitur penting</div>
+            </div>
+            <div class="nr-item">
+              <div class="nr-char">#promo @brand</div>
+              <div class="nr-task">Social Media Analysis</div>
+              <div class="nr-reason">Hashtag dan mention adalah signal topik</div>
+            </div>
+            <div class="nr-item">
+              <div class="nr-char">Dr. Prof. Ir.</div>
+              <div class="nr-task">Named Entity Recognition</div>
+              <div class="nr-reason">Title prefix membantu identifikasi entitas</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Interactive regex tester -->
+        <div class="interactive-box" id="noise-demo">
+          <div class="ib-header">
+            <span class="ib-title">🧹 Regex Noise Remover</span>
+          </div>
+          <div class="ib-body">
+            <textarea class="ib-input" id="noiseInput" rows="3" placeholder="Paste teks dengan noise...">Cek promo di https://tokopedia.com/item?id=123 😍😍 harga &lt;b&gt;Rp 99.000&lt;/b&gt; aja!! #murah #promo2024</textarea>
+            <div class="noise-toggles">
+              <label class="noise-toggle"><input type="checkbox" id="nt-html" checked> HTML tags</label>
+              <label class="noise-toggle"><input type="checkbox" id="nt-url" checked> URLs</label>
+              <label class="noise-toggle"><input type="checkbox" id="nt-emoji" checked> Emoji</label>
+              <label class="noise-toggle"><input type="checkbox" id="nt-punct" checked> Punctuation</label>
+              <label class="noise-toggle"><input type="checkbox" id="nt-num"> Angka</label>
+              <label class="noise-toggle"><input type="checkbox" id="nt-hashtag"> Hashtag</label>
+            </div>
+            <div class="ib-actions">
+              <button class="ib-btn primary" onclick="applyNoise()">Clean Text</button>
+              <button class="ib-btn" onclick="resetNoise()">Reset</button>
+            </div>
+            <div class="ib-result" id="noiseResult" style="display:none">
+              <div class="ibr-label">Output:</div>
+              <div class="ibr-text" id="noiseOutput"></div>
+              <div class="ibr-stats" id="noiseStats"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════ SEC 4: STOPWORD ══════════ -->
+      <section class="lesson-sec" id="sec-stopword">
+        <div class="sec-header">
+          <span class="sec-num">04</span>
+          <div>
+            <h2 class="sec-title">Stopword Removal</h2>
+            <p class="sec-sub">Menghapus kata yang terlalu umum dan tidak memberi informasi — tapi tidak selalu benar</p>
+          </div>
+        </div>
+
+        <div class="prose">
+          Stopword adalah kata-kata dengan <strong>frekuensi tinggi tapi nilai informasi rendah</strong>
+          untuk task tertentu: "yang", "di", "dan", "adalah", "the", "a", "is". Menghapusnya
+          mengurangi noise dan mempercepat training.
+        </div>
+
+        <!-- TF-IDF connection -->
+        <div class="worked-box">
+          <div class="wb-badge">📐 Hubungan dengan TF-IDF</div>
+          <div class="wb-title">Mengapa stopword punya IDF rendah?</div>
+          <div class="calc-chain">
+            <div class="calc-step">
+              <div class="cs-num-circle">1</div>
+              <div class="cs-content">
+                <div class="cs-label">IDF (Inverse Document Frequency)</div>
+                <div class="math-line">
+                  <span class="math-term">IDF(t)</span>
+                  <span class="math-op">=</span>
+                  <span class="math-term">log</span>
+                  <span class="math-op">(</span>
+                  <span class="math-term blue">N</span>
+                  <span class="math-op">/</span>
+                  <span class="math-term purple">df(t)</span>
+                  <span class="math-op">)</span>
+                </div>
+                <div class="math-line">
+                  <span class="math-comment">// N = total dokumen, df(t) = dokumen yang mengandung kata t</span>
+                </div>
+              </div>
+            </div>
+            <div class="calc-step">
+              <div class="cs-num-circle">2</div>
+              <div class="cs-content">
+                <div class="cs-label">Kata "yang" muncul di hampir semua dokumen</div>
+                <div class="math-line">
+                  <span class="math-term">IDF("yang")</span>
+                  <span class="math-op">=</span>
+                  <span class="math-term">log(</span>
+                  <span class="math-term blue">10,000</span>
+                  <span class="math-op">/</span>
+                  <span class="math-term purple">9,980</span>
+                  <span class="math-op">)</span>
+                  <span class="math-op">≈</span>
+                  <span class="math-result red">0.001</span>
+                  <span class="math-comment"> (sangat rendah)</span>
+                </div>
+              </div>
+            </div>
+            <div class="calc-step">
+              <div class="cs-num-circle">3</div>
+              <div class="cs-content">
+                <div class="cs-label">Kata "inflasi" muncul di sedikit dokumen</div>
+                <div class="math-line">
+                  <span class="math-term">IDF("inflasi")</span>
+                  <span class="math-op">=</span>
+                  <span class="math-term">log(</span>
+                  <span class="math-term blue">10,000</span>
+                  <span class="math-op">/</span>
+                  <span class="math-term purple">120</span>
+                  <span class="math-op">)</span>
+                  <span class="math-op">≈</span>
+                  <span class="math-result green">4.42</span>
+                  <span class="math-comment"> (tinggi, informatif)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Indonesian stopwords -->
+        <div class="worked-box">
+          <div class="wb-badge">🇮🇩 Stopword Bahasa Indonesia</div>
+          <div class="wb-title">756 kata dalam daftar resmi (NLTK + Sastrawi)</div>
+          <div class="stopword-categories">
+            <div class="swc-group">
+              <div class="swc-title">Konjungsi</div>
+              <div class="swc-words">
+                <span class="sw-chip">dan</span><span class="sw-chip">atau</span>
+                <span class="sw-chip">tapi</span><span class="sw-chip">namun</span>
+                <span class="sw-chip">serta</span><span class="sw-chip">karena</span>
+                <span class="sw-chip">sehingga</span><span class="sw-chip">maka</span>
+              </div>
+            </div>
+            <div class="swc-group">
+              <div class="swc-title">Preposisi</div>
+              <div class="swc-words">
+                <span class="sw-chip">di</span><span class="sw-chip">ke</span>
+                <span class="sw-chip">dari</span><span class="sw-chip">pada</span>
+                <span class="sw-chip">dalam</span><span class="sw-chip">untuk</span>
+                <span class="sw-chip">dengan</span><span class="sw-chip">oleh</span>
+              </div>
+            </div>
+            <div class="swc-group">
+              <div class="swc-title">Kata Ganti</div>
+              <div class="swc-words">
+                <span class="sw-chip">saya</span><span class="sw-chip">aku</span>
+                <span class="sw-chip">kamu</span><span class="sw-chip">dia</span>
+                <span class="sw-chip">mereka</span><span class="sw-chip">kita</span>
+                <span class="sw-chip">kami</span><span class="sw-chip">ini</span>
+              </div>
+            </div>
+            <div class="swc-group">
+              <div class="swc-title">Partikel</div>
+              <div class="swc-words">
+                <span class="sw-chip">pun</span><span class="sw-chip">lah</span>
+                <span class="sw-chip">kah</span><span class="sw-chip">tah</span>
+                <span class="sw-chip">yang</span><span class="sw-chip">adalah</span>
+                <span class="sw-chip">itu</span><span class="sw-chip">tersebut</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Interactive stopword highlighter -->
+        <div class="interactive-box" id="stopword-demo">
+          <div class="ib-header">
+            <span class="ib-title">🚫 Stopword Highlighter</span>
+            <span class="ib-hint">Stopword di-highlight merah — klik untuk hapus manual, atau hapus semua sekaligus</span>
+          </div>
+          <div class="ib-body">
+            <textarea class="ib-input" id="stopInput" rows="4" placeholder="Paste paragraf Bahasa Indonesia...">Saya sedang belajar tentang pemrosesan teks bahasa Indonesia karena hal ini sangat penting untuk pengembangan model kecerdasan buatan yang dapat memahami bahasa kita dengan baik.</textarea>
+            <div class="ib-actions">
+              <button class="ib-btn primary" onclick="highlightStopwords()">Highlight Stopwords</button>
+              <button class="ib-btn danger" onclick="removeStopwords()">Hapus Semua</button>
+              <button class="ib-btn" onclick="resetStop()">Reset</button>
+            </div>
+            <div class="ib-result" id="stopResult" style="display:none">
+              <div class="ibr-label">Hasil highlight (klik kata merah untuk hapus satu per satu):</div>
+              <div class="ibr-text highlighted" id="stopOutput"></div>
+              <div class="ibr-stats" id="stopStats"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════ SEC 5: STEMMING ══════════ -->
+      <section class="lesson-sec" id="sec-stem">
+        <div class="sec-header">
+          <span class="sec-num">05</span>
+          <div>
+            <h2 class="sec-title">Stemming</h2>
+            <p class="sec-sub">Memangkas imbuhan untuk mendapatkan akar kata — rule-based dan cepat</p>
+          </div>
+        </div>
+
+        <div class="prose">
+          Stemming adalah proses menghapus imbuhan (prefix, suffix, infix, confix) secara
+          mekanis menggunakan aturan morfologi. Hasilnya tidak selalu kata yang valid secara kamus —
+          yang penting konsisten. Untuk Bahasa Indonesia, <strong>Algoritma Nazief-Adriani</strong>
+          (diimplementasikan di PySastrawi) adalah standar de facto.
+        </div>
+
+        <!-- Morphology types -->
+        <div class="worked-box">
+          <div class="wb-badge">📐 Morfologi Bahasa Indonesia — Semua Tipe Imbuhan</div>
+          <div class="wb-title">Imbuhan yang perlu di-strip saat stemming</div>
+          <div class="morpho-table-wrap">
+            <table class="morpho-table">
+              <thead>
+                <tr><th>Tipe</th><th>Imbuhan</th><th>Contoh</th><th>Hasil Stem</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="mt-type prefix">Prefix</span></td>
+                  <td><code>me-, di-, ke-, ber-, ter-, pe-, se-</code></td>
+                  <td>memakan, dimakan, berkumpul</td>
+                  <td>makan, makan, kumpul</td>
+                </tr>
+                <tr>
+                  <td><span class="mt-type suffix">Suffix</span></td>
+                  <td><code>-kan, -an, -i, -nya, -lah, -kah</code></td>
+                  <td>makanan, memakannya, makanlah</td>
+                  <td>makan, makan, makan</td>
+                </tr>
+                <tr>
+                  <td><span class="mt-type confix">Confix</span></td>
+                  <td><code>ke-an, pe-an, ber-an, per-an</code></td>
+                  <td>kecantikan, pembelajaran, perjalanan</td>
+                  <td>cantik, ajar, jalan</td>
+                </tr>
+                <tr>
+                  <td><span class="mt-type infix">Infix</span></td>
+                  <td><code>-el-, -em-, -er-</code></td>
+                  <td>telapak, gemetar, gerigi</td>
+                  <td>tapak, getar, gigi</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Step by step stemming -->
+        <div class="worked-box">
+          <div class="wb-badge">✂️ Algoritma Nazief-Adriani — Step by Step</div>
+          <div class="wb-title">Stemming kata "mempelajari"</div>
+          <div class="stem-steps" id="stemSteps">
+            <div class="ss-step active">
+              <div class="ss-num">1</div>
+              <div class="ss-content">
+                <div class="ss-label">Input kata</div>
+                <div class="ss-word"><span class="sw-full">mempelajari</span></div>
+                <div class="ss-action">Cek apakah ada di kamus → TIDAK → lanjut stripping</div>
+              </div>
+            </div>
+            <div class="ss-step">
+              <div class="ss-num">2</div>
+              <div class="ss-content">
+                <div class="ss-label">Strip suffix <code>-i</code></div>
+                <div class="ss-word">
+                  <span class="sw-full">mempelaiar</span>
+                  <span class="sw-removed">i</span>
+                </div>
+                <div class="ss-action">→ "mempelaiar" — cek kamus → TIDAK → lanjut</div>
+              </div>
+            </div>
+            <div class="ss-step">
+              <div class="ss-num">3</div>
+              <div class="ss-content">
+                <div class="ss-label">Strip prefix <code>me-</code> (dengan nasal <code>m→p</code>)</div>
+                <div class="ss-word">
+                  <span class="sw-removed">mem</span>
+                  <span class="sw-full">pelajar</span>
+                </div>
+                <div class="ss-action">→ "pelajar" — cek kamus → ADA ✓</div>
+              </div>
+            </div>
+            <div class="ss-step">
+              <div class="ss-num">4</div>
+              <div class="ss-content">
+                <div class="ss-label">Strip prefix <code>pe-</code></div>
+                <div class="ss-word">
+                  <span class="sw-removed">pe</span>
+                  <span class="sw-full">lajar</span>
+                </div>
+                <div class="ss-action">→ "lajar" — cek kamus → TIDAK → backtrack ke "pelajar"</div>
+              </div>
+            </div>
+            <div class="ss-step result">
+              <div class="ss-num">✓</div>
+              <div class="ss-content">
+                <div class="ss-label">Hasil akhir</div>
+                <div class="ss-word">
+                  <span class="sw-result">pelajar</span>
+                </div>
+                <div class="ss-action">Stem dari "mempelajari" = <strong>pelajar</strong></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Interactive stemmer -->
+        <div class="interactive-box" id="stem-demo">
+          <div class="ib-header">
+            <span class="ib-title">✂️ Stemmer Interaktif — Bahasa Indonesia</span>
+          </div>
+          <div class="ib-body">
+            <div class="stem-input-row">
+              <input type="text" class="stem-single-input" id="stemInput" placeholder="Ketik kata Bahasa Indonesia..." value="pembelajaran">
+              <button class="ib-btn primary" onclick="stemWord()">Stem</button>
+            </div>
+            <div class="ib-result" id="stemResult" style="display:none">
+              <div class="stem-result-visual" id="stemVisual"></div>
+            </div>
+            <div class="stem-batch-section">
+              <div class="ibr-label" style="margin-bottom:8px;">Atau stem paragraf:</div>
+              <textarea class="ib-input" id="stemBatchInput" rows="3" placeholder="Ketik atau paste teks...">Pembelajaran mesin membutuhkan pemahaman mendalam tentang matematika dan pemrograman komputer.</textarea>
+              <div class="ib-actions">
+                <button class="ib-btn primary" onclick="stemBatch()">Stem Semua Kata</button>
+                <button class="ib-btn" onclick="resetStem()">Reset</button>
+              </div>
+              <div class="ib-result" id="stemBatchResult" style="display:none">
+                <div class="ibr-text" id="stemBatchOutput"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════ SEC 6: LEMMATIZATION ══════════ -->
+      <section class="lesson-sec" id="sec-lemma">
+        <div class="sec-header">
+          <span class="sec-num">06</span>
+          <div>
+            <h2 class="sec-title">Lemmatization</h2>
+            <p class="sec-sub">Berbeda dari stemming — hasilnya selalu kata valid dalam kamus</p>
+          </div>
+        </div>
+
+        <div class="prose">
+          Lemmatization menggunakan <strong>analisis morfologi dan kamus</strong> untuk menemukan
+          <em>lemma</em> (bentuk dasar kata). Hasilnya selalu kata yang valid, berbeda dengan
+          stemming yang bisa menghasilkan kata "putus" dari kata yang tidak berhubungan.
+        </div>
+
+        <!-- Stemming vs Lemma comparison -->
+        <div class="worked-box">
+          <div class="wb-badge">⚡ Stemming vs Lemmatization — Perbandingan Eksak</div>
+          <div class="wb-title">Kasus di mana hasilnya berbeda signifikan</div>
+          <div class="comparison-table-wrap">
+            <table class="comparison-table">
+              <thead>
+                <tr><th>Kata Asal</th><th>Stemming (Sastrawi)</th><th>Lemmatization</th><th>Mana yang Benar?</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>berlari</td>
+                  <td><span class="stem-out">lari</span></td>
+                  <td><span class="lemma-out">lari</span></td>
+                  <td class="same">Sama ✓</td>
+                </tr>
+                <tr>
+                  <td>mempermasalahkan</td>
+                  <td><span class="stem-out">masalah</span></td>
+                  <td><span class="lemma-out">masalah</span></td>
+                  <td class="same">Sama ✓</td>
+                </tr>
+                <tr>
+                  <td>universitas</td>
+                  <td><span class="stem-out wrong">univers</span></td>
+                  <td><span class="lemma-out">universitas</span></td>
+                  <td class="diff">Beda ⚠️</td>
+                </tr>
+                <tr>
+                  <td>kecantikan</td>
+                  <td><span class="stem-out">cantik</span></td>
+                  <td><span class="lemma-out">cantik</span></td>
+                  <td class="same">Sama ✓</td>
+                </tr>
+                <tr>
+                  <td>went (Inggris)</td>
+                  <td><span class="stem-out wrong">went</span></td>
+                  <td><span class="lemma-out">go</span></td>
+                  <td class="diff">Beda ⚠️</td>
+                </tr>
+                <tr>
+                  <td>better (Inggris)</td>
+                  <td><span class="stem-out wrong">better</span></td>
+                  <td><span class="lemma-out">good</span></td>
+                  <td class="diff">Beda ⚠️</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="insight-callout" style="margin-top:14px;">
+            <div class="ic-icon">⚡</div>
+            <div class="ic-body">
+              <strong>Stemming lebih cepat</strong> (rule-based, O(n)) tapi less accurate.
+              <strong>Lemmatization lebih akurat</strong> (dictionary lookup, O(n log n)) tapi lambat.
+              Untuk Bahasa Indonesia dengan morfologi kompleks, lemmatization lebih direkomendasikan.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════ SEC 7: NORMALISASI ══════════ -->
+      <section class="lesson-sec" id="sec-norm">
+        <div class="sec-header">
+          <span class="sec-num">07</span>
+          <div>
+            <h2 class="sec-title">Normalisasi Teks</h2>
+            <p class="sec-sub">Menangani slang, singkatan, dan typo khas Indonesia — tantangan unik NLP lokal</p>
+          </div>
+        </div>
+
+        <div class="prose">
+          Teks media sosial Indonesia penuh dengan singkatan informal, slang, dan variasi penulisan
+          yang tidak ada di kamus standar. Normalisasi mengubah bentuk tidak standar ini ke bentuk
+          baku sebelum proses lainnya.
+        </div>
+
+        <!-- Normalization dictionary -->
+        <div class="worked-box">
+          <div class="wb-badge">📚 Kamus Normalisasi Bahasa Indonesia</div>
+          <div class="wb-title">Contoh mapping — 300+ entri dalam dataset publik</div>
+          <div class="norm-categories">
+            <div class="nc-group">
+              <div class="nc-title">Singkatan SMS/Chat</div>
+              <div class="nc-pairs">
+                <div class="nc-pair"><span class="nc-from">tdk</span><span class="nc-arr">→</span><span class="nc-to">tidak</span></div>
+                <div class="nc-pair"><span class="nc-from">sdh</span><span class="nc-arr">→</span><span class="nc-to">sudah</span></div>
+                <div class="nc-pair"><span class="nc-from">dgn</span><span class="nc-arr">→</span><span class="nc-to">dengan</span></div>
+                <div class="nc-pair"><span class="nc-from">utk</span><span class="nc-arr">→</span><span class="nc-to">untuk</span></div>
+                <div class="nc-pair"><span class="nc-from">yg</span><span class="nc-arr">→</span><span class="nc-to">yang</span></div>
+                <div class="nc-pair"><span class="nc-from">krn</span><span class="nc-arr">→</span><span class="nc-to">karena</span></div>
+              </div>
+            </div>
+            <div class="nc-group">
+              <div class="nc-title">Slang / Gaul</div>
+              <div class="nc-pairs">
+                <div class="nc-pair"><span class="nc-from">gw</span><span class="nc-arr">→</span><span class="nc-to">saya</span></div>
+                <div class="nc-pair"><span class="nc-from">lu</span><span class="nc-arr">→</span><span class="nc-to">kamu</span></div>
+                <div class="nc-pair"><span class="nc-from">gabisa</span><span class="nc-arr">→</span><span class="nc-to">tidak bisa</span></div>
+                <div class="nc-pair"><span class="nc-from">gimana</span><span class="nc-arr">→</span><span class="nc-to">bagaimana</span></div>
+                <div class="nc-pair"><span class="nc-from">emang</span><span class="nc-arr">→</span><span class="nc-to">memang</span></div>
+                <div class="nc-pair"><span class="nc-from">banget</span><span class="nc-arr">→</span><span class="nc-to">sangat</span></div>
+              </div>
+            </div>
+            <div class="nc-group">
+              <div class="nc-title">Variasi Ejaan</div>
+              <div class="nc-pairs">
+                <div class="nc-pair"><span class="nc-from">sy</span><span class="nc-arr">→</span><span class="nc-to">saya</span></div>
+                <div class="nc-pair"><span class="nc-from">aja</span><span class="nc-arr">→</span><span class="nc-to">saja</span></div>
+                <div class="nc-pair"><span class="nc-from">kalo</span><span class="nc-arr">→</span><span class="nc-to">kalau</span></div>
+                <div class="nc-pair"><span class="nc-from">udah</span><span class="nc-arr">→</span><span class="nc-to">sudah</span></div>
+                <div class="nc-pair"><span class="nc-from">nggak</span><span class="nc-arr">→</span><span class="nc-to">tidak</span></div>
+                <div class="nc-pair"><span class="nc-from">gitu</span><span class="nc-arr">→</span><span class="nc-to">begitu</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Interactive normalizer -->
+        <div class="interactive-box" id="norm-demo">
+          <div class="ib-header">
+            <span class="ib-title">📝 Normalizer Bahasa Indonesia</span>
+          </div>
+          <div class="ib-body">
+            <textarea class="ib-input" id="normInput" rows="3" placeholder="Ketik teks informal Indonesia...">Gw udah coba tapi gabisa, emang susah banget. Gimana caranya biar bisa? Krn gw nggak ngerti sm sekali.</textarea>
+            <div class="ib-actions">
+              <button class="ib-btn primary" onclick="applyNorm()">Normalize</button>
+              <button class="ib-btn" onclick="resetNorm()">Reset</button>
+            </div>
+            <div class="ib-result" id="normResult" style="display:none">
+              <div class="ibr-label">Output:</div>
+              <div class="ibr-text" id="normOutput"></div>
+              <div class="ibr-stats" id="normStats"></div>
+              <div class="norm-diff" id="normDiff"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════ SEC 8: PIPELINE LAB ══════════ -->
+      <section class="lesson-sec" id="sec-lab">
+        <div class="sec-header">
+          <span class="sec-num">08</span>
+          <div>
+            <h2 class="sec-title">🧪 Pipeline Lab</h2>
+            <p class="sec-sub">Gabungkan semua teknik — toggle tiap step dan lihat teks berubah realtime</p>
+          </div>
+        </div>
+
+        <div class="prose">
+          Sekarang saatnya mencoba semua teknik dalam satu pipeline. Toggle setiap step,
+          lihat bagaimana teks berubah di setiap tahap, dan pahami dampak urutan preprocessing.
+        </div>
+
+        <div class="pipeline-lab">
+          <!-- Input -->
+          <div class="pl-section">
+            <div class="pl-label">Input Teks</div>
+            <textarea class="pl-input" id="labInput" rows="4">Gw udah belajar Machine Learning selama 3 bulan, tapi masih bingung dgn matematikanya!! 😅 Ada yg bisa bantu? Cek di https://github.com/example</textarea>
+          </div>
+
+          <!-- Step toggles -->
+          <div class="pl-steps">
+            <div class="pl-step-toggle" data-step="lower">
+              <div class="pst-left">
+                <label class="pst-toggle">
+                  <input type="checkbox" id="lab-lower" checked>
+                  <span class="pst-slider"></span>
+                </label>
+                <div class="pst-info">
+                  <div class="pst-name">Lowercase</div>
+                  <div class="pst-desc">Semua huruf → kecil</div>
+                </div>
+              </div>
+              <div class="pst-preview" id="prev-lower">—</div>
+            </div>
+
+            <div class="pl-step-toggle" data-step="noise">
+              <div class="pst-left">
+                <label class="pst-toggle">
+                  <input type="checkbox" id="lab-noise" checked>
+                  <span class="pst-slider"></span>
+                </label>
+                <div class="pst-info">
+                  <div class="pst-name">Noise Removal</div>
+                  <div class="pst-desc">Hapus URL, HTML, emoji, punctuation</div>
+                </div>
+              </div>
+              <div class="pst-preview" id="prev-noise">—</div>
+            </div>
+
+            <div class="pl-step-toggle" data-step="norm">
+              <div class="pst-left">
+                <label class="pst-toggle">
+                  <input type="checkbox" id="lab-norm" checked>
+                  <span class="pst-slider"></span>
+                </label>
+                <div class="pst-info">
+                  <div class="pst-name">Normalisasi</div>
+                  <div class="pst-desc">Slang → formal, singkatan → kata penuh</div>
+                </div>
+              </div>
+              <div class="pst-preview" id="prev-norm">—</div>
+            </div>
+
+            <div class="pl-step-toggle" data-step="stop">
+              <div class="pst-left">
+                <label class="pst-toggle">
+                  <input type="checkbox" id="lab-stop" checked>
+                  <span class="pst-slider"></span>
+                </label>
+                <div class="pst-info">
+                  <div class="pst-name">Stopword Removal</div>
+                  <div class="pst-desc">Hapus kata frekuensi tinggi tidak bermakna</div>
+                </div>
+              </div>
+              <div class="pst-preview" id="prev-stop">—</div>
+            </div>
+
+            <div class="pl-step-toggle" data-step="stem">
+              <div class="pst-left">
+                <label class="pst-toggle">
+                  <input type="checkbox" id="lab-stem">
+                  <span class="pst-slider"></span>
+                </label>
+                <div class="pst-info">
+                  <div class="pst-name">Stemming</div>
+                  <div class="pst-desc">Potong imbuhan ke kata dasar</div>
+                </div>
+              </div>
+              <div class="pst-preview" id="prev-stem">—</div>
+            </div>
+          </div>
+
+          <!-- Final output -->
+          <div class="pl-output">
+            <div class="pl-label">Final Output</div>
+            <div class="pl-result" id="labResult">—</div>
+            <div class="pl-stats" id="labStats"></div>
+          </div>
+        </div>
+
+        <!-- Next lesson -->
+        <div class="next-lesson-cta" style="margin-top:48px;">
+          <span class="nlc-label">Lesson berikutnya</span>
+          <h3 class="nlc-title">POS Tagging &amp; NER →</h3>
+          <p class="nlc-desc">Setelah preprocessing, pelajari cara mengidentifikasi jenis kata dan entitas dalam teks.</p>
+          <a href="/ai-lab/nlp/pos-ner.html" class="nlc-btn">Lanjut ke POS &amp; NER</a>
+        </div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<div id="footer-placeholder"></div>
+<script src="/js/shared.js"></script>
+<script src="/js/lang.js"></script>
+<script src="/js/preprocessing.js"></script>
+</body>
+</html>

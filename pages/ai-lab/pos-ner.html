@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>POS Tagging & NER — NLP | AI Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/shared.css">
+<link rel="stylesheet" href="/css/tokenization.css">
+<link rel="stylesheet" href="/css/pos-ner.css">
+</head>
+<body>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-follower" id="cursor-follower"></div>
+<div id="nav-placeholder"></div>
+<div class="read-progress"><div id="readBar"></div></div>
+
+<div class="lesson-layout">
+  <aside class="lesson-sidebar" id="lessonSidebar">
+    <div class="sb-top">
+      <a href="/pages/ai-lab/nlp.html" class="sb-back">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 3L5 8l5 5"/></svg>
+        Natural Language Processing
+      </a>
+      <div class="sb-studying">
+        <div class="sb-studying-label">Sedang belajar</div>
+        <div class="sb-studying-path">
+          <span class="sbp-item">AI Lab</span><span class="sbp-sep">›</span>
+          <span class="sbp-item">NLP</span><span class="sbp-sep">›</span>
+          <span class="sbp-item active">POS & NER</span>
+        </div>
+      </div>
+      <div class="sb-chapter">Modul 1 · Text Fundamentals</div>
+      <div class="sb-lesson-title">POS Tagging & NER</div>
+      <div class="sb-tags">
+        <span class="sb-tag">Struktur Teks</span>
+        <span class="sb-tag interactive">🧪 Interaktif</span>
+        <span class="sb-tag interactive">🎯 Quiz</span>
+      </div>
+    </div>
+    <nav class="lesson-nav">
+      <div class="nav-section-label">Dalam lesson ini</div>
+      <a href="#sec-pos" class="lnav-item active" data-sec="sec-pos"><span class="lnav-dot"></span><span class="lnav-text">Apa itu POS Tagging?</span><span class="lnav-num">01</span></a>
+      <a href="#sec-hmm" class="lnav-item" data-sec="sec-hmm"><span class="lnav-dot"></span><span class="lnav-text">HMM & Viterbi</span><span class="lnav-num">02</span></a>
+      <a href="#sec-id" class="lnav-item" data-sec="sec-id"><span class="lnav-dot"></span><span class="lnav-text">POS Tags Bahasa Indonesia</span><span class="lnav-num">03</span></a>
+      <a href="#sec-ner" class="lnav-item" data-sec="sec-ner"><span class="lnav-dot"></span><span class="lnav-text">Named Entity Recognition</span><span class="lnav-num">04</span></a>
+      <a href="#sec-ambigu" class="lnav-item" data-sec="sec-ambigu"><span class="lnav-dot"></span><span class="lnav-text">Ambiguitas Indonesia 😅</span><span class="lnav-num">05</span></a>
+      <a href="#sec-eval" class="lnav-item" data-sec="sec-eval"><span class="lnav-dot"></span><span class="lnav-text">Evaluasi & F1 Score</span><span class="lnav-num">06</span></a>
+      <a href="#sec-lab" class="lnav-item" data-sec="sec-lab"><span class="lnav-dot"></span><span class="lnav-text">🧪 Lab + Quiz</span><span class="lnav-num">07</span></a>
+    </nav>
+    <div class="sb-progress">
+      <div class="sb-prog-label"><span>Progress</span><span id="progPct">0%</span></div>
+      <div class="sb-prog-track"><div class="sb-prog-fill" id="progFill"></div></div>
+    </div>
+    <div class="sb-module-nav">
+      <div class="nav-section-label" style="padding:0 8px;margin-bottom:8px">Modul 1 · Text Fundamentals</div>
+      <a href="/pages/ai-lab/tokenization.html" class="smn-item"><span class="smn-dot done"></span><span>Tokenisasi</span></a>
+      <a href="/pages/ai-lab/preprocessing.html" class="smn-item"><span class="smn-dot done"></span><span>Basic Preprocessing</span></a>
+      <a href="/pages/ai-lab/pos-ner.html" class="smn-item current"><span class="smn-dot"></span><span>POS & NER</span></a>
+    </div>
+  </aside>
+
+  <main class="lesson-main">
+    <div class="lesson-topbar">
+      <div class="ltb-left">
+        <button class="ltb-menu" id="menuBtn" onclick="toggleSidebar()">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg>
+        </button>
+        <span class="ltb-crumb">POS Tagging & NER</span>
+      </div>
+      <div class="ltb-right">
+        <a href="/pages/ai-lab/preprocessing.html" class="ltb-btn">← Preprocessing</a>
+        <a href="#sec-lab" class="ltb-btn primary">🧪 Lab</a>
+      </div>
+    </div>
+
+    <div class="lesson-body">
+
+      <!-- ══ SEC 1: POS ══ -->
+      <section class="lesson-sec" id="sec-pos">
+        <div class="sec-header">
+          <span class="sec-num">01</span>
+          <div>
+            <h2 class="sec-title">Apa itu POS Tagging?</h2>
+            <p class="sec-sub">Memberi label jenis kata pada setiap token — fondasi analisis sintaksis</p>
+          </div>
+        </div>
+        <div class="prose">
+          <strong>Part-of-Speech (POS) Tagging</strong> adalah proses melabeli setiap token dalam kalimat dengan kategori gramatikal — NOUN, VERB, ADJ, dll. Ini adalah langkah fundamental yang digunakan pipeline NLP downstream seperti dependency parsing, NER, dan machine translation.
+        </div>
+
+        <!-- Universal 17 tags -->
+        <div class="worked-box">
+          <div class="wb-badge">📚 Universal Dependencies — 17 POS Tags</div>
+          <div class="wb-title">Standar global yang digunakan IndoNLP dan 100+ bahasa lain</div>
+          <div class="pos-tag-grid">
+            <div class="ptg-item" data-tag="NOUN"><span class="pos-badge noun">NOUN</span><div class="ptg-name">Nomina</div><div class="ptg-ex">meja, kucing, <em>Jakarta</em></div></div>
+            <div class="ptg-item" data-tag="VERB"><span class="pos-badge verb">VERB</span><div class="ptg-name">Verba</div><div class="ptg-ex">makan, berlari, <em>berpikir</em></div></div>
+            <div class="ptg-item" data-tag="ADJ"><span class="pos-badge adj">ADJ</span><div class="ptg-name">Adjektiva</div><div class="ptg-ex">cantik, besar, <em>merah</em></div></div>
+            <div class="ptg-item" data-tag="ADV"><span class="pos-badge adv">ADV</span><div class="ptg-name">Adverbia</div><div class="ptg-ex">sangat, selalu, <em>tidak</em></div></div>
+            <div class="ptg-item" data-tag="PRON"><span class="pos-badge pron">PRON</span><div class="ptg-name">Pronomina</div><div class="ptg-ex">saya, dia, <em>mereka</em></div></div>
+            <div class="ptg-item" data-tag="PROPN"><span class="pos-badge propn">PROPN</span><div class="ptg-name">Nama Diri</div><div class="ptg-ex">Budi, Solo, <em>Tokopedia</em></div></div>
+            <div class="ptg-item" data-tag="DET"><span class="pos-badge det">DET</span><div class="ptg-name">Determiner</div><div class="ptg-ex">ini, itu, <em>para</em></div></div>
+            <div class="ptg-item" data-tag="ADP"><span class="pos-badge adp">ADP</span><div class="ptg-name">Preposisi</div><div class="ptg-ex">di, ke, <em>dari</em></div></div>
+            <div class="ptg-item" data-tag="CONJ"><span class="pos-badge conj">CONJ</span><div class="ptg-name">Konjungsi</div><div class="ptg-ex">dan, atau, <em>tetapi</em></div></div>
+            <div class="ptg-item" data-tag="NUM"><span class="pos-badge num">NUM</span><div class="ptg-name">Numeralia</div><div class="ptg-ex">satu, 42, <em>ribuan</em></div></div>
+            <div class="ptg-item" data-tag="PUNCT"><span class="pos-badge punct">PUNCT</span><div class="ptg-name">Punctuasi</div><div class="ptg-ex">. , ! <em>?</em></div></div>
+            <div class="ptg-item" data-tag="AUX"><span class="pos-badge aux">AUX</span><div class="ptg-name">Auxiliar</div><div class="ptg-ex">sudah, akan, <em>harus</em></div></div>
+          </div>
+        </div>
+
+        <!-- Ambiguity intro -->
+        <div class="worked-box">
+          <div class="wb-badge">🤔 Masalah Utama — Ambiguitas POS</div>
+          <div class="wb-title">Satu kata, banyak kemungkinan tag — konteks menentukan</div>
+          <div class="ambig-demo">
+            <div class="ad-sentence">
+              <div class="ad-label">Kalimat 1:</div>
+              <div class="ad-tokens">
+                <span class="ad-token"><span class="pos-badge noun">NOUN</span>Makan</span>
+                <span class="ad-token"><span class="pos-badge noun">NOUN</span>siang</span>
+                <span class="ad-token"><span class="pos-badge pron">PRON</span>saya</span>
+                <span class="ad-token"><span class="pos-badge verb">VERB</span>terlambat</span>
+              </div>
+              <div class="ad-note">"Makan" = NOUN (sebagai subjek)</div>
+            </div>
+            <div class="ad-sentence">
+              <div class="ad-label">Kalimat 2:</div>
+              <div class="ad-tokens">
+                <span class="ad-token"><span class="pos-badge pron">PRON</span>Saya</span>
+                <span class="ad-token"><span class="pos-badge verb">VERB">VERB</span>makan</span>
+                <span class="ad-token"><span class="pos-badge noun">NOUN</span>nasi</span>
+                <span class="ad-token"><span class="pos-badge noun">NOUN</span>goreng</span>
+              </div>
+              <div class="ad-note">"makan" = VERB (sebagai predikat)</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══ SEC 2: HMM VITERBI ══ -->
+      <section class="lesson-sec" id="sec-hmm">
+        <div class="sec-header">
+          <span class="sec-num">02</span>
+          <div>
+            <h2 class="sec-title">HMM & Algoritma Viterbi</h2>
+            <p class="sec-sub">Matematika di balik POS tagger klasik — probabilitas transisi dan emisi</p>
+          </div>
+        </div>
+        <div class="prose">
+          <strong>Hidden Markov Model (HMM)</strong> memodelkan POS tagging sebagai: kita <em>observasi</em> kata-kata, tapi <em>hidden state</em>-nya adalah tag. Model belajar dua probabilitas dari corpus berlabel.
+        </div>
+
+        <div class="worked-box">
+          <div class="wb-badge">📐 Dua Probabilitas Kunci</div>
+          <div class="wb-title">Emission & Transition — dasar HMM tagger</div>
+          <div class="calc-chain">
+            <div class="calc-step">
+              <div class="cs-num-circle">1</div>
+              <div class="cs-content">
+                <div class="cs-label">Emission Probability — P(kata | tag)</div>
+                <div class="math-line">
+                  <span class="math-term purple">P(makan | VERB)</span>
+                  <span class="math-op">=</span>
+                  <span class="math-term blue">count(VERB, makan)</span>
+                  <span class="math-op">/</span>
+                  <span class="math-term blue">count(VERB)</span>
+                  <span class="math-op">=</span>
+                  <span class="math-result">320 / 12,450 = 0.026</span>
+                </div>
+                <div class="math-line">
+                  <span class="math-term purple">P(makan | NOUN)</span>
+                  <span class="math-op">=</span>
+                  <span class="math-term blue">89 / 18,300</span>
+                  <span class="math-op">=</span>
+                  <span class="math-result">0.005</span>
+                </div>
+                <div class="math-line">
+                  <span class="math-comment">// "makan" 5× lebih mungkin VERB daripada NOUN</span>
+                </div>
+              </div>
+            </div>
+            <div class="calc-step">
+              <div class="cs-num-circle">2</div>
+              <div class="cs-content">
+                <div class="cs-label">Transition Probability — P(tag_t | tag_{t-1})</div>
+                <div class="math-line">
+                  <span class="math-term purple">P(VERB | PRON)</span>
+                  <span class="math-op">=</span>
+                  <span class="math-term blue">count(PRON→VERB)</span>
+                  <span class="math-op">/</span>
+                  <span class="math-term blue">count(PRON)</span>
+                  <span class="math-op">=</span>
+                  <span class="math-result green">0.72</span>
+                  <span class="math-comment"> (sangat sering)</span>
+                </div>
+                <div class="math-line">
+                  <span class="math-term purple">P(VERB | VERB)</span>
+                  <span class="math-op">=</span>
+                  <span class="math-result">0.11</span>
+                  <span class="math-comment"> (dua VERB berurutan jarang)</span>
+                </div>
+              </div>
+            </div>
+            <div class="calc-step">
+              <div class="cs-num-circle">3</div>
+              <div class="cs-content">
+                <div class="cs-label">Viterbi Score — gabungan keduanya</div>
+                <div class="math-line">
+                  <span class="math-term">v(t, i)</span>
+                  <span class="math-op">=</span>
+                  <span class="math-term purple">max<sub>j</sub></span>
+                  <span class="math-op">[</span>
+                  <span class="math-term blue">v(t-1, j)</span>
+                  <span class="math-op">×</span>
+                  <span class="math-term green">P(tag_i | tag_j)</span>
+                  <span class="math-op">×</span>
+                  <span class="math-term orange">P(kata_t | tag_i)</span>
+                  <span class="math-op">]</span>
+                </div>
+                <div class="math-line">
+                  <span class="math-comment">// v = viterbi score, t = posisi kata, i/j = tag index</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Viterbi Table Interactive -->
+        <div class="worked-box">
+          <div class="wb-badge">🎛️ Viterbi Table — Realtime</div>
+          <div class="wb-title">Kalimat "Saya makan nasi" — lihat tabel probabilitas terisi</div>
+          <div class="viterbi-demo">
+            <div class="vd-controls">
+              <button class="ib-btn primary" onclick="runViterbi()">▶ Jalankan Viterbi</button>
+              <button class="ib-btn" onclick="resetViterbi()">↺ Reset</button>
+              <span class="vd-hint">Klik cell untuk lihat detail perhitungan</span>
+            </div>
+            <div class="viterbi-table-wrap">
+              <table class="viterbi-table" id="viterbiTable">
+                <thead id="viterbiHead"></thead>
+                <tbody id="viterbiBody"></tbody>
+              </table>
+            </div>
+            <div class="vd-result" id="viterbiResult" style="display:none"></div>
+            <div class="vd-detail" id="viterbiDetail" style="display:none"></div>
+          </div>
+        </div>
+
+        <div class="insight-callout">
+          <div class="ic-icon">⚡</div>
+          <div class="ic-body">
+            <strong>Kompleksitas Viterbi:</strong> O(N × T²) di mana N = panjang kalimat, T = jumlah tag. Untuk kalimat 20 kata dengan 17 tag = 20 × 17² = 5,780 operasi. Jauh lebih efisien dari brute force O(T^N) = 17^20 ≈ 2 × 10^24.
+          </div>
+        </div>
+      </section>
+
+      <!-- ══ SEC 3: POS TAGS INDONESIA ══ -->
+      <section class="lesson-sec" id="sec-id">
+        <div class="sec-header">
+          <span class="sec-num">03</span>
+          <div>
+            <h2 class="sec-title">POS Tags Bahasa Indonesia</h2>
+            <p class="sec-sub">Tantangan unik morfologi Indonesia yang tidak ada di English</p>
+          </div>
+        </div>
+        <div class="prose">
+          Bahasa Indonesia punya karakteristik unik: <strong>tidak ada infleksi tense</strong> (kata kerja tidak berubah untuk waktu), <strong>reduplikasi</strong> (meja-meja, berlari-lari), dan <strong>sistem honorifik</strong> (Bapak, Ibu, Mas, Mbak) yang mempengaruhi POS tagging.
+        </div>
+
+        <div class="worked-box">
+          <div class="wb-badge">🇮🇩 Kasus Khusus Indonesia</div>
+          <div class="wb-title">Fitur linguistik yang bikin POS tagger English gagal</div>
+          <div class="id-cases">
+            <div class="idc-item">
+              <div class="idc-title">Reduplikasi</div>
+              <div class="idc-tokens">
+                <span class="idc-tok"><span class="pos-badge noun">NOUN</span>meja-meja</span>
+                <span class="idc-tok"><span class="pos-badge verb">VERB</span>berlari-lari</span>
+                <span class="idc-tok"><span class="pos-badge adj">ADJ</span>perlahan-lahan</span>
+              </div>
+              <div class="idc-note">Reduplikasi bisa NOUN (plural), VERB (repetitif), ADJ (intensif)</div>
+            </div>
+            <div class="idc-item">
+              <div class="idc-title">Konfiks (me-...-kan, di-...-i)</div>
+              <div class="idc-tokens">
+                <span class="idc-tok"><span class="pos-badge verb">VERB</span>memberikan</span>
+                <span class="idc-tok"><span class="pos-badge verb">VERB</span>dipermasalahkan</span>
+                <span class="idc-tok"><span class="pos-badge verb">VERB</span>mempercayai</span>
+              </div>
+              <div class="idc-note">Selalu VERB — konfiks adalah marker verbal kuat</div>
+            </div>
+            <div class="idc-item">
+              <div class="idc-title">Honorifik sebagai DET/PROPN</div>
+              <div class="idc-tokens">
+                <span class="idc-tok"><span class="pos-badge det">DET</span>Bapak</span>
+                <span class="idc-tok"><span class="pos-badge det">DET</span>Ibu</span>
+                <span class="idc-tok"><span class="pos-badge propn">PROPN</span>Dr.</span>
+              </div>
+              <div class="idc-note">Sebelum nama = DET, tanpa nama = NOUN</div>
+            </div>
+            <div class="idc-item">
+              <div class="idc-title">Partikel enklitik</div>
+              <div class="idc-tokens">
+                <span class="idc-tok"><span class="pos-badge noun">NOUN</span>bukunya</span>
+                <span class="idc-tok"><span class="pos-badge verb">VERB</span>makanlah</span>
+                <span class="idc-tok"><span class="pos-badge verb">VERB</span>apakah</span>
+              </div>
+              <div class="idc-note">-nya, -lah, -kah adalah klitik — token atau bagian token?</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══ SEC 4: NER ══ -->
+      <section class="lesson-sec" id="sec-ner">
+        <div class="sec-header">
+          <span class="sec-num">04</span>
+          <div>
+            <h2 class="sec-title">Named Entity Recognition (NER)</h2>
+            <p class="sec-sub">Mengidentifikasi dan mengklasifikasi entitas bernama dalam teks</p>
+          </div>
+        </div>
+        <div class="prose">
+          NER mengidentifikasi <strong>entitas dunia nyata</strong> dalam teks: nama orang, organisasi, lokasi, tanggal, dll. Ini adalah komponen kritis dalam information extraction, question answering, dan knowledge graph construction.
+        </div>
+
+        <!-- IOB Format -->
+        <div class="worked-box">
+          <div class="wb-badge">📐 Format IOB2 — Inside-Outside-Beginning</div>
+          <div class="wb-title">Standar labeling NER yang digunakan semua model modern</div>
+          <div class="calc-chain">
+            <div class="calc-step">
+              <div class="cs-num-circle">1</div>
+              <div class="cs-content">
+                <div class="cs-label">Tiga prefix IOB2</div>
+                <div class="math-line">
+                  <span class="pos-badge propn">B-TYPE</span>
+                  <span class="math-comment" style="margin-left:8px;">= Beginning — token pertama entitas</span>
+                </div>
+                <div class="math-line">
+                  <span class="pos-badge noun" style="background:rgba(41,151,255,.15);color:#2997ff">I-TYPE</span>
+                  <span class="math-comment" style="margin-left:8px;">= Inside — token lanjutan entitas</span>
+                </div>
+                <div class="math-line">
+                  <span class="pos-badge punct">O</span>
+                  <span class="math-comment" style="margin-left:8px;">= Outside — bukan bagian entitas</span>
+                </div>
+              </div>
+            </div>
+            <div class="calc-step">
+              <div class="cs-num-circle">2</div>
+              <div class="cs-content">
+                <div class="cs-label">Contoh: "Budi Doremi bekerja di Bank Mandiri Jakarta"</div>
+                <div class="iob-example">
+                  <div class="iob-row">
+                    <span class="iob-tok">Budi</span>
+                    <span class="iob-tok">Doremi</span>
+                    <span class="iob-tok">bekerja</span>
+                    <span class="iob-tok">di</span>
+                    <span class="iob-tok">Bank</span>
+                    <span class="iob-tok">Mandiri</span>
+                    <span class="iob-tok">Jakarta</span>
+                  </div>
+                  <div class="iob-row">
+                    <span class="iob-label b-per">B-PER</span>
+                    <span class="iob-label i-per">I-PER</span>
+                    <span class="iob-label o">O</span>
+                    <span class="iob-label o">O</span>
+                    <span class="iob-label b-org">B-ORG</span>
+                    <span class="iob-label i-org">I-ORG</span>
+                    <span class="iob-label b-loc">B-LOC</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- NER Categories Indonesia -->
+        <div class="worked-box">
+          <div class="wb-badge">🇮🇩 Kategori NER Dataset Indonesia (IndoNER)</div>
+          <div class="wb-title">8 kategori entitas dalam dataset resmi</div>
+          <div class="ner-categories">
+            <div class="ner-cat" style="--nc:#ef4444">
+              <div class="ner-cat-badge b-per">PER</div>
+              <div class="ner-cat-name">Person</div>
+              <div class="ner-cat-ex">Joko Widodo, Susi Pudjiastuti, <em>Raisa</em></div>
+            </div>
+            <div class="ner-cat" style="--nc:#3b82f6">
+              <div class="ner-cat-badge b-org">ORG</div>
+              <div class="ner-cat-name">Organization</div>
+              <div class="ner-cat-ex">Tokopedia, Universitas Indonesia, <em>KPK</em></div>
+            </div>
+            <div class="ner-cat" style="--nc:#22c55e">
+              <div class="ner-cat-badge b-loc">LOC</div>
+              <div class="ner-cat-name">Location</div>
+              <div class="ner-cat-ex">Jakarta, Gunung Bromo, <em>Selat Sunda</em></div>
+            </div>
+            <div class="ner-cat" style="--nc:#f59e0b">
+              <div class="ner-cat-badge b-date">DATE</div>
+              <div class="ner-cat-name">Date/Time</div>
+              <div class="ner-cat-ex">17 Agustus 1945, kemarin, <em>tahun depan</em></div>
+            </div>
+            <div class="ner-cat" style="--nc:#8b5cf6">
+              <div class="ner-cat-badge b-evt">EVT</div>
+              <div class="ner-cat-name">Event</div>
+              <div class="ner-cat-ex">Pemilu 2024, Asian Games, <em>Lebaran</em></div>
+            </div>
+            <div class="ner-cat" style="--nc:#06b6d4">
+              <div class="ner-cat-badge b-prod">PROD</div>
+              <div class="ner-cat-name">Product</div>
+              <div class="ner-cat-ex">iPhone 15, Indomie Goreng, <em>Gojek</em></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══ SEC 5: AMBIGUITAS ══ -->
+      <section class="lesson-sec" id="sec-ambigu">
+        <div class="sec-header">
+          <span class="sec-num">05</span>
+          <div>
+            <h2 class="sec-title">Ambiguitas Indonesia 😅</h2>
+            <p class="sec-sub">Kasus-kasus nyata yang bikin NLP model bingung — termasuk "Solo"</p>
+          </div>
+        </div>
+        <div class="prose">
+          Bahasa Indonesia punya banyak kata yang maknanya bergantung 100% pada konteks. Ini adalah <strong>tantangan terbesar NER Indonesia</strong> — dan sumber lelucon tak ada habisnya.
+        </div>
+
+        <!-- Solo case -->
+        <div class="worked-box" style="border-top-color:#f59e0b">
+          <div class="wb-badge" style="color:#f59e0b">🎭 Kasus "Solo" — Triple Ambiguity</div>
+          <div class="wb-title">Satu kata, tiga makna, tiga tag berbeda</div>
+          <div class="solo-cases">
+            <div class="sc-item loc">
+              <div class="sc-tag"><span class="iob-label b-loc">B-LOC</span></div>
+              <div class="sc-sentence">"Kereta dari <strong>Solo</strong> tiba pukul 08.00"</div>
+              <div class="sc-reason">Konteks: kereta + dari + pukul → LOC (kota Surakarta)</div>
+            </div>
+            <div class="sc-item adj">
+              <div class="sc-tag"><span class="pos-badge adj">ADJ</span></div>
+              <div class="sc-sentence">"Dia pergi <strong>solo</strong> tanpa teman"</div>
+              <div class="sc-reason">Konteks: pergi + tanpa teman → ADJ (sendirian, borrowing English)</div>
+            </div>
+            <div class="sc-item per">
+              <div class="sc-tag"><span class="iob-label b-per">B-PER</span></div>
+              <div class="sc-sentence">"<strong>Solo</strong> memenangkan kompetisi itu"</div>
+              <div class="sc-reason">Konteks: subjek + memenangkan → PER (nama orang)</div>
+            </div>
+          </div>
+          <div class="insight-callout" style="margin-top:16px;background:rgba(245,158,11,.06);border-color:rgba(245,158,11,.2)">
+            <div class="ic-icon">😅</div>
+            <div class="ic-body">
+              <strong>Bonus joke:</strong> "Pria Solo pergi solo ke Solo" — dalam satu kalimat ini: PER + ADJ + LOC. Model NER state-of-the-art pun bisa keliru di sini tanpa konteks yang cukup.
+            </div>
+          </div>
+        </div>
+
+        <!-- Other ambiguous words -->
+        <div class="worked-box">
+          <div class="wb-badge">🗺️ Kata-kata Ambigu Terkenal Indonesia</div>
+          <div class="wb-title">Kasus yang sering muncul di benchmark NLP Indonesia</div>
+          <div class="ambig-interactive" id="ambigInteractive">
+            <div class="ai-word-list">
+              <button class="ai-word active" onclick="showAmbig('malang')">Malang</button>
+              <button class="ai-word" onclick="showAmbig('bima')">Bima</button>
+              <button class="ai-word" onclick="showAmbig('kia')">Kia</button>
+              <button class="ai-word" onclick="showAmbig('lima')">Lima</button>
+              <button class="ai-word" onclick="showAmbig('pare')">Pare</button>
+            </div>
+            <div class="ai-cases" id="ambigCases"></div>
+          </div>
+        </div>
+
+        <!-- Context resolution -->
+        <div class="worked-box">
+          <div class="wb-badge">🧠 Bagaimana Model Modern Resolusi Ambiguitas</div>
+          <div class="wb-title">BERT-based NER — konteks bidireksional menyelamatkan</div>
+          <div class="calc-chain">
+            <div class="calc-step">
+              <div class="cs-num-circle">1</div>
+              <div class="cs-content">
+                <div class="cs-label">HMM klasik — hanya lihat ke kiri</div>
+                <div class="math-line">
+                  <span class="math-term">P(tag | kata, tag_sebelumnya)</span>
+                  <span class="math-comment"> → window terbatas</span>
+                </div>
+                <div class="math-line">
+                  <span class="math-comment">// "... ke Solo" → P(LOC|Solo, ADP=ke) = 0.71</span>
+                </div>
+              </div>
+            </div>
+            <div class="calc-step">
+              <div class="cs-num-circle">2</div>
+              <div class="cs-content">
+                <div class="cs-label">BERT — lihat seluruh kalimat dua arah</div>
+                <div class="math-line">
+                  <span class="math-term">P(tag | kata, <span style="color:#34c759">seluruh konteks kalimat</span>)</span>
+                </div>
+                <div class="math-line">
+                  <span class="math-comment">// "Solo memenangkan..." → kiri lihat subjek + kanan lihat predikat</span>
+                </div>
+                <div class="math-line">
+                  <span class="math-comment">// → P(PER|Solo) meningkat drastis</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══ SEC 6: EVALUASI ══ -->
+      <section class="lesson-sec" id="sec-eval">
+        <div class="sec-header">
+          <span class="sec-num">06</span>
+          <div>
+            <h2 class="sec-title">Evaluasi — Precision, Recall & F1</h2>
+            <p class="sec-sub">Angka real dari benchmark IndoNLP — bukan ilustrasi</p>
+          </div>
+        </div>
+        <div class="prose">
+          Evaluasi NER menggunakan <strong>entity-level F1</strong> — sebuah entitas dianggap benar hanya jika boundary <em>dan</em> tipe-nya 100% tepat. Partial match tidak dihitung.
+        </div>
+
+        <div class="worked-box">
+          <div class="wb-badge">📐 Formula Precision, Recall, F1</div>
+          <div class="wb-title">Perhitungan eksak untuk NER entity-level</div>
+          <div class="calc-chain">
+            <div class="calc-step">
+              <div class="cs-num-circle">1</div>
+              <div class="cs-content">
+                <div class="cs-label">Precision — dari semua yang diprediksi, berapa yang benar?</div>
+                <div class="math-line">
+                  <span class="math-term">Precision</span>
+                  <span class="math-op">=</span>
+                  <span class="math-term blue">TP</span>
+                  <span class="math-op">/</span>
+                  <span class="math-op">(</span>
+                  <span class="math-term blue">TP</span>
+                  <span class="math-op">+</span>
+                  <span class="math-term red">FP</span>
+                  <span class="math-op">)</span>
+                  <span class="math-op">=</span>
+                  <span class="math-result">85 / (85+15) = 0.85</span>
+                </div>
+              </div>
+            </div>
+            <div class="calc-step">
+              <div class="cs-num-circle">2</div>
+              <div class="cs-content">
+                <div class="cs-label">Recall — dari semua yang ada di data, berapa yang ditemukan?</div>
+                <div class="math-line">
+                  <span class="math-term">Recall</span>
+                  <span class="math-op">=</span>
+                  <span class="math-term blue">TP</span>
+                  <span class="math-op">/</span>
+                  <span class="math-op">(</span>
+                  <span class="math-term blue">TP</span>
+                  <span class="math-op">+</span>
+                  <span class="math-term orange">FN</span>
+                  <span class="math-op">)</span>
+                  <span class="math-op">=</span>
+                  <span class="math-result">85 / (85+20) = 0.81</span>
+                </div>
+              </div>
+            </div>
+            <div class="calc-step">
+              <div class="cs-num-circle">3</div>
+              <div class="cs-content">
+                <div class="cs-label">F1 Score — harmonic mean, hukum model yang imbalanced</div>
+                <div class="math-line">
+                  <span class="math-term">F1</span>
+                  <span class="math-op">=</span>
+                  <span class="math-term">2 ×</span>
+                  <span class="math-op">(</span>
+                  <span class="math-term blue">P</span>
+                  <span class="math-op">×</span>
+                  <span class="math-term green">R</span>
+                  <span class="math-op">)</span>
+                  <span class="math-op">/</span>
+                  <span class="math-op">(</span>
+                  <span class="math-term blue">P</span>
+                  <span class="math-op">+</span>
+                  <span class="math-term green">R</span>
+                  <span class="math-op">)</span>
+                  <span class="math-op">=</span>
+                  <span class="math-result green">2×(0.85×0.81)/(0.85+0.81) = 0.83</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Benchmark table -->
+        <div class="worked-box">
+          <div class="wb-badge">📊 Benchmark NER Indonesia — Angka Real (IndoNER 2022)</div>
+          <div class="wb-title">Perbandingan model pada dataset berita Indonesia</div>
+          <div class="benchmark-table-wrap">
+            <table class="benchmark-table">
+              <thead>
+                <tr><th>Model</th><th>PER F1</th><th>ORG F1</th><th>LOC F1</th><th>Overall F1</th><th>Speed</th></tr>
+              </thead>
+              <tbody>
+                <tr class="bm-row">
+                  <td>Rule-based</td>
+                  <td>0.61</td><td>0.48</td><td>0.55</td>
+                  <td class="bm-score low">0.54</td>
+                  <td class="bm-fast">⚡⚡⚡</td>
+                </tr>
+                <tr class="bm-row">
+                  <td>HMM</td>
+                  <td>0.74</td><td>0.65</td><td>0.71</td>
+                  <td class="bm-score mid">0.70</td>
+                  <td class="bm-fast">⚡⚡</td>
+                </tr>
+                <tr class="bm-row">
+                  <td>BiLSTM-CRF</td>
+                  <td>0.83</td><td>0.76</td><td>0.81</td>
+                  <td class="bm-score good">0.80</td>
+                  <td class="bm-fast">⚡</td>
+                </tr>
+                <tr class="bm-row best">
+                  <td>IndoBERT-NER ⭐</td>
+                  <td>0.92</td><td>0.87</td><td>0.91</td>
+                  <td class="bm-score best-score">0.90</td>
+                  <td class="bm-fast">🐢</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="insight-callout" style="margin-top:12px;">
+            <div class="ic-icon">💡</div>
+            <div class="ic-body">LOC selalu lebih tinggi dari ORG karena nama kota/negara lebih konsisten. ORG paling sulit — nama perusahaan Indonesia sangat beragam dan sering tidak ada di training data.</div>
+          </div>
+        </div>
+
+        <!-- Interactive confusion matrix -->
+        <div class="worked-box">
+          <div class="wb-badge">🎛️ Confusion Matrix Interaktif</div>
+          <div class="wb-title">Klik cell untuk lihat contoh kesalahan model</div>
+          <div class="confusion-matrix-wrap">
+            <div class="cm-label-top">
+              <span></span>
+              <span>Pred: O</span><span>Pred: PER</span><span>Pred: ORG</span><span>Pred: LOC</span>
+            </div>
+            <div class="cm-rows" id="confusionMatrix"></div>
+          </div>
+          <div class="cm-example" id="cmExample" style="display:none"></div>
+        </div>
+      </section>
+
+      <!-- ══ SEC 7: LAB ══ -->
+      <section class="lesson-sec" id="sec-lab">
+        <div class="sec-header">
+          <span class="sec-num">07</span>
+          <div>
+            <h2 class="sec-title">🧪 Lab + Quiz</h2>
+            <p class="sec-sub">POS tagger, NER highlighter, dan quiz interaktif dengan skor</p>
+          </div>
+        </div>
+
+        <!-- POS Tagger -->
+        <div class="interactive-box">
+          <div class="ib-header"><span class="ib-title">🏷️ POS Tagger Interaktif</span></div>
+          <div class="ib-body">
+            <textarea class="ib-input" id="posInput" rows="3" placeholder="Ketik kalimat Bahasa Indonesia...">Presiden Joko Widodo meresmikan jalan tol baru di Jawa Tengah kemarin.</textarea>
+            <div class="ib-actions">
+              <button class="ib-btn primary" onclick="runPOS()">Tag POS</button>
+              <button class="ib-btn" onclick="resetPOS()">Reset</button>
+            </div>
+            <div class="ib-result" id="posResult" style="display:none">
+              <div class="ibr-label">Hasil POS Tagging:</div>
+              <div class="pos-output" id="posOutput"></div>
+              <div class="pos-legend">
+                <span class="pos-badge noun">NOUN</span>
+                <span class="pos-badge verb">VERB</span>
+                <span class="pos-badge adj">ADJ</span>
+                <span class="pos-badge adv">ADV</span>
+                <span class="pos-badge pron">PRON</span>
+                <span class="pos-badge propn">PROPN</span>
+                <span class="pos-badge adp">ADP</span>
+                <span class="pos-badge det">DET</span>
+                <span class="pos-badge aux">AUX</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- NER Highlighter -->
+        <div class="interactive-box">
+          <div class="ib-header"><span class="ib-title">🔍 NER Highlighter</span></div>
+          <div class="ib-body">
+            <textarea class="ib-input" id="nerInput" rows="3" placeholder="Ketik teks dengan nama orang, tempat, organisasi...">Budi Santoso dari Surabaya bekerja di PT Telkom Indonesia sejak Januari 2020. Ia bertemu Ibu Sari di kantor Bank BCA Jakarta Selatan kemarin.</textarea>
+            <div class="ib-actions">
+              <button class="ib-btn primary" onclick="runNER()">Highlight Entitas</button>
+              <button class="ib-btn" onclick="resetNER()">Reset</button>
+            </div>
+            <div class="ib-result" id="nerResult" style="display:none">
+              <div class="ibr-label">Named Entities:</div>
+              <div class="ner-output" id="nerOutput"></div>
+              <div class="ner-legend">
+                <span class="ner-badge per">PER</span>
+                <span class="ner-badge org">ORG</span>
+                <span class="ner-badge loc">LOC</span>
+                <span class="ner-badge date">DATE</span>
+              </div>
+              <div class="ibr-stats" id="nerStats"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quiz -->
+        <div class="interactive-box">
+          <div class="ib-header">
+            <span class="ib-title">🎯 POS & NER Quiz</span>
+            <span class="ib-hint">Skor: <span id="quizScore">0</span> / <span id="quizTotal">0</span></span>
+          </div>
+          <div class="ib-body">
+            <div class="quiz-container" id="quizContainer"></div>
+          </div>
+        </div>
+
+        <div class="next-lesson-cta" style="margin-top:48px;">
+          <span class="nlc-label">Modul berikutnya</span>
+          <h3 class="nlc-title">Transformers & BERT →</h3>
+          <p class="nlc-desc">Dari HMM ke attention mechanism — arsitektur yang merevolusi NLP.</p>
+          <a href="#" class="nlc-btn">Coming Soon 🔒</a>
+        </div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<div id="footer-placeholder"></div>
+<script src="/js/shared.js"></script>
+<script src="/js/lang.js"></script>
+<script src="/js/pos-ner.js"></script>
+</body>
+</html>

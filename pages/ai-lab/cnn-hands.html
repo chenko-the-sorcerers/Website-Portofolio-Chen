@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hands-on: CNN Pertama — Deep Learning for Vision | AI Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/shared.css">
+<link rel="stylesheet" href="/css/cnn-intro.css">
+<link rel="stylesheet" href="/css/cnn-why.css">
+<link rel="stylesheet" href="/css/cnn-hands.css">
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-follower" id="cursor-follower"></div>
+<div id="nav-placeholder"></div>
+<div class="read-progress"><div id="readBar"></div></div>
+
+<div class="lesson-layout">
+
+  <!-- ═══ SIDEBAR ═══ -->
+  <aside class="lesson-sidebar" id="lessonSidebar">
+    <div class="sb-top">
+      <a href="/pages/ai-lab/computer-vision.html" class="sb-back">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 3L5 8l5 5"/></svg>
+        Computer Vision
+      </a>
+      <div class="sb-studying">
+        <div class="sb-studying-label">Sedang belajar</div>
+        <div class="sb-studying-path">
+          <span class="sbp-item">AI Lab</span>
+          <span class="sbp-sep">›</span>
+          <span class="sbp-item">Computer Vision</span>
+          <span class="sbp-sep">›</span>
+          <span class="sbp-item active">Deep Learning for Vision</span>
+        </div>
+      </div>
+      <div class="sb-chapter">Module 3 · Deep Learning for Vision</div>
+      <div class="sb-lesson-title">Hands-on: CNN Pertama</div>
+      <div class="sb-tags">
+        <span class="sb-tag">PyTorch</span>
+        <span class="sb-tag interactive">💻 Code</span>
+      </div>
+    </div>
+
+    <nav class="lesson-nav">
+      <div class="nav-section-label">Dalam lesson ini</div>
+      <a href="#sec-setup" class="lnav-item active" data-sec="sec-setup">
+        <span class="lnav-dot"></span><span class="lnav-text">Setup &amp; Dataset</span><span class="lnav-num">01</span>
+      </a>
+      <a href="#sec-model" class="lnav-item" data-sec="sec-model">
+        <span class="lnav-dot"></span><span class="lnav-text">Definisi Model</span><span class="lnav-num">02</span>
+      </a>
+      <a href="#sec-training" class="lnav-item" data-sec="sec-training">
+        <span class="lnav-dot"></span><span class="lnav-text">Training Loop</span><span class="lnav-num">03</span>
+      </a>
+      <a href="#sec-eval" class="lnav-item" data-sec="sec-eval">
+        <span class="lnav-dot"></span><span class="lnav-text">Evaluasi &amp; Visualisasi</span><span class="lnav-num">04</span>
+      </a>
+      <a href="#sec-improve" class="lnav-item" data-sec="sec-improve">
+        <span class="lnav-dot"></span><span class="lnav-text">Cara Meningkatkan Akurasi</span><span class="lnav-num">05</span>
+      </a>
+    </nav>
+
+    <div class="sb-progress">
+      <div class="sb-prog-label"><span>Progress</span><span id="progPct">0%</span></div>
+      <div class="sb-prog-track"><div class="sb-prog-fill" id="progFill"></div></div>
+    </div>
+
+    <div class="sb-module-nav">
+      <div class="nav-section-label" style="padding:0 8px;margin-bottom:8px">Module 3 · Deep Learning for Vision</div>
+      <a href="/pages/ai-lab/cnn-why.html" class="smn-item done"><span class="smn-dot done"></span><span>Mengapa CNN?</span></a>
+      <a href="/pages/ai-lab/cnn-intro.html" class="smn-item done"><span class="smn-dot done"></span><span>Introduction to CNNs</span></a>
+      <a href="/pages/ai-lab/cnn-relu.html" class="smn-item done"><span class="smn-dot done"></span><span>Aktivasi ReLU</span></a>
+      <a href="/pages/ai-lab/cnn-fc.html" class="smn-item done"><span class="smn-dot done"></span><span>FC Layer &amp; Softmax</span></a>
+      <a href="/pages/ai-lab/cnn-hands.html" class="smn-item current"><span class="smn-dot done"></span><span>Hands-on: CNN Pertama</span></a>
+    </div>
+  </aside>
+
+  <!-- ═══ MAIN ═══ -->
+  <main class="lesson-main">
+    <div class="lesson-topbar">
+      <div class="ltb-left">
+        <button class="ltb-menu" id="menuBtn" onclick="toggleSidebar()">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg>
+        </button>
+        <span class="ltb-crumb">Hands-on: CNN Pertama</span>
+      </div>
+      <div class="ltb-right">
+        <a href="/pages/ai-lab/cnn-fc.html" class="ltb-btn">← FC Layer</a>
+        <a href="/pages/ai-lab/computer-vision.html" class="ltb-btn primary">Selesai ✓</a>
+      </div>
+    </div>
+
+    <div class="lesson-body">
+
+      <!-- ═══ SEC 1: SETUP & DATASET ═══ -->
+      <section class="lesson-sec" id="sec-setup">
+        <div class="sec-header">
+          <span class="sec-num">01</span>
+          <div>
+            <h2 class="sec-title">Setup &amp; Dataset CIFAR-10</h2>
+            <p class="sec-sub">Persiapan environment dan loading dataset — langkah pertama setiap project DL</p>
+          </div>
+        </div>
+
+        <div class="prose">
+          Kita akan membangun dan melatih CNN dari scratch menggunakan <strong>PyTorch</strong>
+          pada dataset <strong>CIFAR-10</strong> — 60,000 gambar 32×32 dari 10 kelas:
+          pesawat, mobil, burung, kucing, rusa, anjing, katak, kuda, kapal, truk.
+        </div>
+
+        <!-- Code block: imports + dataset -->
+        <div class="code-block">
+          <div class="cb-header">
+            <span class="cb-lang">python</span>
+            <span class="cb-filename">01_setup.py</span>
+            <button class="cb-copy" data-target="code-setup">Copy</button>
+          </div>
+          <pre id="code-setup"><code><span class="co">import</span> torch
+<span class="co">import</span> torch.nn <span class="co">as</span> nn
+<span class="co">import</span> torch.optim <span class="co">as</span> optim
+<span class="co">import</span> torchvision
+<span class="co">import</span> torchvision.transforms <span class="co">as</span> transforms
+<span class="co">import</span> matplotlib.pyplot <span class="co">as</span> plt
+
+<span class="cm"># ── Device ─────────────────────────────────────────────</span>
+device = torch.device(<span class="st">'cuda'</span> <span class="co">if</span> torch.cuda.is_available() <span class="co">else</span> <span class="st">'cpu'</span>)
+<span class="fn">print</span>(<span class="st">f'Using device: {device}'</span>)
+
+<span class="cm"># ── Data transforms ────────────────────────────────────</span>
+transform_train = transforms.Compose([
+    transforms.RandomHorizontalFlip(),     <span class="cm"># augmentasi</span>
+    transforms.RandomCrop(<span class="nu">32</span>, padding=<span class="nu">4</span>),  <span class="cm"># augmentasi</span>
+    transforms.ToTensor(),
+    transforms.Normalize(
+        mean=(<span class="nu">0.4914</span>, <span class="nu">0.4822</span>, <span class="nu">0.4465</span>),  <span class="cm"># mean CIFAR-10</span>
+        std= (<span class="nu">0.2023</span>, <span class="nu">0.1994</span>, <span class="nu">0.2010</span>)   <span class="cm"># std CIFAR-10</span>
+    )
+])
+transform_test = transforms.Compose([
+    transforms.ToTensor(),
+    transforms.Normalize(
+        mean=(<span class="nu">0.4914</span>, <span class="nu">0.4822</span>, <span class="nu">0.4465</span>),
+        std= (<span class="nu">0.2023</span>, <span class="nu">0.1994</span>, <span class="nu">0.2010</span>)
+    )
+])
+
+<span class="cm"># ── Load dataset ───────────────────────────────────────</span>
+train_set = torchvision.datasets.CIFAR10(
+    root=<span class="st">'./data'</span>, train=<span class="kw">True</span>, download=<span class="kw">True</span>, transform=transform_train
+)
+test_set = torchvision.datasets.CIFAR10(
+    root=<span class="st">'./data'</span>, train=<span class="kw">False</span>, download=<span class="kw">True</span>, transform=transform_test
+)
+
+train_loader = torch.utils.data.DataLoader(train_set, batch_size=<span class="nu">128</span>, shuffle=<span class="kw">True</span>,  num_workers=<span class="nu">2</span>)
+test_loader  = torch.utils.data.DataLoader(test_set,  batch_size=<span class="nu">128</span>, shuffle=<span class="kw">False</span>, num_workers=<span class="nu">2</span>)
+
+CLASSES = [<span class="st">'pesawat'</span>, <span class="st">'mobil'</span>, <span class="st">'burung'</span>, <span class="st">'kucing'</span>, <span class="st">'rusa'</span>,
+           <span class="st">'anjing'</span>,  <span class="st">'katak'</span>, <span class="st">'kuda'</span>,  <span class="st">'kapal'</span>, <span class="st">'truk'</span>]</code></pre>
+        </div>
+
+        <div class="insight-callout">
+          <div class="ic-icon">💡</div>
+          <div class="ic-body">
+            <strong>Normalisasi penting.</strong> Kita kurangi mean dan bagi dengan std dari dataset training.
+            Ini membuat gradient lebih stabil dan training lebih cepat konvergen.
+            Nilai mean/std CIFAR-10 sudah dihitung dan tersedia di dokumentasi torchvision.
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══ SEC 2: DEFINISI MODEL ═══ -->
+      <section class="lesson-sec" id="sec-model">
+        <div class="sec-header">
+          <span class="sec-num">02</span>
+          <div>
+            <h2 class="sec-title">Definisi Model CNN</h2>
+            <p class="sec-sub">Arsitektur sederhana tapi efektif — Conv → ReLU → Pool → FC → Softmax</p>
+          </div>
+        </div>
+
+        <div class="prose">
+          Kita bangun CNN kecil dengan dua blok Conv+ReLU+Pool, diikuti Global Average Pooling
+          dan satu FC layer. Target: ~75% akurasi di CIFAR-10 dengan &lt;100K parameter.
+        </div>
+
+        <div class="code-block">
+          <div class="cb-header">
+            <span class="cb-lang">python</span>
+            <span class="cb-filename">02_model.py</span>
+            <button class="cb-copy" data-target="code-model">Copy</button>
+          </div>
+          <pre id="code-model"><code><span class="co">class</span> <span class="fn">SimpleCNN</span>(nn.Module):
+    <span class="co">def</span> <span class="fn">__init__</span>(<span class="kw">self</span>, num_classes=<span class="nu">10</span>):
+        <span class="fn">super</span>().<span class="fn">__init__</span>()
+
+        <span class="cm"># ── Feature extractor ──────────────────────────────</span>
+        <span class="kw">self</span>.features = nn.Sequential(
+            <span class="cm"># Block 1: 32×32×3 → 16×16×32</span>
+            nn.Conv2d(<span class="nu">3</span>,  <span class="nu">32</span>, kernel_size=<span class="nu">3</span>, padding=<span class="nu">1</span>),  <span class="cm"># 896 params</span>
+            nn.BatchNorm2d(<span class="nu">32</span>),
+            nn.ReLU(inplace=<span class="kw">True</span>),
+            nn.Conv2d(<span class="nu">32</span>, <span class="nu">32</span>, kernel_size=<span class="nu">3</span>, padding=<span class="nu">1</span>),  <span class="cm"># 9,248 params</span>
+            nn.BatchNorm2d(<span class="nu">32</span>),
+            nn.ReLU(inplace=<span class="kw">True</span>),
+            nn.MaxPool2d(<span class="nu">2</span>, <span class="nu">2</span>),                              <span class="cm"># 32×32 → 16×16</span>
+            nn.Dropout2d(<span class="nu">0.1</span>),
+
+            <span class="cm"># Block 2: 16×16×32 → 8×8×64</span>
+            nn.Conv2d(<span class="nu">32</span>, <span class="nu">64</span>, kernel_size=<span class="nu">3</span>, padding=<span class="nu">1</span>),  <span class="cm"># 18,496 params</span>
+            nn.BatchNorm2d(<span class="nu">64</span>),
+            nn.ReLU(inplace=<span class="kw">True</span>),
+            nn.Conv2d(<span class="nu">64</span>, <span class="nu">64</span>, kernel_size=<span class="nu">3</span>, padding=<span class="nu">1</span>),  <span class="cm"># 36,928 params</span>
+            nn.BatchNorm2d(<span class="nu">64</span>),
+            nn.ReLU(inplace=<span class="kw">True</span>),
+            nn.MaxPool2d(<span class="nu">2</span>, <span class="nu">2</span>),                              <span class="cm"># 16×16 → 8×8</span>
+            nn.Dropout2d(<span class="nu">0.2</span>),
+        )
+
+        <span class="cm"># ── Classifier ─────────────────────────────────────</span>
+        <span class="kw">self</span>.gap        = nn.AdaptiveAvgPool2d(<span class="nu">1</span>)   <span class="cm"># Global Avg Pool → 1×1×64</span>
+        <span class="kw">self</span>.classifier = nn.Linear(<span class="nu">64</span>, num_classes) <span class="cm"># 640 + 10 bias</span>
+
+    <span class="co">def</span> <span class="fn">forward</span>(<span class="kw">self</span>, x):
+        x = <span class="kw">self</span>.features(x)    <span class="cm"># (B, 3, 32, 32) → (B, 64, 8, 8)</span>
+        x = <span class="kw">self</span>.gap(x)         <span class="cm"># (B, 64, 8, 8)  → (B, 64, 1, 1)</span>
+        x = x.flatten(<span class="nu">1</span>)        <span class="cm"># (B, 64, 1, 1)  → (B, 64)</span>
+        x = <span class="kw">self</span>.classifier(x)  <span class="cm"># (B, 64)        → (B, 10) logits</span>
+        <span class="co">return</span> x                <span class="cm"># Softmax diterapkan di loss function</span>
+
+model = <span class="fn">SimpleCNN</span>().to(device)
+total_params = <span class="fn">sum</span>(p.numel() <span class="co">for</span> p <span class="co">in</span> model.parameters() <span class="co">if</span> p.requires_grad)
+<span class="fn">print</span>(<span class="st">f'Total trainable params: {total_params:,}'</span>)
+<span class="cm"># → Total trainable params: 66,442</span></code></pre>
+        </div>
+
+        <!-- Arch summary -->
+        <div class="worked-box">
+          <div class="wb-badge">📊 Ringkasan Arsitektur</div>
+          <div class="wb-title">SimpleCNN — Layer demi Layer</div>
+          <div class="arch-table-wrap">
+            <table class="comparison-table">
+              <thead>
+                <tr><th>Layer</th><th>Output Shape</th><th>Params</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Input</td><td>3 × 32 × 32</td><td>—</td></tr>
+                <tr><td>Conv2d(3→32, 3×3) + BN + ReLU</td><td>32 × 32 × 32</td><td>896 + 64</td></tr>
+                <tr><td>Conv2d(32→32, 3×3) + BN + ReLU</td><td>32 × 32 × 32</td><td>9,248 + 64</td></tr>
+                <tr><td>MaxPool(2×2) + Dropout</td><td>32 × 16 × 16</td><td>0</td></tr>
+                <tr><td>Conv2d(32→64, 3×3) + BN + ReLU</td><td>64 × 16 × 16</td><td>18,496 + 128</td></tr>
+                <tr><td>Conv2d(64→64, 3×3) + BN + ReLU</td><td>64 × 16 × 16</td><td>36,928 + 128</td></tr>
+                <tr><td>MaxPool(2×2) + Dropout</td><td>64 × 8 × 8</td><td>0</td></tr>
+                <tr><td>Global Avg Pool</td><td>64 × 1 × 1</td><td>0</td></tr>
+                <tr class="good-row"><td>Linear(64→10)</td><td>10 (logits)</td><td class="green-num">650</td></tr>
+                <tr class="good-row"><td><strong>Total</strong></td><td></td><td class="green-num"><strong>66,602</strong></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══ SEC 3: TRAINING LOOP ═══ -->
+      <section class="lesson-sec" id="sec-training">
+        <div class="sec-header">
+          <span class="sec-num">03</span>
+          <div>
+            <h2 class="sec-title">Training Loop</h2>
+            <p class="sec-sub">Forward pass → loss → backward → optimizer step — diulang ribuan kali</p>
+          </div>
+        </div>
+
+        <div class="prose">
+          Training loop adalah inti dari setiap deep learning project.
+          Setiap <em>epoch</em>, kita lewatkan seluruh training set, hitung loss,
+          propagasikan gradient mundur, lalu update weight.
+        </div>
+
+        <div class="code-block">
+          <div class="cb-header">
+            <span class="cb-lang">python</span>
+            <span class="cb-filename">03_train.py</span>
+            <button class="cb-copy" data-target="code-train">Copy</button>
+          </div>
+          <pre id="code-train"><code><span class="cm"># ── Loss & optimizer ───────────────────────────────────</span>
+criterion = nn.CrossEntropyLoss()            <span class="cm"># Softmax sudah di dalam ini</span>
+optimizer = optim.AdamW(
+    model.parameters(), lr=<span class="nu">1e-3</span>, weight_decay=<span class="nu">1e-4</span>
+)
+scheduler = optim.lr_scheduler.CosineAnnealingLR(
+    optimizer, T_max=<span class="nu">50</span>
+)
+
+<span class="cm"># ── Training loop ──────────────────────────────────────</span>
+<span class="co">def</span> <span class="fn">train_epoch</span>(model, loader, criterion, optimizer):
+    model.<span class="fn">train</span>()
+    total_loss, correct, total = <span class="nu">0.0</span>, <span class="nu">0</span>, <span class="nu">0</span>
+
+    <span class="co">for</span> images, labels <span class="co">in</span> loader:
+        images, labels = images.to(device), labels.to(device)
+
+        optimizer.<span class="fn">zero_grad</span>()           <span class="cm"># reset gradient lama</span>
+        outputs = model(images)           <span class="cm"># forward pass</span>
+        loss    = criterion(outputs, labels)  <span class="cm"># hitung loss</span>
+        loss.<span class="fn">backward</span>()                  <span class="cm"># backprop</span>
+        optimizer.<span class="fn">step</span>()                 <span class="cm"># update weights</span>
+
+        total_loss += loss.item() * images.size(<span class="nu">0</span>)
+        _, predicted = outputs.<span class="fn">max</span>(<span class="nu">1</span>)
+        correct += predicted.<span class="fn">eq</span>(labels).<span class="fn">sum</span>().item()
+        total   += labels.size(<span class="nu">0</span>)
+
+    <span class="co">return</span> total_loss / total, <span class="nu">100.0</span> * correct / total
+
+<span class="cm"># ── Eval loop ──────────────────────────────────────────</span>
+<span class="co">def</span> <span class="fn">evaluate</span>(model, loader, criterion):
+    model.<span class="fn">eval</span>()
+    total_loss, correct, total = <span class="nu">0.0</span>, <span class="nu">0</span>, <span class="nu">0</span>
+    <span class="co">with</span> torch.<span class="fn">no_grad</span>():
+        <span class="co">for</span> images, labels <span class="co">in</span> loader:
+            images, labels = images.to(device), labels.to(device)
+            outputs = model(images)
+            loss    = criterion(outputs, labels)
+            total_loss += loss.item() * images.size(<span class="nu">0</span>)
+            _, predicted = outputs.<span class="fn">max</span>(<span class="nu">1</span>)
+            correct += predicted.<span class="fn">eq</span>(labels).<span class="fn">sum</span>().item()
+            total   += labels.size(<span class="nu">0</span>)
+    <span class="co">return</span> total_loss / total, <span class="nu">100.0</span> * correct / total
+
+<span class="cm"># ── Run training ───────────────────────────────────────</span>
+EPOCHS = <span class="nu">50</span>
+history = {<span class="st">'train_loss'</span>: [], <span class="st">'val_loss'</span>: [], <span class="st">'val_acc'</span>: []}
+
+<span class="co">for</span> epoch <span class="co">in</span> <span class="fn">range</span>(<span class="nu">1</span>, EPOCHS + <span class="nu">1</span>):
+    tr_loss, tr_acc = <span class="fn">train_epoch</span>(model, train_loader, criterion, optimizer)
+    vl_loss, vl_acc = <span class="fn">evaluate</span>(model, test_loader, criterion)
+    scheduler.<span class="fn">step</span>()
+
+    history[<span class="st">'train_loss'</span>].<span class="fn">append</span>(tr_loss)
+    history[<span class="st">'val_loss'</span>].<span class="fn">append</span>(vl_loss)
+    history[<span class="st">'val_acc'</span>].<span class="fn">append</span>(vl_acc)
+
+    <span class="co">if</span> epoch % <span class="nu">5</span> == <span class="nu">0</span>:
+        <span class="fn">print</span>(<span class="st">f'Epoch {epoch:2d} | '</span>
+              <span class="st">f'Train loss: {tr_loss:.3f} acc: {tr_acc:.1f}% | '</span>
+              <span class="st">f'Val loss: {vl_loss:.3f} acc: {vl_acc:.1f}%'</span>)</code></pre>
+        </div>
+
+        <!-- Expected output -->
+        <div class="worked-box">
+          <div class="wb-badge">📟 Expected Output</div>
+          <div class="wb-title">Output training yang diharapkan</div>
+          <pre class="output-preview">Epoch  5 | Train loss: 1.312 acc: 52.1% | Val loss: 1.198 acc: 57.3%
+Epoch 10 | Train loss: 1.089 acc: 61.5% | Val loss: 1.054 acc: 62.8%
+Epoch 20 | Train loss: 0.872 acc: 69.4% | Val loss: 0.891 acc: 69.1%
+Epoch 30 | Train loss: 0.751 acc: 74.1% | Val loss: 0.812 acc: 72.4%
+Epoch 50 | Train loss: 0.624 acc: 78.3% | Val loss: 0.756 acc: 75.2%</pre>
+        </div>
+      </section>
+
+      <!-- ═══ SEC 4: EVALUASI ═══ -->
+      <section class="lesson-sec" id="sec-eval">
+        <div class="sec-header">
+          <span class="sec-num">04</span>
+          <div>
+            <h2 class="sec-title">Evaluasi &amp; Visualisasi</h2>
+            <p class="sec-sub">Memahami hasil training — confusion matrix, per-class accuracy, learning curves</p>
+          </div>
+        </div>
+
+        <div class="code-block">
+          <div class="cb-header">
+            <span class="cb-lang">python</span>
+            <span class="cb-filename">04_eval.py</span>
+            <button class="cb-copy" data-target="code-eval">Copy</button>
+          </div>
+          <pre id="code-eval"><code><span class="co">import</span> numpy <span class="co">as</span> np
+<span class="co">from</span> sklearn.metrics <span class="co">import</span> confusion_matrix, classification_report
+<span class="co">import</span> seaborn <span class="co">as</span> sns
+
+<span class="cm"># ── Collect all predictions ────────────────────────────</span>
+model.<span class="fn">eval</span>()
+all_preds, all_labels = [], []
+
+<span class="co">with</span> torch.<span class="fn">no_grad</span>():
+    <span class="co">for</span> images, labels <span class="co">in</span> test_loader:
+        images = images.to(device)
+        outputs = model(images)
+        _, predicted = outputs.<span class="fn">max</span>(<span class="nu">1</span>)
+        all_preds.<span class="fn">extend</span>(predicted.cpu().numpy())
+        all_labels.<span class="fn">extend</span>(labels.numpy())
+
+all_preds  = np.<span class="fn">array</span>(all_preds)
+all_labels = np.<span class="fn">array</span>(all_labels)
+
+<span class="cm"># ── Per-class accuracy ─────────────────────────────────</span>
+<span class="fn">print</span>(classification_report(all_labels, all_preds, target_names=CLASSES))
+
+<span class="cm"># ── Confusion matrix ───────────────────────────────────</span>
+cm = confusion_matrix(all_labels, all_preds)
+plt.figure(figsize=(<span class="nu">10</span>, <span class="nu">8</span>))
+sns.heatmap(cm, annot=<span class="kw">True</span>, fmt=<span class="st">'d'</span>, cmap=<span class="st">'Blues'</span>,
+            xticklabels=CLASSES, yticklabels=CLASSES)
+plt.title(<span class="st">'Confusion Matrix — SimpleCNN CIFAR-10'</span>)
+plt.ylabel(<span class="st">'True Label'</span>); plt.xlabel(<span class="st">'Predicted Label'</span>)
+plt.<span class="fn">show</span>()
+
+<span class="cm"># ── Learning curves ────────────────────────────────────</span>
+fig, (ax1, ax2) = plt.subplots(<span class="nu">1</span>, <span class="nu">2</span>, figsize=(<span class="nu">12</span>, <span class="nu">4</span>))
+
+ax1.plot(history[<span class="st">'train_loss'</span>], label=<span class="st">'Train Loss'</span>, color=<span class="st">'#2997ff'</span>)
+ax1.plot(history[<span class="st">'val_loss'</span>],   label=<span class="st">'Val Loss'</span>,   color=<span class="st">'#ff3b30'</span>)
+ax1.set_title(<span class="st">'Loss Curve'</span>); ax1.legend()
+
+ax2.plot(history[<span class="st">'val_acc'</span>], label=<span class="st">'Val Accuracy'</span>, color=<span class="st">'#34c759'</span>)
+ax2.axhline(<span class="nu">75</span>, linestyle=<span class="st">'--'</span>, color=<span class="st">'gray'</span>, label=<span class="st">'Target 75%'</span>)
+ax2.set_title(<span class="st">'Validation Accuracy'</span>); ax2.legend()
+
+plt.tight_layout(); plt.<span class="fn">show</span>()</code></pre>
+        </div>
+      </section>
+
+      <!-- ═══ SEC 5: CARA MENINGKATKAN ═══ -->
+      <section class="lesson-sec" id="sec-improve">
+        <div class="sec-header">
+          <span class="sec-num">05</span>
+          <div>
+            <h2 class="sec-title">Cara Meningkatkan Akurasi</h2>
+            <p class="sec-sub">Dari 75% ke 90%+ — teknik-teknik yang benar-benar bekerja</p>
+          </div>
+        </div>
+
+        <div class="prose">
+          Model kita mencapai ~75% akurasi. State-of-the-art CIFAR-10 mencapai &gt;99%.
+          Berikut langkah-langkah praktis yang bisa kamu coba, dari yang paling mudah ke yang paling complex:
+        </div>
+
+        <div class="three-props" style="grid-template-columns: 1fr 1fr;">
+          <div class="prop-card">
+            <div class="prop-num">1</div>
+            <div class="prop-title">Data Augmentation</div>
+            <div class="prop-body">
+              <div class="prop-desc">Tambah <code>RandomRotation</code>, <code>ColorJitter</code>, <code>CutOut</code>. Efektif dan mudah.</div>
+              <div class="prop-effect green">✓ +2–5% akurasi</div>
+            </div>
+          </div>
+
+          <div class="prop-card">
+            <div class="prop-num">2</div>
+            <div class="prop-title">Lebih Banyak Layer</div>
+            <div class="prop-body">
+              <div class="prop-desc">Tambah Conv block ke-3 dengan 128 filter. Lebih ekspresif.</div>
+              <div class="prop-effect green">✓ +3–7% akurasi</div>
+            </div>
+          </div>
+
+          <div class="prop-card">
+            <div class="prop-num">3</div>
+            <div class="prop-title">Learning Rate Warmup</div>
+            <div class="prop-body">
+              <div class="prop-desc">Mulai dari LR kecil, naikan 5 epoch pertama, lalu cosine decay.</div>
+              <div class="prop-effect green">✓ Training lebih stabil</div>
+            </div>
+          </div>
+
+          <div class="prop-card">
+            <div class="prop-num">4</div>
+            <div class="prop-title">Transfer Learning</div>
+            <div class="prop-body">
+              <div class="prop-desc">Gunakan ResNet-18 pre-trained ImageNet, fine-tune classifier saja.</div>
+              <div class="prop-effect green">✓ 90%+ dengan cepat</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Module complete CTA -->
+        <div class="next-lesson-cta" style="border-color: rgba(52,199,89,0.4); background: rgba(52,199,89,0.05);">
+          <div class="nlc-inner">
+            <span class="nlc-label" style="color:#34c759;">🎉 Module 3 Selesai!</span>
+            <h3 class="nlc-title">Kamu sudah menguasai Deep Learning for Vision</h3>
+            <p class="nlc-desc">Dari "mengapa CNN?" sampai implementasi lengkap dari scratch.
+              Modul berikutnya: <strong>Popular Architectures</strong> — VGG, ResNet, EfficientNet, dan cara membacanya.</p>
+            <a href="/pages/ai-lab/computer-vision.html" class="nlc-btn" style="background:#34c759;color:#000;">
+              ← Kembali ke Computer Vision
+            </a>
+          </div>
+        </div>
+      </section>
+
+    </div><!-- /lesson-body -->
+  </main>
+</div><!-- /lesson-layout -->
+
+<div id="footer-placeholder"></div>
+<script src="/js/shared.js"></script>
+<script src="/js/lang.js"></script>
+<script src="/js/cnn-hands.js"></script>
+</body>
+</html>

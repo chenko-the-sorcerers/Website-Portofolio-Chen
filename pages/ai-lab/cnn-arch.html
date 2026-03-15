@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Popular Architectures — Deep Learning for Vision | AI Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/shared.css">
+<link rel="stylesheet" href="/css/cnn-intro.css">
+<link rel="stylesheet" href="/css/cnn-why.css">
+<link rel="stylesheet" href="/css/cnn-arch.css">
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-follower" id="cursor-follower"></div>
+<div id="nav-placeholder"></div>
+<div class="read-progress"><div id="readBar"></div></div>
+
+<div class="lesson-layout">
+
+  <!-- ═══ SIDEBAR ═══ -->
+  <aside class="lesson-sidebar" id="lessonSidebar">
+    <div class="sb-top">
+      <a href="/pages/ai-lab/computer-vision.html" class="sb-back">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 3L5 8l5 5"/></svg>
+        Computer Vision
+      </a>
+      <div class="sb-studying">
+        <div class="sb-studying-label">Sedang belajar</div>
+        <div class="sb-studying-path">
+          <span class="sbp-item">AI Lab</span>
+          <span class="sbp-sep">›</span>
+          <span class="sbp-item">Computer Vision</span>
+          <span class="sbp-sep">›</span>
+          <span class="sbp-item active">Deep Learning for Vision</span>
+        </div>
+      </div>
+      <div class="sb-chapter">Module 3 · Deep Learning for Vision</div>
+      <div class="sb-lesson-title">Popular Architectures</div>
+      <div class="sb-tags">
+        <span class="sb-tag">Arsitektur</span>
+        <span class="sb-tag interactive">🧮 Math</span>
+      </div>
+    </div>
+
+    <nav class="lesson-nav">
+      <div class="nav-section-label">Dalam lesson ini</div>
+      <a href="#sec-overview" class="lnav-item active" data-sec="sec-overview">
+        <span class="lnav-dot"></span><span class="lnav-text">Evolusi Arsitektur</span><span class="lnav-num">01</span>
+      </a>
+      <a href="#sec-resnet" class="lnav-item" data-sec="sec-resnet">
+        <span class="lnav-dot"></span><span class="lnav-text">ResNet &amp; Skip Connections</span><span class="lnav-num">02</span>
+      </a>
+      <a href="#sec-efficientnet" class="lnav-item" data-sec="sec-efficientnet">
+        <span class="lnav-dot"></span><span class="lnav-text">EfficientNet &amp; Compound Scaling</span><span class="lnav-num">03</span>
+      </a>
+      <a href="#sec-compare" class="lnav-item" data-sec="sec-compare">
+        <span class="lnav-dot"></span><span class="lnav-text">Perbandingan Lengkap</span><span class="lnav-num">04</span>
+      </a>
+      <a href="#sec-choose" class="lnav-item" data-sec="sec-choose">
+        <span class="lnav-dot"></span><span class="lnav-text">Pilih Backbone yang Tepat</span><span class="lnav-num">05</span>
+      </a>
+    </nav>
+
+    <div class="sb-progress">
+      <div class="sb-prog-label"><span>Progress</span><span id="progPct">0%</span></div>
+      <div class="sb-prog-track"><div class="sb-prog-fill" id="progFill"></div></div>
+    </div>
+
+    <div class="sb-module-nav">
+      <div class="nav-section-label" style="padding:0 8px;margin-bottom:8px">Module 3 · Deep Learning for Vision</div>
+      <a href="/pages/ai-lab/cnn-why.html"   class="smn-item done"><span class="smn-dot done"></span><span>Mengapa CNN?</span></a>
+      <a href="/pages/ai-lab/cnn-intro.html"  class="smn-item done"><span class="smn-dot done"></span><span>Introduction to CNNs</span></a>
+      <a href="/pages/ai-lab/cnn-relu.html"   class="smn-item done"><span class="smn-dot done"></span><span>Aktivasi ReLU</span></a>
+      <a href="/pages/ai-lab/cnn-fc.html"     class="smn-item done"><span class="smn-dot done"></span><span>FC Layer &amp; Softmax</span></a>
+      <a href="/pages/ai-lab/cnn-hands.html"  class="smn-item done"><span class="smn-dot done"></span><span>Hands-on: CNN Pertama</span></a>
+      <a href="/pages/ai-lab/cnn-arch.html"   class="smn-item current"><span class="smn-dot done"></span><span>Popular Architectures</span></a>
+    </div>
+  </aside>
+
+  <!-- ═══ MAIN ═══ -->
+  <main class="lesson-main">
+    <div class="lesson-topbar">
+      <div class="ltb-left">
+        <button class="ltb-menu" id="menuBtn" onclick="toggleSidebar()">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg>
+        </button>
+        <span class="ltb-crumb">Popular Architectures</span>
+      </div>
+      <div class="ltb-right">
+        <a href="/pages/ai-lab/cnn-hands.html" class="ltb-btn">← Hands-on</a>
+        <a href="/pages/ai-lab/cnn-arch-builder.html" class="ltb-btn primary">Next: Builder →</a>
+      </div>
+    </div>
+
+    <div class="lesson-body">
+
+      <!-- ═══ SEC 1: EVOLUSI ARSITEKTUR ═══ -->
+      <section class="lesson-sec" id="sec-overview">
+        <div class="sec-header">
+          <span class="sec-num">01</span>
+          <div>
+            <h2 class="sec-title">Evolusi Arsitektur CNN</h2>
+            <p class="sec-sub">Dari AlexNet 2012 ke EfficientNet 2019 — 7 tahun lompatan akurasi dan efisiensi</p>
+          </div>
+        </div>
+
+        <div class="prose">
+          Sejak AlexNet memenangkan ImageNet 2012 dengan top-5 error 15.3%, arsitektur CNN
+          terus berevolusi. Setiap generasi memecahkan masalah spesifik yang menghambat generasi sebelumnya.
+          Memahami <em>mengapa</em> setiap arsitektur dibuat adalah kunci memilih yang tepat.
+        </div>
+
+        <!-- Timeline -->
+        <div class="arch-timeline">
+          <div class="atl-item">
+            <div class="atl-year">2012</div>
+            <div class="atl-dot" style="--dc:#2997ff"></div>
+            <div class="atl-card">
+              <div class="atl-name">AlexNet</div>
+              <div class="atl-stat"><span class="atl-num">8</span> layers · <span class="atl-num">60M</span> params</div>
+              <div class="atl-acc">Top-5: <strong>15.3%</strong> error</div>
+              <div class="atl-note">Pertama pakai ReLU + dropout + GPU training</div>
+            </div>
+          </div>
+          <div class="atl-item">
+            <div class="atl-year">2014</div>
+            <div class="atl-dot" style="--dc:#a855f7"></div>
+            <div class="atl-card">
+              <div class="atl-name">VGG-16</div>
+              <div class="atl-stat"><span class="atl-num">16</span> layers · <span class="atl-num">138M</span> params</div>
+              <div class="atl-acc">Top-5: <strong>7.3%</strong> error</div>
+              <div class="atl-note">Konsisten pakai Conv 3×3. Simple tapi sangat besar</div>
+            </div>
+          </div>
+          <div class="atl-item">
+            <div class="atl-year">2015</div>
+            <div class="atl-dot" style="--dc:#ff9f0a"></div>
+            <div class="atl-card">
+              <div class="atl-name">ResNet-50</div>
+              <div class="atl-stat"><span class="atl-num">50</span> layers · <span class="atl-num">25M</span> params</div>
+              <div class="atl-acc">Top-5: <strong>3.57%</strong> error</div>
+              <div class="atl-note">Skip connections — jaringan dalam akhirnya bisa ditraining</div>
+            </div>
+          </div>
+          <div class="atl-item">
+            <div class="atl-year">2017</div>
+            <div class="atl-dot" style="--dc:#34c759"></div>
+            <div class="atl-card">
+              <div class="atl-name">MobileNetV2</div>
+              <div class="atl-stat"><span class="atl-num">53</span> layers · <span class="atl-num">3.4M</span> params</div>
+              <div class="atl-acc">Top-1: <strong>72%</strong> acc</div>
+              <div class="atl-note">Depthwise separable conv — dirancang untuk mobile/edge</div>
+            </div>
+          </div>
+          <div class="atl-item">
+            <div class="atl-year">2019</div>
+            <div class="atl-dot" style="--dc:#ff3b30"></div>
+            <div class="atl-card">
+              <div class="atl-name">EfficientNet-B7</div>
+              <div class="atl-stat"><span class="atl-num">813</span> layers · <span class="atl-num">66M</span> params</div>
+              <div class="atl-acc">Top-5: <strong>1.8%</strong> error</div>
+              <div class="atl-note">Compound scaling — scale depth, width, resolution bersama</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="insight-callout">
+          <div class="ic-icon">📉</div>
+          <div class="ic-body">
+            <strong>Tren utama:</strong> Error turun dari 15.3% (AlexNet) ke 1.8% (EfficientNet) dalam 7 tahun,
+            sementara jumlah parameter <em>tidak selalu naik</em> — ResNet-50 hanya butuh 25M params
+            dibanding VGG-16 yang 138M, tapi jauh lebih akurat.
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══ SEC 2: RESNET ═══ -->
+      <section class="lesson-sec" id="sec-resnet">
+        <div class="sec-header">
+          <span class="sec-num">02</span>
+          <div>
+            <h2 class="sec-title">ResNet &amp; Skip Connections</h2>
+            <p class="sec-sub">Satu ide sederhana yang membuka jalan untuk jaringan ratusan layer</p>
+          </div>
+        </div>
+
+        <div class="prose">
+          Sebelum ResNet, menambah layer justru menurunkan akurasi — bukan karena overfitting,
+          tapi karena <strong>vanishing gradient</strong> membuat layer awal tidak belajar.
+          He et al. (2015) memecahkan ini dengan satu ide yang elegan: <strong>residual connection</strong>.
+        </div>
+
+        <!-- Residual block visual -->
+        <div class="worked-box">
+          <div class="wb-badge">🔬 Diagram</div>
+          <div class="wb-title">Residual Block — Anatomy</div>
+          <div class="resblock-diagram" id="resblockDiagram" style="min-height:320px;">
+            <!-- drawn by JS -->
+          </div>
+          <div class="resblock-caption">
+            Daripada belajar pemetaan <em>H(x)</em> langsung, ResNet belajar
+            <em>residual</em> <strong>F(x) = H(x) − x</strong>, lalu tambahkan input asli:
+            output = F(x) + x
+          </div>
+        </div>
+
+        <!-- Why it works - math -->
+        <div class="worked-box">
+          <div class="wb-badge">📐 Matematika Residual</div>
+          <div class="wb-title">Kenapa skip connection memecahkan vanishing gradient?</div>
+          <div class="calc-chain">
+            <div class="calc-step">
+              <div class="cs-num-circle">1</div>
+              <div class="cs-content">
+                <div class="cs-label">Tanpa skip connection — gradient menyusut di setiap layer</div>
+                <div class="math-line">
+                  <span class="math-comment">// Backprop tanpa skip: kalikan Jacobian tiap layer</span>
+                </div>
+                <div class="math-line">
+                  ∂L/∂x<span class="math-sub">0</span>
+                  <span class="math-op">=</span>
+                  <span class="math-term red">∂L/∂x<span class="math-sub">L</span></span>
+                  <span class="math-op">·</span>
+                  <span class="math-term red">∏<span class="math-sub">l=1..L</span> W<span class="math-sub">l</span></span>
+                  <span class="math-comment"> ← bisa → 0 atau → ∞</span>
+                </div>
+              </div>
+            </div>
+            <div class="calc-step">
+              <div class="cs-num-circle">2</div>
+              <div class="cs-content">
+                <div class="cs-label">Dengan skip connection — selalu ada jalur gradient langsung</div>
+                <div class="math-line">
+                  x<span class="math-sub">l+1</span>
+                  <span class="math-op">=</span>
+                  <span class="math-term blue">F(x<span class="math-sub">l</span>, W<span class="math-sub">l</span>)</span>
+                  <span class="math-op">+</span>
+                  <span class="math-term green">x<span class="math-sub">l</span></span>
+                  <span class="math-comment"> ← shortcut langsung</span>
+                </div>
+              </div>
+            </div>
+            <div class="calc-step">
+              <div class="cs-num-circle">3</div>
+              <div class="cs-content">
+                <div class="cs-label">Gradient selalu punya jalur "bebas hambatan" ke layer awal</div>
+                <div class="math-line">
+                  ∂x<span class="math-sub">l+1</span>/∂x<span class="math-sub">l</span>
+                  <span class="math-op">=</span>
+                  <span class="math-term blue">∂F/∂x<span class="math-sub">l</span></span>
+                  <span class="math-op">+</span>
+                  <span class="math-term green">1</span>
+                  <span class="math-comment"> ← "+1" ini yang menyelamatkan gradient!</span>
+                </div>
+                <div class="math-line">
+                  <span class="math-comment">// Bahkan jika ∂F/∂x ≈ 0, gradient masih mengalir via "+1"</span>
+                </div>
+              </div>
+            </div>
+            <div class="calc-step">
+              <div class="cs-num-circle">4</div>
+              <div class="cs-content">
+                <div class="cs-label">Hasil: ResNet-152 (152 layer) bisa ditraining — sebelumnya mustahil</div>
+                <div class="math-line">
+                  ResNet-50: <span class="math-result green">25M params</span>
+                  <span class="math-comment"> vs VGG-16: </span>
+                  <span class="math-result red">138M params</span>
+                  <span class="math-comment"> — lebih kecil, lebih akurat</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottleneck block -->
+        <div class="worked-box">
+          <div class="wb-badge">🏗️ Dua Varian Block</div>
+          <div class="wb-title">Block Sederhana vs Block Efisien — ResNet-18 vs ResNet-50</div>
+          <div class="bottleneck-compare">
+            <div class="btn-col">
+              <div class="btn-col-title">Block Sederhana — ResNet-18/34</div>
+              <div class="btn-layers">
+                <div class="btn-layer" style="--lc:#2997ff">Conv 3×3, 64 ch<div class="btn-params">3×3×64×64 = 36,864</div></div>
+                <div class="btn-layer" style="--lc:#2997ff">BN + ReLU</div>
+                <div class="btn-layer" style="--lc:#2997ff">Conv 3×3, 64 ch<div class="btn-params">3×3×64×64 = 36,864</div></div>
+                <div class="btn-layer" style="--lc:#2997ff">BN</div>
+                <div class="btn-skip">+ skip →</div>
+                <div class="btn-total">Total: <strong>73,728 params</strong></div>
+              </div>
+            </div>
+            <div class="btn-vs">vs</div>
+            <div class="btn-col">
+              <div class="btn-col-title">Block Efisien — ResNet-50/101/152</div>
+              <div class="btn-layers">
+                <div class="btn-layer" style="--lc:#a855f7">Conv 1×1, 64 ch<div class="btn-params">1×1×256×64 = 16,384</div></div>
+                <div class="btn-layer" style="--lc:#a855f7">Conv 3×3, 64 ch<div class="btn-params">3×3×64×64 = 36,864</div></div>
+                <div class="btn-layer" style="--lc:#a855f7">Conv 1×1, 256 ch<div class="btn-params">1×1×64×256 = 16,384</div></div>
+                <div class="btn-layer" style="--lc:#a855f7">BN + ReLU each</div>
+                <div class="btn-skip">+ skip →</div>
+                <div class="btn-total" style="color:#34c759">Total: <strong>69,632 params</strong> ✓</div>
+              </div>
+            </div>
+          </div>
+          <div class="insight-callout" style="margin-top:16px">
+            <div class="ic-icon">💡</div>
+            <div class="ic-body">
+              <strong>Trik block efisien:</strong> Conv 1×1 pertama <em>mengecilkan</em> jumlah channel (misal 256→64),
+              lalu Conv 3×3 bekerja di ruang yang jauh lebih kecil dan murah,
+              kemudian Conv 1×1 terakhir <em>mengembalikan</em> ke ukuran semula (64→256).
+              Hasilnya: jumlah parameter hampir sama, tapi FLOPS jauh lebih sedikit.
+            </div>
+          </div>
+        </div>
+
+        <!-- Interactive: depth slider -->
+        <div class="worked-box" id="resnetExplorer">
+          <div class="wb-badge">🎛️ Interactive · Eksplorasi varian ResNet</div>
+          <div class="wb-title">ResNet Family — Parameter &amp; Akurasi</div>
+          <div class="resnet-cards" id="resnetCards">
+            <!-- filled by JS -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══ SEC 3: EFFICIENTNET ═══ -->
+      <section class="lesson-sec" id="sec-efficientnet">
+        <div class="sec-header">
+          <span class="sec-num">03</span>
+          <div>
+            <h2 class="sec-title">EfficientNet &amp; Compound Scaling</h2>
+            <p class="sec-sub">Satu formula untuk scale depth, width, dan resolusi secara bersamaan</p>
+          </div>
+        </div>
+
+        <div class="prose">
+          Cara konvensional meningkatkan akurasi: tambah layer (depth), tambah channel (width),
+          atau naikkan resolusi input. EfficientNet (Tan &amp; Le, 2019) menunjukkan bahwa ketiganya
+          harus di-scale <strong>secara proporsional dan bersamaan</strong> untuk hasil optimal.
+        </div>
+
+        <!-- Compound scaling formula -->
+        <div class="formula-box">
+          <div class="fb-title">Compound Scaling Formula</div>
+          <div class="fb-eq" style="font-size:17px;line-height:2.2;">
+            depth: <span class="feq-var blue">d = α<sup>φ</sup></span>
+            &nbsp;&nbsp;·&nbsp;&nbsp;
+            width: <span class="feq-var purple">w = β<sup>φ</sup></span>
+            &nbsp;&nbsp;·&nbsp;&nbsp;
+            resolution: <span class="feq-var" style="color:#ff9f0a">r = γ<sup>φ</sup></span>
+          </div>
+          <div class="fb-legend">
+            <div class="fb-leg-item"><span class="fb-sym blue">α, β, γ</span><span class="fb-desc">konstanta yang dicari via grid search kecil (α=1.2, β=1.1, γ=1.15)</span></div>
+            <div class="fb-leg-item"><span class="fb-sym" style="color:#ff9f0a">φ</span><span class="fb-desc">compound coefficient — satu angka yang mengontrol semua dimensi sekaligus</span></div>
+          </div>
+          <div class="fb-note">Constraint: α · β² · γ² ≈ 2, sehingga FLOPS naik ~2<sup>φ</sup> per step scaling</div>
+        </div>
+
+        <!-- Scaling dimensions visual -->
+        <div class="worked-box">
+          <div class="wb-badge">🎛️ Interactive · Geser φ untuk lihat scaling</div>
+          <div class="wb-title">Compound Scaling Real-time</div>
+          <div class="cs-slider-row">
+            <label class="pe-slider-label">Compound coefficient <em>φ</em></label>
+            <div class="pe-slider-track">
+              <input type="range" id="slPhi" min="0" max="7" step="1" value="0">
+              <div class="pe-slider-ticks">
+                <span>B0</span><span>B1</span><span>B2</span><span>B3</span><span>B4</span><span>B5</span><span>B6</span><span>B7</span>
+              </div>
+            </div>
+            <div class="pe-slider-val">B<span id="valPhi">0</span></div>
+          </div>
+          <div class="cs-display" id="csDisplay">
+            <!-- filled by JS -->
+          </div>
+        </div>
+
+        <!-- Why compound scaling works -->
+        <div class="worked-box">
+          <div class="wb-badge">📐 Mengapa Compound Scaling Lebih Baik?</div>
+          <div class="wb-title">Scale satu dimensi vs compound scaling</div>
+          <div class="calc-chain">
+            <div class="calc-step">
+              <div class="cs-num-circle">1</div>
+              <div class="cs-content">
+                <div class="cs-label">Scale depth saja (tambah layer)</div>
+                <div class="math-line">
+                  <span class="math-comment">// Receptive field tidak naik karena resolusi sama</span>
+                </div>
+                <div class="math-line">
+                  Akurasi naik <span class="math-result">sedikit</span> lalu
+                  <span class="math-result red">plateau</span>
+                  <span class="math-comment"> — layer tambahan tidak berguna tanpa channel lebih</span>
+                </div>
+              </div>
+            </div>
+            <div class="calc-step">
+              <div class="cs-num-circle">2</div>
+              <div class="cs-content">
+                <div class="cs-label">Scale resolution saja (input lebih besar)</div>
+                <div class="math-line">
+                  <span class="math-comment">// Butuh receptive field lebih besar untuk manfaatkan resolusi tinggi</span>
+                </div>
+                <div class="math-line">
+                  Tanpa depth/width yang cukup, resolusi tinggi
+                  <span class="math-result red">tidak terpakai optimal</span>
+                </div>
+              </div>
+            </div>
+            <div class="calc-step">
+              <div class="cs-num-circle">3</div>
+              <div class="cs-content">
+                <div class="cs-label">Compound scaling — semua dimensi naik bersama</div>
+                <div class="math-line">
+                  <span class="math-comment">// Resolusi tinggi → perlu depth lebih untuk RF besar</span>
+                </div>
+                <div class="math-line">
+                  <span class="math-comment">// Depth lebih → perlu width lebih agar tidak bottleneck</span>
+                </div>
+                <div class="math-line">
+                  EfficientNet-B7 vs ResNet-50:
+                  <span class="math-result green">+8.1% akurasi</span>
+                  dengan <span class="math-result green">8.4× lebih sedikit FLOPS</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══ SEC 4: PERBANDINGAN ═══ -->
+      <section class="lesson-sec" id="sec-compare">
+        <div class="sec-header">
+          <span class="sec-num">04</span>
+          <div>
+            <h2 class="sec-title">Perbandingan Lengkap Arsitektur</h2>
+            <p class="sec-sub">Accuracy vs params vs latency — angka yang sebenarnya</p>
+          </div>
+        </div>
+
+        <!-- Interactive scatter/bar comparison -->
+        <div class="worked-box" id="archCompare">
+          <div class="wb-badge">🎛️ Interactive · Pilih metrik perbandingan</div>
+          <div class="wb-title">Accuracy vs Efisiensi</div>
+          <div class="ac-tabs" id="acTabs">
+            <button class="ac-tab active" data-metric="params">Params</button>
+            <button class="ac-tab" data-metric="flops">FLOPS</button>
+            <button class="ac-tab" data-metric="latency">Latency</button>
+          </div>
+          <div class="ac-chart" id="acChart">
+            <!-- filled by JS -->
+          </div>
+          <div class="ac-legend" id="acLegend">
+            <!-- filled by JS -->
+          </div>
+        </div>
+
+        <!-- Full comparison table -->
+        <div class="comparison-table-wrap">
+          <table class="comparison-table">
+            <thead>
+              <tr>
+                <th>Model</th>
+                <th>Tahun</th>
+                <th>Params</th>
+                <th>Top-1 Acc</th>
+                <th>ImageNet FLOPS</th>
+                <th>Kecepatan (GPU)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="bad-row">
+                <td>AlexNet</td>
+                <td>2012</td>
+                <td class="red-num">60M</td>
+                <td>56.5%</td>
+                <td>0.7B</td>
+                <td>—</td>
+              </tr>
+              <tr class="bad-row">
+                <td>VGG-16</td>
+                <td>2014</td>
+                <td class="red-num">138M</td>
+                <td>71.6%</td>
+                <td>15.5B</td>
+                <td>~50ms</td>
+              </tr>
+              <tr>
+                <td>ResNet-50</td>
+                <td>2015</td>
+                <td>25.6M</td>
+                <td>76.0%</td>
+                <td>4.1B</td>
+                <td>~25ms</td>
+              </tr>
+              <tr>
+                <td>ResNet-101</td>
+                <td>2015</td>
+                <td>44.5M</td>
+                <td>77.4%</td>
+                <td>7.8B</td>
+                <td>~40ms</td>
+              </tr>
+              <tr class="good-row">
+                <td>MobileNetV2</td>
+                <td>2018</td>
+                <td class="green-num">3.4M</td>
+                <td>72.0%</td>
+                <td class="green-num">0.3B</td>
+                <td class="green-num">~6ms</td>
+              </tr>
+              <tr class="good-row">
+                <td>EfficientNet-B0</td>
+                <td>2019</td>
+                <td class="green-num">5.3M</td>
+                <td class="green-num">77.1%</td>
+                <td class="green-num">0.4B</td>
+                <td>~8ms</td>
+              </tr>
+              <tr class="good-row">
+                <td>EfficientNet-B4</td>
+                <td>2019</td>
+                <td>19M</td>
+                <td class="green-num">82.6%</td>
+                <td>4.2B</td>
+                <td>~25ms</td>
+              </tr>
+              <tr class="good-row">
+                <td>EfficientNet-B7</td>
+                <td>2019</td>
+                <td>66M</td>
+                <td class="green-num">84.4%</td>
+                <td>37B</td>
+                <td>~160ms</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="table-note">Latency diukur pada single image, GPU V100, batch size 1. Angka bervariasi tergantung hardware.</div>
+        </div>
+      </section>
+
+      <!-- ═══ SEC 5: PILIH BACKBONE ═══ -->
+      <section class="lesson-sec" id="sec-choose">
+        <div class="sec-header">
+          <span class="sec-num">05</span>
+          <div>
+            <h2 class="sec-title">Pilih Backbone yang Tepat</h2>
+            <p class="sec-sub">Decision framework berdasarkan constraint nyata di production</p>
+          </div>
+        </div>
+
+        <div class="prose">
+          Tidak ada satu backbone terbaik untuk semua kasus. Pilihan bergantung pada
+          <strong>constraint deployment</strong>: apakah kamu butuh akurasi maksimal, latency rendah,
+          model kecil untuk mobile, atau keseimbangan keduanya?
+        </div>
+
+        <!-- Decision tree interactive -->
+        <div class="worked-box" id="backboneChooser">
+          <div class="wb-badge">🎛️ Interactive · Jawab pertanyaan untuk rekomendasi</div>
+          <div class="wb-title">Backbone Recommender</div>
+          <div class="bc-questions" id="bcQuestions">
+            <!-- filled by JS -->
+          </div>
+          <div class="bc-result" id="bcResult" style="display:none">
+            <!-- filled by JS -->
+          </div>
+        </div>
+
+        <!-- Cheat sheet -->
+        <div class="three-props" style="grid-template-columns:repeat(3,1fr)">
+          <div class="prop-card">
+            <div class="prop-num" style="color:#2997ff">📱</div>
+            <div class="prop-title">Mobile / Edge</div>
+            <div class="prop-body">
+              <div class="prop-desc">RAM terbatas, butuh real-time inference di device.</div>
+              <div class="prop-math">
+                <div class="pm-eq"><span class="math-term green">MobileNetV2/V3</span></div>
+                <div class="pm-note">3–6M params · &lt;10ms · TFLite friendly</div>
+              </div>
+              <div class="prop-effect green">✓ Juga: EfficientNet-B0/B1</div>
+            </div>
+          </div>
+
+          <div class="prop-card">
+            <div class="prop-num" style="color:#a855f7">⚖️</div>
+            <div class="prop-title">Balanced</div>
+            <div class="prop-body">
+              <div class="prop-desc">Server deployment, butuh akurasi baik dengan latency wajar.</div>
+              <div class="prop-math">
+                <div class="pm-eq"><span class="math-term purple">ResNet-50</span></div>
+                <div class="pm-note">25M params · ~25ms · ekosistem besar</div>
+              </div>
+              <div class="prop-effect green">✓ Juga: EfficientNet-B4</div>
+            </div>
+          </div>
+
+          <div class="prop-card">
+            <div class="prop-num" style="color:#ff9f0a">🏆</div>
+            <div class="prop-title">Max Accuracy</div>
+            <div class="prop-body">
+              <div class="prop-desc">Offline processing, kompetisi, riset — latency bukan prioritas.</div>
+              <div class="prop-math">
+                <div class="pm-eq"><span class="math-term" style="color:#ff9f0a">EfficientNet-B7</span></div>
+                <div class="pm-note">66M params · ~160ms · SOTA ImageNet</div>
+              </div>
+              <div class="prop-effect green">✓ Juga: ViT-L (transformer)</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="comparison-table-wrap">
+          <table class="comparison-table">
+            <thead>
+              <tr>
+                <th>Use Case</th>
+                <th>Rekomendasi Pertama</th>
+                <th>Alternatif</th>
+                <th>Alasan</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Klasifikasi mobile app</td>
+                <td class="green-num">MobileNetV3-Small</td>
+                <td>EfficientNet-Lite0</td>
+                <td>2.5M params, &lt;5ms CPU</td>
+              </tr>
+              <tr>
+                <td>Transfer learning cepat</td>
+                <td class="green-num">ResNet-50</td>
+                <td>EfficientNet-B0</td>
+                <td>Pretrained weights tersedia luas, stabil</td>
+              </tr>
+              <tr>
+                <td>Object detection backbone</td>
+                <td class="green-num">ResNet-50/101 + FPN</td>
+                <td>EfficientDet</td>
+                <td>Dipakai di COCO SOTA, ekosistem besar</td>
+              </tr>
+              <tr>
+                <td>Medical imaging / fine detail</td>
+                <td class="green-num">EfficientNet-B4/B5</td>
+                <td>ResNet-101</td>
+                <td>Resolusi tinggi penting, compound scaling membantu</td>
+              </tr>
+              <tr>
+                <td>Kaggle / kompetisi</td>
+                <td class="green-num">EfficientNet-B6/B7</td>
+                <td>ViT-Large</td>
+                <td>Akurasi maksimal, latency tidak masalah</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="insight-callout">
+          <div class="ic-icon">🔑</div>
+          <div class="ic-body">
+            <strong>Satu aturan praktis:</strong> Mulai selalu dengan <strong>ResNet-50 pretrained ImageNet</strong>
+            sebagai baseline. Kalau butuh lebih kecil → MobileNet. Kalau butuh lebih akurat →
+            EfficientNet-B4. Kalau sudah di-tune dan masih kurang → scale up ke B6/B7 atau coba ViT.
+          </div>
+        </div>
+
+        <!-- Module complete CTA -->
+        <div class="next-lesson-cta">
+          <div class="nlc-inner">
+            <span class="nlc-label">Lesson berikutnya</span>
+            <h3 class="nlc-title">Architecture Builder →</h3>
+            <p class="nlc-desc">
+              Teori sudah tuntas. Sekarang bangun arsitektur CNN layer per layer secara interaktif,
+              visualisasi gradient flow, eksplorasi EfficientNet scaling,
+              dan upload gambarmu untuk melihat feature map nyata di tiap layer.
+            </p>
+            <a href="/pages/ai-lab/cnn-arch-builder.html" class="nlc-btn">Buka Architecture Builder</a>
+          </div>
+        </div>
+      </section>
+
+    </div><!-- /lesson-body -->
+  </main>
+</div><!-- /lesson-layout -->
+
+<div id="footer-placeholder"></div>
+<script src="/js/shared.js"></script>
+<script src="/js/lang.js"></script>
+<script src="/js/cnn-arch.js"></script>
+</body>
+</html>

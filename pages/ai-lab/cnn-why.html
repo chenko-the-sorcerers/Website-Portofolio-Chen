@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mengapa CNN? — Deep Learning for Vision | AI Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/shared.css">
+<link rel="stylesheet" href="/css/cnn-intro.css">
+<link rel="stylesheet" href="/css/cnn-why.css">
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-follower" id="cursor-follower"></div>
+<div id="nav-placeholder"></div>
+<div class="read-progress"><div id="readBar"></div></div>
+
+<div class="lesson-layout">
+
+  <!-- ═══ SIDEBAR ═══ -->
+  <aside class="lesson-sidebar" id="lessonSidebar">
+    <div class="sb-top">
+      <a href="/pages/ai-lab/computer-vision.html" class="sb-back">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 3L5 8l5 5"/></svg>
+        Computer Vision
+      </a>
+      <div class="sb-studying">
+        <div class="sb-studying-label">Sedang belajar</div>
+        <div class="sb-studying-path">
+          <span class="sbp-item">AI Lab</span>
+          <span class="sbp-sep">›</span>
+          <span class="sbp-item">Computer Vision</span>
+          <span class="sbp-sep">›</span>
+          <span class="sbp-item active">Deep Learning for Vision</span>
+        </div>
+      </div>
+      <div class="sb-chapter">Module 3 · Deep Learning for Vision</div>
+      <div class="sb-lesson-title">Mengapa CNN?</div>
+      <div class="sb-tags">
+        <span class="sb-tag">Intuisi</span>
+        <span class="sb-tag interactive">🧮 Math</span>
+      </div>
+    </div>
+
+    <nav class="lesson-nav">
+      <div class="nav-section-label">Dalam lesson ini</div>
+      <a href="#sec-masalah" class="lnav-item active" data-sec="sec-masalah">
+        <span class="lnav-dot"></span><span class="lnav-text">Masalah MLP</span><span class="lnav-num">01</span>
+      </a>
+      <a href="#sec-params" class="lnav-item" data-sec="sec-params">
+        <span class="lnav-dot"></span><span class="lnav-text">Ledakan Parameter</span><span class="lnav-num">02</span>
+      </a>
+      <a href="#sec-spatial" class="lnav-item" data-sec="sec-spatial">
+        <span class="lnav-dot"></span><span class="lnav-text">Konteks Spasial Hilang</span><span class="lnav-num">03</span>
+      </a>
+      <a href="#sec-bio" class="lnav-item" data-sec="sec-bio">
+        <span class="lnav-dot"></span><span class="lnav-text">Inspirasi Biologis</span><span class="lnav-num">04</span>
+      </a>
+      <a href="#sec-solusi" class="lnav-item" data-sec="sec-solusi">
+        <span class="lnav-dot"></span><span class="lnav-text">Solusi CNN</span><span class="lnav-num">05</span>
+      </a>
+    </nav>
+
+    <div class="sb-progress">
+      <div class="sb-prog-label"><span>Progress</span><span id="progPct">0%</span></div>
+      <div class="sb-prog-track"><div class="sb-prog-fill" id="progFill"></div></div>
+    </div>
+
+    <div class="sb-module-nav">
+      <div class="nav-section-label" style="padding:0 8px;margin-bottom:8px">Module 3 · Deep Learning for Vision</div>
+      <a href="/pages/ai-lab/cnn-why.html" class="smn-item current"><span class="smn-dot done"></span><span>Mengapa CNN?</span></a>
+      <a href="/pages/ai-lab/cnn-intro.html" class="smn-item locked"><span class="smn-dot"></span><span>Introduction to CNNs</span><span class="smn-lock">🔒</span></a>
+      <a href="/pages/ai-lab/cnn-relu.html" class="smn-item locked"><span class="smn-dot"></span><span>Aktivasi ReLU</span><span class="smn-lock">🔒</span></a>
+      <a href="/pages/ai-lab/cnn-fc.html" class="smn-item locked"><span class="smn-dot"></span><span>FC Layer &amp; Softmax</span><span class="smn-lock">🔒</span></a>
+      <a href="/pages/ai-lab/cnn-hands.html" class="smn-item locked"><span class="smn-dot"></span><span>Hands-on: CNN Pertama</span><span class="smn-lock">🔒</span></a>
+    </div>
+  </aside>
+
+  <!-- ═══ MAIN ═══ -->
+  <main class="lesson-main">
+    <div class="lesson-topbar">
+      <div class="ltb-left">
+        <button class="ltb-menu" id="menuBtn" onclick="toggleSidebar()">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg>
+        </button>
+        <span class="ltb-crumb">Mengapa CNN?</span>
+      </div>
+      <div class="ltb-right">
+        <a href="/pages/ai-lab/computer-vision.html" class="ltb-btn">← Back to CV</a>
+        <a href="/pages/ai-lab/cnn-intro.html" class="ltb-btn primary">Next: CNN →</a>
+      </div>
+    </div>
+
+    <div class="lesson-body">
+
+      <!-- ═══ SEC 1: MASALAH MLP ═══ -->
+      <section class="lesson-sec" id="sec-masalah">
+        <div class="sec-header">
+          <span class="sec-num">01</span>
+          <div>
+            <h2 class="sec-title">Mengapa MLP Gagal pada Gambar?</h2>
+            <p class="sec-sub">Dua masalah fundamental yang membuat MLP tidak cocok untuk computer vision</p>
+          </div>
+        </div>
+
+        <div class="prose">
+          Sebelum CNN, orang mencoba menggunakan <strong>Multilayer Perceptron (MLP)</strong> untuk klasifikasi gambar.
+          Hasilnya buruk — bukan karena MLP bodoh, tapi karena gambar punya properti unik yang tidak bisa ditangani MLP.
+          Ada <strong>dua masalah mendasar</strong>: ledakan parameter dan hilangnya konteks spasial.
+        </div>
+
+        <!-- Overview 2 problems -->
+        <div class="problem-overview">
+          <div class="prob-card">
+            <div class="prob-icon">💥</div>
+            <div class="prob-num">Problem 1</div>
+            <div class="prob-title">Parameter Explosion</div>
+            <div class="prob-desc">Gambar 224×224×3 = 150,528 nilai. Satu hidden layer 512 neuron → butuh 77 juta parameter. Tidak scalable, mudah overfit.</div>
+          </div>
+          <div class="prob-arrow">→</div>
+          <div class="prob-card">
+            <div class="prob-icon">🗺️</div>
+            <div class="prob-num">Problem 2</div>
+            <div class="prob-title">Spatial Context Lost</div>
+            <div class="prob-desc">Flatten piksel ke vektor 1D menghancurkan hubungan spasial. Piksel (0,0) dan (0,1) yang bersebelahan menjadi sama "jauhnya" dengan (0,0) dan (223,223).</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══ SEC 2: PARAMETER EXPLOSION ═══ -->
+      <section class="lesson-sec" id="sec-params">
+        <div class="sec-header">
+          <span class="sec-num">02</span>
+          <div>
+            <h2 class="sec-title">Problem 1 — Ledakan Jumlah Parameter</h2>
+            <p class="sec-sub">Menghitung parameter MLP vs CNN secara eksak — angka demi angka</p>
+          </div>
+        </div>
+
+        <div class="prose">
+          Mari kita hitung secara eksak berapa parameter yang dibutuhkan MLP untuk memproses gambar CIFAR-10 (32×32×3)
+          dan ImageNet (224×224×3). Ini bukan perkiraan — ini perhitungan tepat.
+        </div>
+
+        <!-- ── INTERACTIVE SLIDER ── -->
+        <div class="worked-box" id="paramExplorer">
+          <div class="wb-badge">🎛️ Interactive · Geser slider untuk lihat dampaknya</div>
+          <div class="wb-title">Parameter Explosion — Real-time Calculator</div>
+
+          <!-- Sliders -->
+          <div class="pe-sliders">
+            <div class="pe-slider-row">
+              <label class="pe-slider-label">
+                Resolusi gambar
+                <span class="pe-slider-hint">Tinggi = Lebar</span>
+              </label>
+              <div class="pe-slider-track">
+                <input type="range" id="slRes" min="0" max="3" step="1" value="0">
+                <div class="pe-slider-ticks">
+                  <span>32</span><span>64</span><span>128</span><span>224</span>
+                </div>
+              </div>
+              <div class="pe-slider-val">
+                <span id="valRes">32</span>×<span id="valRes2">32</span>×3
+              </div>
+            </div>
+
+            <div class="pe-slider-row">
+              <label class="pe-slider-label">
+                Hidden layer 1
+                <span class="pe-slider-hint">jumlah neuron</span>
+              </label>
+              <div class="pe-slider-track">
+                <input type="range" id="slH1" min="64" max="2048" step="64" value="512">
+                <div class="pe-slider-ticks">
+                  <span>64</span><span>512</span><span>1024</span><span>2048</span>
+                </div>
+              </div>
+              <div class="pe-slider-val"><span id="valH1">512</span></div>
+            </div>
+
+            <div class="pe-slider-row">
+              <label class="pe-slider-label">
+                Hidden layer 2
+                <span class="pe-slider-hint">jumlah neuron</span>
+              </label>
+              <div class="pe-slider-track">
+                <input type="range" id="slH2" min="64" max="1024" step="64" value="256">
+                <div class="pe-slider-ticks">
+                  <span>64</span><span>256</span><span>512</span><span>1024</span>
+                </div>
+              </div>
+              <div class="pe-slider-val"><span id="valH2">256</span></div>
+            </div>
+          </div>
+
+          <!-- Step-by-step calc (updates live) -->
+          <div class="calc-chain" style="margin-top:20px;">
+            <div class="calc-step">
+              <div class="cs-num-circle">1</div>
+              <div class="cs-content">
+                <div class="cs-label">Flatten input gambar ke vektor 1D</div>
+                <div class="math-line" id="peStep1">—</div>
+              </div>
+            </div>
+            <div class="calc-step">
+              <div class="cs-num-circle">2</div>
+              <div class="cs-content">
+                <div class="cs-label" id="peLabel2">Hidden Layer 1</div>
+                <div class="math-line" id="peStep2">—</div>
+              </div>
+            </div>
+            <div class="calc-step">
+              <div class="cs-num-circle">3</div>
+              <div class="cs-content">
+                <div class="cs-label" id="peLabel3">Hidden Layer 2</div>
+                <div class="math-line" id="peStep3">—</div>
+              </div>
+            </div>
+            <div class="calc-step">
+              <div class="cs-num-circle">4</div>
+              <div class="cs-content">
+                <div class="cs-label">Output Layer: 10 kelas</div>
+                <div class="math-line" id="peStep4">—</div>
+              </div>
+            </div>
+            <div class="calc-total" id="peTotal">
+              <div class="ct-label">Total MLP</div>
+              <div class="ct-math" id="peTotalMath">—</div>
+              <div class="ct-result" id="peTotalResult" style="display:block;margin-top:6px;">—</div>
+              <div class="ct-note" id="peTotalNote">—</div>
+            </div>
+          </div>
+
+          <!-- MLP vs CNN comparison bar -->
+          <div class="pe-compare" style="margin-top:20px;">
+            <div class="pe-compare-title">MLP vs CNN — Layer pertama saja</div>
+            <div class="pe-bars">
+              <div class="pe-bar-row">
+                <span class="pe-bar-label">MLP layer 1</span>
+                <div class="pe-bar-track">
+                  <div class="pe-bar-fill mlp" id="barMLP"></div>
+                </div>
+                <span class="pe-bar-num red" id="numMLP">—</span>
+              </div>
+              <div class="pe-bar-row">
+                <span class="pe-bar-label">CNN Conv 3×3</span>
+                <div class="pe-bar-track">
+                  <div class="pe-bar-fill cnn" id="barCNN"></div>
+                </div>
+                <span class="pe-bar-num green" id="numCNN">896</span>
+              </div>
+            </div>
+            <div class="pe-ratio" id="peRatio">—</div>
+          </div>
+
+          <!-- Warning badge -->
+          <div class="pe-warning" id="peWarning" style="display:none;">
+            <span>💥</span>
+            <span id="peWarningText">—</span>
+          </div>
+        </div>
+
+        <!-- ── Formula umum ── -->
+        <div class="formula-box">
+          <div class="fb-title">Formula Umum Parameter FC Layer</div>
+          <div class="fb-eq">
+            <span class="feq-term">params</span>
+            <span class="feq-op">=</span>
+            <span class="feq-var blue">n<sub>in</sub></span>
+            <span class="feq-op">×</span>
+            <span class="feq-var purple">n<sub>out</sub></span>
+            <span class="feq-op">+</span>
+            <span class="feq-var purple">n<sub>out</sub></span>
+          </div>
+          <div class="fb-legend">
+            <div class="fb-leg-item"><span class="fb-sym blue">n<sub>in</sub></span><span class="fb-desc">jumlah neuron input</span></div>
+            <div class="fb-leg-item"><span class="fb-sym purple">n<sub>out</sub></span><span class="fb-desc">jumlah neuron output (+ bias)</span></div>
+          </div>
+          <div class="fb-note">Parameter tumbuh secara kuadratik: 2× resolusi gambar = 4× jumlah parameter input!</div>
+        </div>
+
+        <!-- ── Parameter sharing insight ── -->
+        <div class="insight-callout">
+          <div class="ic-icon">🔑</div>
+          <div class="ic-body">
+            <strong>Kunci CNN: Parameter Sharing.</strong>
+            Satu filter 3×3 (9 parameter) digunakan di <em>seluruh bagian gambar</em> — bukan parameter terpisah untuk setiap posisi.
+            Filter yang sama yang mendeteksi tepi vertikal di pojok kiri juga mendeteksi tepi vertikal di pojok kanan.
+            Hasilnya: CNN untuk ImageNet hanya butuh ~25 juta parameter (AlexNet), bukan miliaran.
+          </div>
+        </div>
+
+        <!-- ── Comparison table ── -->
+        <div class="comparison-table-wrap">
+          <table class="comparison-table">
+            <thead>
+              <tr>
+                <th>Arsitektur</th>
+                <th>Input</th>
+                <th>Layer Pertama</th>
+                <th>Params Layer 1</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="bad-row">
+                <td>MLP</td>
+                <td>224×224×3 flatten</td>
+                <td>FC 512 neuron</td>
+                <td class="red-num">77,070,848</td>
+              </tr>
+              <tr class="good-row">
+                <td>CNN (AlexNet)</td>
+                <td>224×224×3 as tensor</td>
+                <td>Conv 11×11, 96 filter</td>
+                <td class="green-num">34,944</td>
+              </tr>
+              <tr class="good-row">
+                <td>CNN (VGG-16)</td>
+                <td>224×224×3 as tensor</td>
+                <td>Conv 3×3, 64 filter</td>
+                <td class="green-num">1,792</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="table-note">AlexNet: 2,200× lebih efisien. VGG: 43,000× lebih efisien dari MLP di layer pertama.</div>
+        </div>
+      </section>
+
+      <!-- ═══ SEC 3: SPATIAL CONTEXT ═══ -->
+      <section class="lesson-sec" id="sec-spatial">
+        <div class="sec-header">
+          <span class="sec-num">03</span>
+          <div>
+            <h2 class="sec-title">Problem 2 — Hilangnya Konteks Spasial</h2>
+            <p class="sec-sub">Flatten menghancurkan informasi "siapa bersebelahan dengan siapa"</p>
+          </div>
+        </div>
+
+        <div class="prose">
+          Bahkan jika kita abaikan masalah parameter, ada masalah yang lebih mendasar:
+          ketika kita <em>flatten</em> gambar menjadi vektor 1D, kita menghancurkan semua
+          informasi tentang <strong>posisi dan hubungan antar piksel</strong>.
+        </div>
+
+        <!-- Visual: flatten destroys structure -->
+        <div class="worked-box">
+          <div class="wb-badge">🔬 Visualisasi</div>
+          <div class="wb-title">Apa yang hilang saat flatten?</div>
+
+          <div class="flatten-demo">
+            <!-- Original image grid -->
+            <div class="fd-left">
+              <div class="fd-label">Gambar 4×4 (wajah sederhana)</div>
+              <div class="pixel-grid" id="pixelGrid">
+                <!-- Filled by JS -->
+              </div>
+              <div class="fd-sublabel">Piksel bertetangga punya makna bersama:<br>mata kiri + mata kanan = sepasang mata</div>
+            </div>
+
+            <div class="fd-arrow">
+              <div class="fd-arrow-line"></div>
+              <div class="fd-arrow-label">flatten()</div>
+            </div>
+
+            <!-- Flattened vector -->
+            <div class="fd-right">
+              <div class="fd-label">Vektor 1D (16 nilai)</div>
+              <div class="flat-vector" id="flatVector">
+                <!-- Filled by JS -->
+              </div>
+              <div class="fd-sublabel">Hubungan spasial hilang.<br>Piksel [0,0] dan [0,1] kini "sejauh" piksel [0,0] dan [3,3].</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Distance in MLP vs CNN -->
+        <div class="worked-box">
+          <div class="wb-badge">📐 Kalkulasi Jarak</div>
+          <div class="wb-title">Jarak piksel di MLP vs CNN</div>
+
+          <div class="calc-chain">
+            <div class="calc-step">
+              <div class="cs-num-circle">1</div>
+              <div class="cs-content">
+                <div class="cs-label">Gambar 4×4 — posisi piksel di memori setelah flatten</div>
+                <div class="math-line">
+                  <span class="math-comment">// piksel (row, col) → index = row × width + col</span>
+                </div>
+                <div class="math-line">
+                  piksel <span class="math-term blue">(0, 0)</span>
+                  <span class="math-op">→</span>
+                  index <span class="math-term">0</span>
+                </div>
+                <div class="math-line">
+                  piksel <span class="math-term blue">(0, 1)</span>
+                  <span class="math-comment"> (tetangga kanan)</span>
+                  <span class="math-op">→</span>
+                  index <span class="math-term">1</span>
+                </div>
+                <div class="math-line">
+                  piksel <span class="math-term red">(3, 3)</span>
+                  <span class="math-comment"> (pojok berlawanan)</span>
+                  <span class="math-op">→</span>
+                  index <span class="math-term">15</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="calc-step">
+              <div class="cs-num-circle">2</div>
+              <div class="cs-content">
+                <div class="cs-label">Di MLP: jarak "hubungan" antar piksel tidak diperhitungkan</div>
+                <div class="math-line">
+                  <span class="math-comment">// Weight W[i][j] sama untuk semua pasangan (i,j)</span>
+                </div>
+                <div class="math-line">
+                  W<span class="math-sub">[0][1]</span>
+                  <span class="math-comment"> (tetangga sebelah)</span>
+                  <span class="math-op">=</span>
+                  W<span class="math-sub">[0][15]</span>
+                  <span class="math-comment"> (pojok berlawanan)</span>
+                </div>
+                <div class="math-line">
+                  <span class="math-comment">// keduanya punya weight independen yang diinisialisasi random</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="calc-step">
+              <div class="cs-num-circle">3</div>
+              <div class="cs-content">
+                <div class="cs-label">Di CNN: hanya piksel dalam receptive field yang saling berpengaruh</div>
+                <div class="math-line">
+                  <span class="math-comment">// Filter 3×3 di posisi (r,c) hanya menggunakan:</span>
+                </div>
+                <div class="math-line">
+                  <span class="math-term blue">I[r,c], I[r,c+1], I[r,c+2]</span>
+                </div>
+                <div class="math-line">
+                  <span class="math-term blue">I[r+1,c], I[r+1,c+1], I[r+1,c+2]</span>
+                </div>
+                <div class="math-line">
+                  <span class="math-term blue">I[r+2,c], I[r+2,c+1], I[r+2,c+2]</span>
+                </div>
+                <div class="math-line">
+                  <span class="math-comment">// Piksel jauh tidak mempengaruhi output lokal — sesuai kenyataan!</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="insight-callout" style="margin-top:16px;">
+            <div class="ic-icon">💡</div>
+            <div class="ic-body">
+              <strong>Intinya:</strong> Tepi horizontal di baris ke-5 dibentuk oleh piksel di sekitarnya —
+              bukan oleh piksel di baris ke-200. CNN memaksa model untuk mempelajari hubungan
+              <em>lokal</em> ini secara eksplisit melalui struktur filter-nya.
+            </div>
+          </div>
+        </div>
+
+        <!-- Translation variance problem -->
+        <div class="worked-box">
+          <div class="wb-badge">🐱 Translation Variance — Masalah Serius MLP</div>
+          <div class="wb-title">Kucing di kiri ≠ Kucing di kanan (bagi MLP)</div>
+
+          <div class="prose" style="margin-bottom:18px;">
+            Bayangkan gambar kucing yang sama, tapi digeser ke kanan 1 piksel. Bagi MLP, kedua gambar
+            ini mengaktifkan neuron yang <em>sama sekali berbeda</em>, karena semua weight terikat ke
+            posisi piksel absolut.
+          </div>
+
+          <div class="translation-demo">
+            <div class="td-item">
+              <div class="td-grid" id="catLeft"></div>
+              <div class="td-label">Kucing di kiri</div>
+              <div class="td-neurons">
+                <div class="tn-label">Neuron aktif di MLP:</div>
+                <div class="tn-bars" id="neuronsLeft"></div>
+              </div>
+            </div>
+            <div class="td-vs">≠</div>
+            <div class="td-item">
+              <div class="td-grid" id="catRight"></div>
+              <div class="td-label">Kucing digeser 1 piksel</div>
+              <div class="td-neurons">
+                <div class="tn-label">Neuron aktif di MLP:</div>
+                <div class="tn-bars" id="neuronsRight"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="formula-box" style="margin-top:16px;">
+            <div class="fb-title">Translation Invariance CNN — Secara Matematis</div>
+            <div class="fb-eq" style="font-size:16px;">
+              f(T<sub>Δ</sub>(I)) = T<sub>Δ</sub>(f(I))
+            </div>
+            <div class="fb-legend">
+              <div class="fb-leg-item"><span class="fb-sym blue">T<sub>Δ</sub></span><span class="fb-desc">operasi geser (translation) sebesar Δ</span></div>
+              <div class="fb-leg-item"><span class="fb-sym green">f</span><span class="fb-desc">operasi konvolusi</span></div>
+            </div>
+            <div class="fb-note">
+              Mengaplikasikan filter lalu menggeser = menggeser lalu mengaplikasikan filter.
+              Hasilnya sama — inilah yang membuat CNN robust terhadap posisi objek.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══ SEC 4: BIOLOGICAL INSPIRATION ═══ -->
+      <section class="lesson-sec" id="sec-bio">
+        <div class="sec-header">
+          <span class="sec-num">04</span>
+          <div>
+            <h2 class="sec-title">Inspirasi Biologis — Korteks Visual</h2>
+            <p class="sec-sub">CNN bukan diciptakan dari nol — terinspirasi cara otak manusia melihat</p>
+          </div>
+        </div>
+
+        <div class="prose">
+          Pada 1959, <strong>Hubel &amp; Wiesel</strong> menemukan bahwa neuron di korteks visual kucing
+          merespons secara spesifik terhadap pola tertentu — bukan semua piksel sekaligus.
+          Simple cells merespons orientasi tepi tertentu. Complex cells merespons tepi dari berbagai posisi.
+          Inilah yang menginspirasi CNN.
+        </div>
+
+        <!-- Visual cortex hierarchy -->
+        <div class="bio-hierarchy">
+          <div class="bh-level" style="--lc: rgba(41,151,255,0.3);">
+            <div class="bh-icon">👁️</div>
+            <div class="bh-body">
+              <div class="bh-name">Retina → LGN</div>
+              <div class="bh-role">Raw pixel input</div>
+              <div class="bh-desc">Mendeteksi perbedaan intensitas cahaya. Belum memahami apa pun.</div>
+            </div>
+            <div class="bh-cnn">
+              <div class="bh-cnn-label">CNN equivalent</div>
+              <div class="bh-cnn-val">Input layer</div>
+            </div>
+          </div>
+
+          <div class="bh-arrow">↓</div>
+
+          <div class="bh-level" style="--lc: rgba(168,85,247,0.3);">
+            <div class="bh-icon">📐</div>
+            <div class="bh-body">
+              <div class="bh-name">V1 — Simple Cells</div>
+              <div class="bh-role">Orientasi tepi lokal</div>
+              <div class="bh-desc">Merespons tepi horizontal / vertikal / diagonal di posisi spesifik. Receptive field kecil (~1°).</div>
+            </div>
+            <div class="bh-cnn">
+              <div class="bh-cnn-label">CNN equivalent</div>
+              <div class="bh-cnn-val">Conv Layer 1–2<br><small>tepi, warna, tekstur dasar</small></div>
+            </div>
+          </div>
+
+          <div class="bh-arrow">↓</div>
+
+          <div class="bh-level" style="--lc: rgba(255,159,10,0.3);">
+            <div class="bh-icon">🔷</div>
+            <div class="bh-body">
+              <div class="bh-name">V2 / V4 — Complex Cells</div>
+              <div class="bh-role">Pola dari berbagai posisi</div>
+              <div class="bh-desc">Merespons tepi yang sama dari mana saja di receptive field yang lebih besar. Position-tolerant.</div>
+            </div>
+            <div class="bh-cnn">
+              <div class="bh-cnn-label">CNN equivalent</div>
+              <div class="bh-cnn-val">Conv Layer 3–5<br><small>tekstur, bagian objek</small></div>
+            </div>
+          </div>
+
+          <div class="bh-arrow">↓</div>
+
+          <div class="bh-level" style="--lc: rgba(52,199,89,0.3);">
+            <div class="bh-icon">🧠</div>
+            <div class="bh-body">
+              <div class="bh-name">IT Cortex — Object Recognition</div>
+              <div class="bh-role">Representasi abstrak objek</div>
+              <div class="bh-desc">Merespons wajah, benda, hewan — tidak peduli posisi, ukuran, atau pencahayaan.</div>
+            </div>
+            <div class="bh-cnn">
+              <div class="bh-cnn-label">CNN equivalent</div>
+              <div class="bh-cnn-val">FC Layers + Softmax<br><small>keputusan klasifikasi</small></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Receptive field math -->
+        <div class="worked-box">
+          <div class="wb-badge">📐 Kalkulasi Receptive Field</div>
+          <div class="wb-title">Seberapa besar area input yang dilihat tiap neuron?</div>
+
+          <div class="prose" style="margin-bottom:16px;">
+            <strong>Receptive field</strong> adalah area di gambar asli yang mempengaruhi aktivasi
+            satu neuron. Semakin dalam layer, semakin besar receptive field-nya.
+          </div>
+
+          <div class="calc-chain">
+            <div class="calc-step">
+              <div class="cs-num-circle">1</div>
+              <div class="cs-content">
+                <div class="cs-label">Layer 1: Conv 3×3, stride 1</div>
+                <div class="math-line">
+                  RF<span class="math-sub">1</span>
+                  <span class="math-op">=</span>
+                  <span class="math-term blue">3×3</span>
+                  <span class="math-comment"> area pada gambar input</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="calc-step">
+              <div class="cs-num-circle">2</div>
+              <div class="cs-content">
+                <div class="cs-label">Layer 2: Conv 3×3 lagi, stride 1</div>
+                <div class="math-line">
+                  <span class="math-comment">// Layer 2 melihat 3×3 area di output Layer 1</span>
+                </div>
+                <div class="math-line">
+                  <span class="math-comment">// Tiap sel Layer 1 sudah mewakili 3×3 area asli</span>
+                </div>
+                <div class="math-line">
+                  RF<span class="math-sub">2</span>
+                  <span class="math-op">=</span>
+                  <span class="math-term blue">3</span>
+                  <span class="math-op">+</span>
+                  <span class="math-term blue">2</span>
+                  <span class="math-comment"> (tambah 1 di tiap sisi)</span>
+                  <span class="math-op">=</span>
+                  <span class="math-result">5×5</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="calc-step">
+              <div class="cs-num-circle">3</div>
+              <div class="cs-content">
+                <div class="cs-label">Formula umum: L layer Conv 3×3 tanpa pooling</div>
+                <div class="math-line">
+                  RF<span class="math-sub">L</span>
+                  <span class="math-op">=</span>
+                  <span class="math-term blue">1</span>
+                  <span class="math-op">+</span>
+                  <span class="math-term purple">L</span>
+                  <span class="math-op">×</span>
+                  <span class="math-term purple">(k−1)</span>
+                </div>
+                <div class="math-line">
+                  <span class="math-comment">// k = ukuran kernel (3), L = jumlah layer</span>
+                </div>
+                <div class="math-line">
+                  5 layer Conv 3×3
+                  <span class="math-op">→</span>
+                  RF = 1 + 5×(3−1) =
+                  <span class="math-result">11×11 piksel</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="calc-step">
+              <div class="cs-num-circle">4</div>
+              <div class="cs-content">
+                <div class="cs-label">Dengan MaxPool 2×2 (stride 2) setelah tiap 2 Conv</div>
+                <div class="math-line">
+                  <span class="math-comment">// Pooling melipatgandakan effective receptive field</span>
+                </div>
+                <div class="math-line">
+                  Setelah 2 Conv + 1 Pool:
+                  RF <span class="math-op">×</span> <span class="math-term blue">2</span>
+                  <span class="math-op">=</span>
+                  <span class="math-result">10×10</span>
+                </div>
+                <div class="math-line">
+                  VGG-16 akhir:
+                  RF ≈ <span class="math-result">196×196</span>
+                  <span class="math-comment"> dari gambar 224×224</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="insight-callout" style="margin-top:16px;">
+            <div class="ic-icon">🧠</div>
+            <div class="ic-body">
+              Persis seperti simple cells di V1 melihat patch kecil, complex cells di V4 melihat area lebih besar —
+              receptive field CNN secara alami tumbuh seiring kedalaman, membentuk hirarki representasi yang sama
+              dengan korteks visual manusia.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══ SEC 5: SOLUSI CNN ═══ -->
+      <section class="lesson-sec" id="sec-solusi">
+        <div class="sec-header">
+          <span class="sec-num">05</span>
+          <div>
+            <h2 class="sec-title">Solusi CNN — Tiga Properti Kunci</h2>
+            <p class="sec-sub">Bagaimana CNN mengatasi semua masalah MLP sekaligus</p>
+          </div>
+        </div>
+
+        <div class="prose">
+          CNN mengatasi kedua masalah MLP dengan tiga properti fundamental yang bekerja bersama:
+          <strong>local connectivity</strong>, <strong>parameter sharing</strong>, dan <strong>equivariance</strong>.
+        </div>
+
+        <div class="three-props">
+          <!-- Property 1 -->
+          <div class="prop-card">
+            <div class="prop-num">1</div>
+            <div class="prop-title">Local Connectivity</div>
+            <div class="prop-body">
+              <div class="prop-desc">
+                Tiap neuron hanya terhubung ke area kecil (receptive field) dari layer sebelumnya,
+                bukan ke semua piksel.
+              </div>
+              <div class="prop-math">
+                <div class="pm-eq">
+                  neuron(r,c) = f(
+                    <span class="math-term blue">I[r:r+k, c:c+k]</span>
+                  )
+                </div>
+                <div class="pm-note">k = ukuran kernel (misal 3)</div>
+              </div>
+              <div class="prop-effect green">✓ Menangkap struktur spasial lokal</div>
+            </div>
+          </div>
+
+          <!-- Property 2 -->
+          <div class="prop-card">
+            <div class="prop-num">2</div>
+            <div class="prop-title">Parameter Sharing</div>
+            <div class="prop-body">
+              <div class="prop-desc">
+                Satu set weight (filter) digunakan di semua posisi gambar. Filter tepi horizontal
+                yang sama bekerja di seluruh bagian gambar.
+              </div>
+              <div class="prop-math">
+                <div class="pm-eq">
+                  W<span class="math-sub">(r,c)</span>
+                  <span class="math-op">=</span>
+                  W<span class="math-sub">(r′,c′)</span>
+                  <span class="math-op">=</span>
+                  <span class="math-term purple">K</span>
+                  <span class="math-comment"> ∀ (r,c),(r′,c′)</span>
+                </div>
+                <div class="pm-note">Satu kernel K berlaku universal di seluruh gambar</div>
+              </div>
+              <div class="prop-effect green">✓ Efisiensi parameter: 3×3=9, bukan 9×W×H</div>
+            </div>
+          </div>
+
+          <!-- Property 3 -->
+          <div class="prop-card">
+            <div class="prop-num">3</div>
+            <div class="prop-title">Translation Equivariance</div>
+            <div class="prop-body">
+              <div class="prop-desc">
+                Jika objek bergeser di input, feature map-nya bergeser dengan cara yang sama —
+                tidak perlu belajar ulang.
+              </div>
+              <div class="prop-math">
+                <div class="pm-eq">
+                  Conv(T<span class="math-sub">Δ</span>(I))
+                  <span class="math-op">=</span>
+                  T<span class="math-sub">Δ</span>(Conv(I))
+                </div>
+                <div class="pm-note">T<sub>Δ</sub> = geser sebesar Δ piksel</div>
+              </div>
+              <div class="prop-effect green">✓ Robust terhadap posisi objek</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Final comparison -->
+        <div class="worked-box">
+          <div class="wb-badge">⚡ Perbandingan Akhir</div>
+          <div class="wb-title">MLP vs CNN untuk klasifikasi gambar 32×32×3</div>
+
+          <div class="final-compare">
+            <div class="fc-col">
+              <div class="fc-header bad">MLP</div>
+              <div class="fc-row"><span class="fc-key">Parameter</span><span class="fc-val red">~1.7 juta</span></div>
+              <div class="fc-row"><span class="fc-key">Spatial awareness</span><span class="fc-val red">❌ Tidak ada</span></div>
+              <div class="fc-row"><span class="fc-key">Translation invariant</span><span class="fc-val red">❌ Tidak</span></div>
+              <div class="fc-row"><span class="fc-key">Parameter sharing</span><span class="fc-val red">❌ Tidak</span></div>
+              <div class="fc-row"><span class="fc-key">Skalabilitas</span><span class="fc-val red">❌ Buruk</span></div>
+            </div>
+            <div class="fc-col">
+              <div class="fc-header good">CNN</div>
+              <div class="fc-row"><span class="fc-key">Parameter</span><span class="fc-val green">~29 ribu</span></div>
+              <div class="fc-row"><span class="fc-key">Spatial awareness</span><span class="fc-val green">✅ Local RF</span></div>
+              <div class="fc-row"><span class="fc-key">Translation invariant</span><span class="fc-val green">✅ Ya (+ pooling)</span></div>
+              <div class="fc-row"><span class="fc-key">Parameter sharing</span><span class="fc-val green">✅ Ya (kernel)</span></div>
+              <div class="fc-row"><span class="fc-key">Skalabilitas</span><span class="fc-val green">✅ Sangat baik</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Next lesson CTA -->
+        <div class="next-lesson-cta">
+          <div class="nlc-inner">
+            <span class="nlc-label">Lesson berikutnya</span>
+            <h3 class="nlc-title">Introduction to CNNs →</h3>
+            <p class="nlc-desc">Sekarang kamu tahu MENGAPA CNN — saatnya pelajari CARA KERJA-nya. Konvolusi, stride, padding, dan pooling secara matematis.</p>
+            <a href="/pages/ai-lab/cnn-intro.html" class="nlc-btn">Lanjut ke CNN Intro</a>
+          </div>
+        </div>
+
+      </section>
+
+    </div><!-- /lesson-body -->
+  </main>
+</div><!-- /lesson-layout -->
+
+<div id="footer-placeholder"></div>
+<script src="/js/shared.js"></script>
+<script src="/js/lang.js"></script>
+<script src="/js/cnn-why.js"></script>
+</body>
+</html>

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Lab — Marchel Andrian Shevchenko</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/shared.css">
+<link rel="stylesheet" href="/css/ai-lab.css">
+</head>
+<body>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-follower" id="cursor-follower"></div>
+
+<div id="nav-placeholder"></div>
+
+<!-- HERO -->
+<div class="page-hero">
+  <div class="hero-glow"></div>
+  <div class="page-inner">
+    <p class="page-label">Knowledge Hub</p>
+    <h1 class="page-title">AI<br><span>Lab.</span></h1>
+    <p class="page-sub">An open learning space to explore the foundations and frontiers of Artificial Intelligence — from core algorithms to real-world applications.</p>
+  </div>
+</div>
+
+<!-- TOPICS -->
+<div class="lab-wrap">
+  <div class="lab-grid">
+
+    <!-- 1. Machine Learning -->
+    <a href="/pages/ai-lab/machine-learning.html" class="topic-card reveal" style="--card-glow:rgba(0,113,227,.15);">
+      <div class="card-accent" style="background:#2997ff;"></div>
+      <div class="card-num">01 / 08</div>
+      <span class="card-icon">🤖</span>
+      <div class="card-title"> Machine Learning</div>
+      <div class="card-desc">Supervised, unsupervised, and reinforcement learning. From linear regression to gradient boosting and neural networks.</div>
+      <div class="card-tags">
+        <span class="card-tag">Supervised</span>
+        <span class="card-tag">Unsupervised</span>
+        <span class="card-tag">Neural Nets</span>
+        <span class="card-tag">XGBoost</span>
+      </div>
+      <div class="card-cta">Explore <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4"/></svg></div>
+    </a>
+
+    <!-- 2. Computer Vision -->
+    <a href="/pages/ai-lab/computer-vision.html" class="topic-card reveal d1" style="--card-glow:rgba(0,199,190,.13);">
+      <div class="card-accent" style="background:#00c7be;"></div>
+      <div class="card-num">02 / 08</div>
+      <span class="card-icon">👁️</span>
+      <div class="card-title">Computer Vision</div>
+      <div class="card-desc">Teach machines to see and interpret visual data. Object detection, segmentation, optical flow, and beyond.</div>
+      <div class="card-tags">
+        <span class="card-tag">CNNs</span>
+        <span class="card-tag">YOLO</span>
+        <span class="card-tag">Segmentation</span>
+        <span class="card-tag">ViT</span>
+      </div>
+      <div class="card-cta">Explore <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4"/></svg></div>
+    </a>
+
+    <!-- 3. NLP -->
+    <a href="/pages/ai-lab/nlp.html" class="topic-card reveal d2" style="--card-glow:rgba(255,159,10,.12);">
+      <div class="card-accent" style="background:#ff9f0a;"></div>
+      <div class="card-num">03 / 08</div>
+      <span class="card-icon">🗣️</span>
+      <div class="card-title">Natural Language Processing</div>
+      <div class="card-desc">Transformers, tokenization, language models, RAG, and the full pipeline from text to meaning.</div>
+      <div class="card-tags">
+        <span class="card-tag">Transformers</span>
+        <span class="card-tag">BERT</span>
+        <span class="card-tag">RAG</span>
+        <span class="card-tag">Tokenization</span>
+      </div>
+      <div class="card-cta">Explore <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4"/></svg></div>
+    </a>
+
+    <!-- 4. Generative AI -->
+    <a href="/pages/ai-lab/generative-ai.html" class="topic-card reveal d3" style="--card-glow:rgba(124,58,237,.18);">
+      <div class="card-accent" style="background:#a855f7;"></div>
+      <div class="card-num">04 / 08</div>
+      <span class="card-icon">✨</span>
+      <div class="card-title">Generative AI</div>
+      <div class="card-desc">Diffusion models, GANs, multimodal generation, prompt engineering, and the science of creating with AI.</div>
+      <div class="card-tags">
+        <span class="card-tag">Diffusion</span>
+        <span class="card-tag">GANs</span>
+        <span class="card-tag">VLMs</span>
+        <span class="card-tag">Prompt Eng.</span>
+      </div>
+      <div class="card-cta">Explore <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4"/></svg></div>
+    </a>
+
+    <!-- 5. Mathematics for AI -->
+    <a href="/pages/ai-lab/mathematics.html" class="topic-card reveal d4" style="--card-glow:rgba(52,199,89,.12);">
+      <div class="card-accent" style="background:#34c759;"></div>
+      <div class="card-num">05 / 08</div>
+      <span class="card-icon">∑</span>
+      <div class="card-title">Mathematics for AI</div>
+      <div class="card-desc">Linear algebra, calculus, probability, and statistics — the mathematical foundations every AI practitioner needs.</div>
+      <div class="card-tags">
+        <span class="card-tag">Linear Algebra</span>
+        <span class="card-tag">Calculus</span>
+        <span class="card-tag">Statistics</span>
+        <span class="card-tag">Probability</span>
+      </div>
+      <div class="card-cta">Explore <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4"/></svg></div>
+    </a>
+
+    <!-- 6. Bioinformatics -->
+    <a href="/pages/ai-lab/bioinformatics.html" class="topic-card reveal d5" style="--card-glow:rgba(255,55,95,.12);">
+      <div class="card-accent" style="background:#ff375f;"></div>
+      <div class="card-num">06 / 08</div>
+      <span class="card-icon">🧬</span>
+      <div class="card-title">Bioinformatics</div>
+      <div class="card-desc">AI meets life science. Genomic sequencing, protein structure prediction, RNA-Seq analysis, and computational biology.</div>
+      <div class="card-tags">
+        <span class="card-tag">Genomics</span>
+        <span class="card-tag">RNA-Seq</span>
+        <span class="card-tag">AlphaFold</span>
+        <span class="card-tag">Nextflow</span>
+      </div>
+      <div class="card-cta">Explore <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4"/></svg></div>
+    </a>
+
+    <!-- 7. Data Engineer -->
+    <a href="/pages/ai-lab/data-engineer.html" class="topic-card reveal d6" style="--card-glow:rgba(0,113,227,.15);">
+      <div class="card-accent" style="background:#0071e3;"></div>
+      <div class="card-num">07 / 08</div>
+      <span class="card-icon">⚙️</span>
+      <div class="card-title">Data Engineer</div>
+      <div class="card-desc">Pipelines, warehouses, ETL, and the infrastructure that powers production AI — building reliable data systems at scale.</div>
+      <div class="card-tags">
+        <span class="card-tag">ETL</span>
+        <span class="card-tag">Airflow</span>
+        <span class="card-tag">Spark</span>
+        <span class="card-tag">BigQuery</span>
+      </div>
+      <div class="card-cta">Explore <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4"/></svg></div>
+    </a>
+
+    <!-- 8. Data Analyst -->
+    <a href="/pages/ai-lab/data-analyst.html" class="topic-card reveal d7" style="--card-glow:rgba(255,214,10,.1);">
+      <div class="card-accent" style="background:#ffd60a;"></div>
+      <div class="card-num">08 / 08</div>
+      <span class="card-icon">📊</span>
+      <div class="card-title">Data Analyst</div>
+      <div class="card-desc">From raw data to actionable insight. Visualization, statistical analysis, dashboarding, and data storytelling.</div>
+      <div class="card-tags">
+        <span class="card-tag">Pandas</span>
+        <span class="card-tag">SQL</span>
+        <span class="card-tag">Tableau</span>
+        <span class="card-tag">Storytelling</span>
+      </div>
+      <div class="card-cta">Explore <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4"/></svg></div>
+    </a>
+
+  </div>
+</div>
+
+<div id="footer-placeholder"></div>
+
+<script src="/js/shared.js"></script>
+<script src="/js/lang.js"></script>
+<script src="/js/ai-lab.js"></script>
+</body>
+</html>

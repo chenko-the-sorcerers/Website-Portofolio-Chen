@@ -1,0 +1,103 @@
+[
+  {
+    "company": "Coding Collective",
+    "role": "AI Community Lead",
+    "period": "Jul – Nov 2025",
+    "year": "2025",
+    "location": "Singapore",
+    "active": true,
+    "tags": [
+      "Community Building",
+      "AI Ecosystem",
+      "Open Source",
+      "Leadership"
+    ],
+    "desc": "Building and leading initiatives that empower aspiring and professional AI practitioners across Indonesia.",
+    "bullets": [
+      "Created collaborative AI ecosystems through hands-on workshops and study groups",
+      "Led open-source projects connecting Indonesian AI practitioners",
+      "Established strategic partnerships across the region"
+    ]
+  },
+  {
+    "company": "PT. Data Sorcerers Indonesia",
+    "role": "Founder & Chief Executive Officer",
+    "period": "Apr 2024 – Present",
+    "year": "2024",
+    "location": "Yogyakarta, ID",
+    "active": true,
+    "tags": [
+      "AI Consulting",
+      "Leadership",
+      "Entrepreneurship",
+      "Product Development"
+    ],
+    "desc": "IT Consulting that prepares digital talent for the AI world through project-based and open-source initiatives. Focused on AI for Culture, Healthcare, and Wellness.",
+    "bullets": [
+      "Founded and scaled to 10 AI divisions (CV, NLP, GenAI, Bioinformatics, etc.)",
+      "Delivered 20+ AI projects across industries",
+      "Built a community of 500+ AI practitioners in Indonesia"
+    ]
+  },
+  {
+    "company": "Massachusetts Institute of Technology",
+    "role": "Pre-PhD Researcher",
+    "period": "2025 – Present",
+    "year": "2025",
+    "location": "Boston, USA",
+    "active": true,
+    "tags": [
+      "Computer Vision",
+      "Computational Optimization",
+      "Research",
+      "MIT REAP"
+    ],
+    "desc": "Computational Science & Engineering research focused on Computer Vision and Computational Optimization.",
+    "bullets": [
+      "Research: Computer Vision & Computational Optimization",
+      "4th Place MIT Regional Entrepreneurship Acceleration Programme (REAP) 2025",
+      "Collaborating with cross-disciplinary research groups"
+    ]
+  },
+  {
+    "company": "PT. Kalbe Farma, Tbk.",
+    "role": "AI Engineer — Manufacturing",
+    "period": "Jun 2024 – Jun 2025",
+    "year": "2024",
+    "location": "Jakarta, ID",
+    "active": false,
+    "tags": [
+      "Computer Vision",
+      "CFD",
+      "ML",
+      "Manufacturing",
+      "Healthcare"
+    ],
+    "desc": "Applied AI engineering in pharmaceutical manufacturing — from defect detection to energy optimisation.",
+    "bullets": [
+      "Automated defect detection in aluminium packaging with Computer Vision",
+      "Built LightFM health recommendation system (National DS Tournament)",
+      "CFD + ML energy optimisation for spray dryer machines"
+    ]
+  },
+  {
+    "company": "X Corp (Twitter)",
+    "role": "Machine Learning Engineer",
+    "period": "Jul 2023 – Dec 2024",
+    "year": "2023",
+    "location": "San Francisco, USA",
+    "active": false,
+    "tags": [
+      "Machine Learning",
+      "NLP",
+      "Platform AI",
+      "Collaboration"
+    ],
+    "desc": "Collaborated with 10+ third-party institutions to integrate ML solutions across the X platform.",
+    "bullets": [
+      "Collaborated with 10+ third-party institutions",
+      "Integrated innovative ML solutions across the platform",
+      "Expanded X's AI innovation ecosystem"
+    ]
+  }
+]

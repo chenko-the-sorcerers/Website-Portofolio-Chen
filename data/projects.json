@@ -1,0 +1,162 @@
+[
+  {
+    "id": "arutala",
+    "title": "Arutala v2.2 — Multimodal AI Ecosystem",
+    "tags": [
+      "nlp",
+      "culture"
+    ],
+    "badges": [
+      "LLM",
+      "VLM",
+      "Multimodal",
+      "NLP",
+      "Cultural AI"
+    ],
+    "icon": "🌐",
+    "size": "featured",
+    "desc": "Full multimodal AI learning environment for Indonesian local languages. Integrates LLM and VLM pipelines with 21 regional personas via Dialekta v1.0. Includes the ARUNA 7B and DIALEKTA 2B foundation models, and is powered by the SABDA algorithm for script intelligence."
+  },
+  {
+    "id": "indollnet",
+    "title": "IndoLLNet v2.1",
+    "tags": [
+      "cv",
+      "culture"
+    ],
+    "badges": [
+      "CNN",
+      "OCR",
+      "Computer Vision"
+    ],
+    "icon": "📜",
+    "size": "normal",
+    "desc": "Novel CNN architecture for Indonesian indigenous Nusantara script recognition. Enables handwritten character recognition for ancient scripts. Powers the Arutala Aksara app with 600K+ users. Presented at 10+ academic and industry panels."
+  },
+  {
+    "id": "aruna",
+    "title": "ARUNA 7B & DIALEKTA 2B",
+    "tags": [
+      "nlp",
+      "culture"
+    ],
+    "badges": [
+      "Foundation Model",
+      "7B params",
+      "Low-resource"
+    ],
+    "icon": "🤖",
+    "size": "normal",
+    "desc": "Foundation language models purpose-built for Indonesian local languages and dialects. ARUNA at 7B parameters handles broad linguistic understanding; DIALEKTA 2B specialises in regional dialect generation and conversation."
+  },
+  {
+    "id": "mandala",
+    "title": "MANDALA",
+    "tags": [
+      "cv",
+      "mfg"
+    ],
+    "badges": [
+      "IoT",
+      "Safety",
+      "Computer Vision"
+    ],
+    "icon": "🚆",
+    "size": "normal",
+    "desc": "Monitoring Safety and Railway Navigation system. Presented to PT. KAI (Indonesia Railway Company) 2025 for national railway infrastructure safety and real-time hazard detection."
+  },
+  {
+    "id": "sabdarana",
+    "title": "SABDARANA",
+    "tags": [
+      "web3",
+      "culture"
+    ],
+    "badges": [
+      "Web3",
+      "NFT",
+      "Blockchain"
+    ],
+    "icon": "⛓️",
+    "size": "normal",
+    "desc": "Web3 & NFT-based Cultural Learn-to-Earn application. Preserving Nusantara heritage through blockchain incentives and gamified cultural education. Presented at Garuda Hacks 2025."
+  },
+  {
+    "id": "kerti-kawista",
+    "title": "KERTI KAWISTA",
+    "tags": [
+      "cv"
+    ],
+    "badges": [
+      "Face Recognition",
+      "Safety",
+      "CCTV"
+    ],
+    "icon": "🏗️",
+    "size": "normal",
+    "desc": "Construction site presence app with facial recognition attendance, safety gear validation, and real-time CCTV monitoring. Presented at Garuda Hacks 2023."
+  },
+  {
+    "id": "defect-detection",
+    "title": "Aluminium Defect Detection",
+    "tags": [
+      "cv",
+      "mfg"
+    ],
+    "badges": [
+      "Computer Vision",
+      "Manufacturing",
+      "Quality Control"
+    ],
+    "icon": "🔬",
+    "size": "normal",
+    "desc": "Automated defect detection in aluminium packaging using Computer Vision at PT. Kalbe Farma. Reduced manual inspection time significantly and improved product quality consistency."
+  },
+  {
+    "id": "lightfm",
+    "title": "LightFM Health Recommender",
+    "tags": [
+      "health",
+      "nlp"
+    ],
+    "badges": [
+      "Recommendation System",
+      "Healthcare",
+      "ML"
+    ],
+    "icon": "💊",
+    "size": "normal",
+    "desc": "Collaborative filtering health recommendation system built for the National Data Science Tournament at Kalbe Farma. Personalises health product recommendations for millions of users."
+  },
+  {
+    "id": "cfd-ml",
+    "title": "CFD + ML Spray Dryer Optimisation",
+    "tags": [
+      "mfg"
+    ],
+    "badges": [
+      "CFD",
+      "OpenFOAM",
+      "Energy Optimisation"
+    ],
+    "icon": "🌊",
+    "size": "normal",
+    "desc": "Combined Computational Fluid Dynamics and Machine Learning model for energy optimisation in pharmaceutical spray dryer machines at Kalbe Farma. Reduces energy consumption while maintaining output quality."
+  },
+  {
+    "id": "bioblock",
+    "title": "BioBlock",
+    "tags": [
+      "web3",
+      "health"
+    ],
+    "badges": [
+      "Blockchain",
+      "Healthcare",
+      "AI Diagnostics"
+    ],
+    "icon": "🧬",
+    "size": "normal",
+    "desc": "Blockchain-based secure medical data platform with integrated AI diagnostics. Presented at Universitas Gadjah Mada NETCOMP 3.0. Ensures data integrity and patient privacy in healthcare systems."
+  }
+]

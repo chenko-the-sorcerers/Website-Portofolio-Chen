@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TF-IDF — Text Representations | NLP | AI Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/shared.css">
+<link rel="stylesheet" href="/css/tfidf.css">
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-follower" id="cursor-follower"></div>
+<div id="nav-placeholder"></div>
+<div class="read-progress"><div id="readBar"></div></div>
+
+<div class="lesson-layout">
+
+  <!-- ═══ SIDEBAR ═══ -->
+  <aside class="lesson-sidebar" id="lessonSidebar">
+    <div class="sb-top">
+      <a href="/ai-lab/nlp.html" class="sb-back">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 3L5 8l5 5"/></svg>
+        Natural Language Processing
+      </a>
+      <div class="sb-studying">
+        <div class="sb-studying-label">Sedang belajar</div>
+        <div class="sb-studying-path">
+          <span class="sbp-item">AI Lab</span><span class="sbp-sep">›</span>
+          <span class="sbp-item">NLP</span><span class="sbp-sep">›</span>
+          <span class="sbp-item active">TF-IDF</span>
+        </div>
+      </div>
+      <div class="sb-chapter">Modul 2 · Text Representations</div>
+      <div class="sb-lesson-title">TF-IDF &amp; Document Search</div>
+      <div class="sb-tags">
+        <span class="sb-tag">Representasi Teks</span>
+        <span class="sb-tag interactive">🧮 Math</span>
+        <span class="sb-tag interactive">🔍 Search Engine</span>
+      </div>
+    </div>
+
+    <nav class="lesson-nav">
+      <div class="nav-section-label">Dalam lesson ini</div>
+      <a href="#sec-masalah" class="lnav-item active" data-sec="sec-masalah">
+        <span class="lnav-dot"></span><span class="lnav-text">Batasan BoW</span><span class="lnav-num">01</span>
+      </a>
+      <a href="#sec-tf" class="lnav-item" data-sec="sec-tf">
+        <span class="lnav-dot"></span><span class="lnav-text">Term Frequency</span><span class="lnav-num">02</span>
+      </a>
+      <a href="#sec-idf" class="lnav-item" data-sec="sec-idf">
+        <span class="lnav-dot"></span><span class="lnav-text">Inverse Document Frequency</span><span class="lnav-num">03</span>
+      </a>
+      <a href="#sec-tfidf" class="lnav-item" data-sec="sec-tfidf">
+        <span class="lnav-dot"></span><span class="lnav-text">Skor TF-IDF</span><span class="lnav-num">04</span>
+      </a>
+      <a href="#sec-search" class="lnav-item" data-sec="sec-search">
+        <span class="lnav-dot"></span><span class="lnav-text">Mesin Pencari</span><span class="lnav-num">05</span>
+      </a>
+      <a href="#sec-preproses" class="lnav-item" data-sec="sec-preproses">
+        <span class="lnav-dot"></span><span class="lnav-text">Pra-pemrosesan B. Indonesia</span><span class="lnav-num">06</span>
+      </a>
+      <a href="#sec-lab" class="lnav-item" data-sec="sec-lab">
+        <span class="lnav-dot"></span><span class="lnav-text">🧪 Lab — Search Engine</span><span class="lnav-num">07</span>
+      </a>
+    </nav>
+
+    <div class="sb-progress">
+      <div class="sb-prog-label"><span>Progress</span><span id="progPct">0%</span></div>
+      <div class="sb-prog-track"><div class="sb-prog-fill" id="progFill"></div></div>
+    </div>
+
+    <div class="sb-module-nav">
+      <div class="nav-section-label" style="padding:0 8px;margin-bottom:8px">Modul 2 · Text Representations</div>
+      <a href="/ai-lab/nlp/bow.html" class="smn-item"><span class="smn-dot done"></span><span>Bag-of-Words</span></a>
+      <a href="/ai-lab/nlp/tfidf.html" class="smn-item current"><span class="smn-dot"></span><span>TF-IDF</span></a>
+      <a href="/ai-lab/nlp/word-vectors.html" class="smn-item locked"><span class="smn-dot"></span><span>Word Vectors</span><span class="smn-lock">🔒</span></a>
+    </div>
+  </aside>
+
+  <!-- ═══ MAIN ═══ -->
+  <main class="lesson-main">
+    <div class="lesson-topbar">
+      <div class="ltb-left">
+        <button class="ltb-menu" id="menuBtn" onclick="toggleSidebar()">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg>
+        </button>
+        <span class="ltb-crumb">TF-IDF</span>
+      </div>
+      <div class="ltb-right">
+        <a href="/ai-lab/nlp/bow.html" class="ltb-btn">← Bag-of-Words</a>
+        <a href="/ai-lab/nlp/word-vectors.html" class="ltb-btn primary">Word Vectors →</a>
+      </div>
+    </div>
+
+    <div class="lesson-body">
+
+      <!-- ══ SEC 1: BATASAN BOW ══ -->
+      <section class="lesson-sec" id="sec-masalah">
+        <div class="sec-header">
+          <span class="sec-num">01</span>
+          <div>
+            <h2 class="sec-title">Batasan Bag-of-Words</h2>
+            <p class="sec-sub">Mengapa menghitung kata saja tidak cukup — dan apa yang perlu diperbaiki</p>
+          </div>
+        </div>
+
+        <div class="prose">
+          Di lesson sebelumnya kita membangun BoW — representasi teks sebagai vektor frekuensi kata. Hasilnya cukup baik untuk banyak kasus. Tapi ada satu kelemahan mendasar: <strong>semua kata diperlakukan setara</strong>, padahal jelas kata "dan", "di", "yang" tidak lebih informatif dari kata "korupsi", "tsunami", atau "Tokopedia".
+        </div>
+
+        <div class="worked-box">
+          <div class="wb-badge">❌ Masalah BoW</div>
+          <div class="wb-title">Kata Umum Mendominasi Vektor</div>
+          <div class="calc-chain">
+            <div class="calc-step">
+              <div class="cs-num-circle" style="background:#ef4444;color:#fff;">!</div>
+              <div class="cs-content">
+                <div class="cs-label">Dokumen berita ekonomi Indonesia</div>
+                <div class="math-line"><span class="math-term">"Bank Indonesia <strong style="color:#ef4444">dan</strong> pemerintah <strong style="color:#ef4444">yang</strong> bekerja sama <strong style="color:#ef4444">di</strong> bidang moneter"</span></div>
+                <div class="math-line" style="margin-top:8px;">
+                  <span class="math-comment">// Kata paling tinggi skornya di BoW:</span>
+                </div>
+                <div class="math-line">
+                  <span class="math-term red">"dan" = 847</span>
+                  <span class="math-op">,</span>
+                  <span class="math-term red">"yang" = 634</span>
+                  <span class="math-op">,</span>
+                  <span class="math-term red">"di" = 521</span>
+                  <span class="math-op">,</span>
+                  <span class="math-term" style="color:#30d158;">"bank" = 12</span>
+                  <span class="math-op">,</span>
+                  <span class="math-term" style="color:#30d158;">"moneter" = 3</span>
+                </div>
+              </div>
+            </div>
+            <div class="calc-step">
+              <div class="cs-num-circle" style="background:#ef4444;color:#fff;">!</div>
+              <div class="cs-content">
+                <div class="cs-label">Akibatnya — dua dokumen sangat berbeda kelihatan "mirip"</div>
+                <div class="math-line">
+                  <span class="math-term">"Pemerintah dan rakyat yang bersatu"</span>
+                  <span class="math-op">←→</span>
+                  <span class="math-term">"Pemerintah dan bank yang bangkrut"</span>
+                </div>
+                <div class="math-line">
+                  <span class="math-result red">cosine sim = 0.82</span>
+                  <span class="math-comment">// sangat mirip di BoW, padahal topik berbeda jauh!</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="compare-2">
+          <div class="cmp-card">
+            <div class="cmp-head">❌ BoW Murni</div>
+            <ul class="cmp-list">
+              <li class="bad">Kata "dan", "di", "yang" dapat skor tinggi</li>
+              <li class="bad">Kata informatif ("moneter", "inflasi") tenggelam</li>
+              <li class="bad">Dokumen berbeda topik kelihatan mirip</li>
+              <li class="bad">Tidak diskriminatif untuk pencarian</li>
+            </ul>
+          </div>
+          <div class="cmp-card">
+            <div class="cmp-head">✅ TF-IDF</div>
+            <ul class="cmp-list">
+              <li class="good">Kata umum yang muncul di semua dokumen dapat skor rendah</li>
+              <li class="good">Kata langka yang diskriminatif dapat skor tinggi</li>
+              <li class="good">Dokumen yang benar-benar mirip topik terdeteksi</li>
+              <li class="good">Standar emas untuk Information Retrieval klasik</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="insight-callout warn">
+          <div class="ic-icon">🎯</div>
+          <div class="ic-body">
+            <strong>Solusi:</strong> Kita butuh bobot yang mempertimbangkan dua hal sekaligus — seberapa sering kata muncul <em>dalam dokumen itu</em> (lokal), DAN seberapa langka kata itu <em>di seluruh korpus</em> (global). Inilah TF-IDF.
+          </div>
+        </div>
+      </section>
+
+      <!-- ══ SEC 2: TF ══ -->
+      <section class="lesson-sec" id="sec-tf">
+        <div class="sec-header">
+          <span class="sec-num">02</span>
+          <div>
+            <h2 class="sec-title">Term Frequency (TF)</h2>
+            <p class="sec-sub">Ukuran lokal — seberapa sering kata muncul dalam satu dokumen tertentu</p>
+          </div>
+        </div>
+
+        <div class="prose">
+          <strong>Term Frequency</strong> mengukur kerapatan kata dalam satu dokumen. Asumsinya sederhana: semakin sering kata muncul dalam dokumen, semakin besar kemungkinan kata itu merepresentasikan topik dokumen tersebut. Namun kita <em>normalkan</em> dengan total kata agar dokumen panjang tidak otomatis mendapat skor lebih tinggi dari dokumen pendek.
+        </div>
+
+        <div class="formula-box">
+          <div class="fb-label">Formula Term Frequency</div>
+          <div class="fb-eq">
+            TF(<span class="fv">t</span>, <span class="fb">d</span>)
+            <span class="op"> = </span>
+            <span style="display:inline-flex;flex-direction:column;align-items:center;gap:2px;">
+              <span style="border-bottom:2px solid rgba(41,151,255,.4);padding-bottom:4px;">jumlah kemunculan <span class="fv">t</span> dalam <span class="fb">d</span></span>
+              <span>total kata dalam <span class="fb">d</span></span>
+            </span>
+          </div>
+          <div class="fb-legend">
+            <div class="fb-leg"><span class="fb-sym" style="color:#2997ff;">t</span><span class="fb-desc">= term (kata yang dihitung)</span></div>
+            <div class="fb-leg"><span class="fb-sym" style="color:#2997ff;">d</span><span class="fb-desc">= document (dokumen target)</span></div>
+          </div>
+        </div>
+
+        <div class="worked-box">
+          <div class="wb-badge">🧮 Contoh TF — Berita Gojek</div>
+          <div class="wb-title">Dokumen: "Gojek meluncurkan layanan baru di Jakarta dan Bandung"</div>
+          <div class="calc-chain">
+            <div class="calc-step">
+              <div class="cs-num-circle">1</div>
+              <div class="cs-content">
+                <div class="cs-label">Hitung total kata setelah tokenisasi</div>
+                <div class="math-line">
+                  <span class="math-term">"gojek meluncurkan layanan baru jakarta bandung"</span>
+                </div>
+                <div class="math-line">
+                  <span class="math-term blue">total kata</span><span class="math-op">=</span>
+                  <span class="math-result">7</span>
+                  <span class="math-comment">// setelah hapus stop words</span>
+                </div>
+              </div>
+            </div>
+            <div class="calc-step">
+              <div class="cs-num-circle">2</div>
+              <div class="cs-content">
+                <div class="cs-label">Hitung TF tiap kata (frekuensi ÷ total)</div>
+                <div class="math-line">
+                  <span class="math-term">TF("gojek")</span><span class="math-op">=</span>
+                  <span class="math-term">1 ÷ 7</span><span class="math-op">=</span>
+                  <span class="math-result green">0.143</span>
+                </div>
+                <div class="math-line">
+                  <span class="math-term">TF("jakarta")</span><span class="math-op">=</span>
+                  <span class="math-term">1 ÷ 7</span><span class="math-op">=</span>
+                  <span class="math-result green">0.143</span>
+                </div>
+                <div class="math-line">
+                  <span class="math-term">TF("layanan")</span><span class="math-op">=</span>
+                  <span class="math-term">1 ÷ 7</span><span class="math-op">=</span>
+                  <span class="math-result green">0.143</span>
+                  <span class="math-comment">// semua kata muncul 1× → TF sama</span>
+                </div>
+              </div>
+            </div>
+            <div class="calc-step">
+              <div class="cs-num-circle">3</div>
+              <div class="cs-content">
+                <div class="cs-label">Jika kata muncul lebih dari sekali — TF naik</div>
+                <div class="math-line">
+                  <span class="math-term">"Gojek dan Gojek lagi dan lagi"</span>
+                  <span class="math-comment">// setelah stop words: "gojek gojek"</span>
+                </div>
+                <div class="math-line">
+                  <span class="math-term">TF("gojek")</span><span class="math-op">=</span>
+                  <span class="math-term">2 ÷ 2</span><span class="math-op">=</span>
+                  <span class="math-result green">1.000</span>
+                  <span class="math-comment">// dokumen berbicara hampir hanya tentang gojek</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="insight-callout warn">
+          <div class="ic-icon">⚠️</div>
+          <div class="ic-body">
+            <strong>Masalah TF saja:</strong> Kata "dan" punya TF sangat tinggi di hampir semua dokumen, tapi tidak bermakna. Di sinilah IDF masuk — menghukum kata yang terlalu umum di seluruh korpus.
+          </div>
+        </div>
+      </section>
+
+      <!-- ══ SEC 3: IDF ══ -->
+      <section class="lesson-sec" id="sec-idf">
+        <div class="sec-header">
+          <span class="sec-num">03</span>
+          <div>
+            <h2 class="sec-title">Inverse Document Frequency (IDF)</h2>
+            <p class="sec-sub">Ukuran global — seberapa langka kata di seluruh korpus. Semakin langka, semakin berharga.</p>
+          </div>
+        </div>
+
+        <div class="prose">
+          <strong>IDF</strong> memberi skor berdasarkan kelangkaan kata. Jika kata muncul di hampir semua dokumen — seperti "dan", "ini", "adalah" — maka ia mendapat skor IDF mendekati nol. Jika kata sangat langka dan hanya muncul di beberapa dokumen — seperti "deflasi", "koruptor", "startup" — maka ia mendapat skor IDF tinggi.
+        </div>
+
+        <div class="formula-box blue">
+          <div class="fb-label">Formula Inverse Document Frequency</div>
+          <div class="fb-eq">
+            IDF(<span class="fv">t</span>)
+            <span class="op"> = </span>
+            log
+            <span style="display:inline-flex;flex-direction:column;align-items:center;gap:2px;margin:0 4px;">
+              <span style="border-bottom:2px solid rgba(41,151,255,.4);padding-bottom:4px;">N</span>
+              <span>df(<span class="fv">t</span>)</span>
+            </span>
+          </div>
+          <div class="fb-legend">
+            <div class="fb-leg"><span class="fb-sym" style="color:#2997ff;">N</span><span class="fb-desc">= total dokumen dalam korpus</span></div>
+            <div class="fb-leg"><span class="fb-sym" style="color:#ff9f0a;">df(t)</span><span class="fb-desc">= jumlah dokumen yang mengandung kata t</span></div>
+          </div>
+        </div>
+
+        <div class="worked-box">
+          <div class="wb-badge">📊 Visualisasi Skala IDF — Korpus 1000 Dokumen</div>
+          <div class="wb-title">Semakin Langka → Skor IDF Semakin Tinggi</div>
+          <div class="idf-scale" id="idfScaleDemo"></div>
+          <div style="margin-top:8px;font-family:var(--font-mono);font-size:11px;color:var(--text-3);">
+            IDF = log(1000 / df). Bar menunjukkan skor relatif. Kata yang muncul di semua dokumen mendapat IDF ≈ 0.
+          </div>
+        </div>
+
+        <div class="prose">
+          Fungsi logaritma dipilih bukan sembarangan — ia <strong>menyeimbangkan skala</strong>. Tanpa log, kata yang muncul di 1 dokumen dari 1000 mendapat skor 1000× lebih tinggi dari kata yang muncul di 10 dokumen. Dengan log, perbedaannya menjadi log(1000) vs log(100) = 3 vs 2 — jauh lebih wajar secara linguistik.
+        </div>
+
+        <div class="code-block">
+<pre><code><span class="c-kw">import</span> math
+
+N <span class="c-op">=</span> <span class="c-num">1000</span>  <span class="c-cmt"># total dokumen</span>
+
+<span class="c-kw">def</span> <span class="c-fn">idf</span>(df):
+    <span class="c-cmt"># +1 pada penyebut = Laplace smoothing (hindari div/0)</span>
+    <span class="c-kw">return</span> math.<span class="c-fn">log</span>((N <span class="c-op">+</span> <span class="c-num">1</span>) <span class="c-op">/</span> (df <span class="c-op">+</span> <span class="c-num">1</span>)) <span class="c-op">+</span> <span class="c-num">1</span>
+
+<span class="c-fn">print</span>(<span class="c-fn">idf</span>(<span class="c-num">1000</span>))  <span class="c-cmt"># "dan" muncul di semua  → 1.001 (hampir 0)</span>
+<span class="c-fn">print</span>(<span class="c-fn">idf</span>(<span class="c-num">500</span>))   <span class="c-cmt"># "jakarta" setengah dok → 1.693</span>
+<span class="c-fn">print</span>(<span class="c-fn">idf</span>(<span class="c-num">10</span>))    <span class="c-cmt"># "deflasi" sangat langka → 5.298</span>
+<span class="c-fn">print</span>(<span class="c-fn">idf</span>(<span class="c-num">1</span>))     <span class="c-cmt"># "koruptor X" unik      → 7.909</span></code></pre>
+        </div>
+      </section>
+
+      <!-- ══ SEC 4: SKOR TF-IDF ══ -->
+      <section class="lesson-sec" id="sec-tfidf">
+        <div class="sec-header">
+          <span class="sec-num">04</span>
+          <div>
+            <h2 class="sec-title">Skor TF-IDF — Menggabungkan Dua Bobot</h2>
+            <p class="sec-sub">Perkalian sederhana yang menghasilkan representasi yang jauh lebih bermakna dari BoW</p>
+          </div>
+        </div>
+
+        <div class="prose">
+          Skor TF-IDF adalah perkalian langsung dari dua komponen: <strong>TF</strong> (bobot lokal — penting dalam dokumen ini) dan <strong>IDF</strong> (bobot global — langka di korpus). Kata mendapat skor tinggi hanya jika ia sering muncul dalam dokumen DAN langka di korpus — persis seperti karakteristik kata kunci yang ideal.
+        </div>
+
+        <div class="formula-box">
+          <div class="fb-label">Formula TF-IDF</div>
+          <div class="fb-eq">
+            TF-IDF(<span class="fv">t</span>, <span class="fb">d</span>)
+            <span class="op"> = </span>
+            TF(<span class="fv">t</span>, <span class="fb">d</span>)
+            <span class="op"> × </span>
+            IDF(<span class="fv">t</span>)
+          </div>
+          <div class="fb-legend">
+            <div class="fb-leg"><span class="fb-sym" style="color:#30d158;">TF</span><span class="fb-desc">= sering muncul dalam dokumen ini</span></div>
+            <div class="fb-leg"><span class="fb-sym" style="color:#ff9f0a;">IDF</span><span class="fb-desc">= langka di seluruh korpus</span></div>
+            <div class="fb-leg"><span class="fb-sym" style="color:#2997ff;">TF-IDF</span><span class="fb-desc">= tinggi hanya jika keduanya terpenuhi</span></div>
+          </div>
+        </div>
+
+        <div class="worked-box">
+          <div class="wb-badge">🎯 Perbandingan — Tiga Kata dalam Satu Dokumen</div>
+          <div class="wb-title">Korpus: 100 berita startup Indonesia</div>
+
+          <!-- TF-IDF word list akan di-render JS -->
+          <div id="tfidfWordDemo"></div>
+          <div style="margin-top:12px;font-family:var(--font-mono);font-size:11px;color:var(--text-3);">
+            ↑ "startup" menang karena kombinasi TF tinggi × IDF tinggi. "dan" kalah meski TF tinggi karena IDF mendekati nol.
+          </div>
+        </div>
+
+        <div class="code-block">
+<pre><code><span class="c-kw">from</span> sklearn.feature_extraction.text <span class="c-kw">import</span> TfidfVectorizer
+
+korpus <span class="c-op">=</span> [
+    <span class="c-str">"Gojek startup unicorn Indonesia meluncurkan fitur baru"</span>,
+    <span class="c-str">"Tokopedia dan Shopee bersaing di pasar e-commerce"</span>,
+    <span class="c-str">"Startup Indonesia makin banyak mendapat pendanaan"</span>,
+]
+
+vec <span class="c-op">=</span> <span class="c-cls">TfidfVectorizer</span>()
+X   <span class="c-op">=</span> vec.<span class="c-fn">fit_transform</span>(korpus)
+
+<span class="c-cmt"># Lihat skor TF-IDF dokumen pertama</span>
+feature_names <span class="c-op">=</span> vec.<span class="c-fn">get_feature_names_out</span>()
+scores        <span class="c-op">=</span> X[<span class="c-num">0</span>].<span class="c-fn">toarray</span>()[<span class="c-num">0</span>]
+
+<span class="c-cmt"># Urutkan dari skor tertinggi</span>
+top_words <span class="c-op">=</span> <span class="c-fn">sorted</span>(
+    <span class="c-fn">zip</span>(feature_names, scores),
+    key<span class="c-op">=lambda</span> x: x[<span class="c-num">1</span>], reverse<span class="c-op">=True</span>
+)[:<span class="c-num">5</span>]
+<span class="c-cmt"># [('unicorn', 0.52), ('fitur', 0.52),</span>
+<span class="c-cmt">#  ('meluncurkan', 0.52), ('gojek', 0.40), ...]</span></code></pre>
+        </div>
+
+        <div class="insight-callout">
+          <div class="ic-icon">💡</div>
+          <div class="ic-body">
+            <strong>Keyword Extraction gratis:</strong> Kata-kata dengan skor TF-IDF tertinggi per dokumen adalah keyword otomatis — bisa dipakai untuk tag artikel, summarization, atau indexing. Ini adalah cara kerja search engine seperti Elasticsearch sebelum era neural search.
+          </div>
+        </div>
+      </section>
+
+      <!-- ══ SEC 5: SEARCH ENGINE ══ -->
+      <section class="lesson-sec" id="sec-search">
+        <div class="sec-header">
+          <span class="sec-num">05</span>
+          <div>
+            <h2 class="sec-title">Mesin Pencari dengan TF-IDF</h2>
+            <p class="sec-sub">Dari vector space model ke document retrieval yang bisa kamu bangun dalam 10 baris Python</p>
+          </div>
+        </div>
+
+        <div class="prose">
+          Dengan vektor TF-IDF untuk setiap dokumen, kita bisa membangun mesin pencari sederhana: representasikan query sebagai vektor TF-IDF menggunakan vocabulary yang sama, lalu hitung cosine similarity antara query dan semua dokumen, dan kembalikan yang paling mirip.
+        </div>
+
+        <div class="worked-box">
+          <div class="wb-badge">⚙️ Pipeline Search Engine TF-IDF</div>
+          <div class="wb-title">Dari Korpus ke Hasil Pencarian</div>
+          <div class="calc-chain">
+            <div class="calc-step">
+              <div class="cs-num-circle">1</div>
+              <div class="cs-content">
+                <div class="cs-label">Offline: build index (dilakukan sekali)</div>
+                <div class="math-line">
+                  <span class="math-term">Korpus D₁…Dₙ</span>
+                  <span class="math-op">→ TfidfVectorizer.fit_transform →</span>
+                  <span class="math-result blue">Matrix X (n × |V|)</span>
+                </div>
+              </div>
+            </div>
+            <div class="calc-step">
+              <div class="cs-num-circle">2</div>
+              <div class="cs-content">
+                <div class="cs-label">Online: proses query (setiap pencarian)</div>
+                <div class="math-line">
+                  <span class="math-term">Query q</span>
+                  <span class="math-op">→ vectorizer.transform →</span>
+                  <span class="math-result blue">Vektor q (1 × |V|)</span>
+                </div>
+              </div>
+            </div>
+            <div class="calc-step">
+              <div class="cs-num-circle">3</div>
+              <div class="cs-content">
+                <div class="cs-label">Hitung cosine similarity query vs semua dokumen</div>
+                <div class="math-line">
+                  <span class="math-term">scores</span>
+                  <span class="math-op">=</span>
+                  <span class="math-term">cosine_similarity(q, X)</span>
+                  <span class="math-comment">// array 1×n</span>
+                </div>
+              </div>
+            </div>
+            <div class="calc-step">
+              <div class="cs-num-circle">4</div>
+              <div class="cs-content">
+                <div class="cs-label">Urutkan dan kembalikan top-k dokumen</div>
+                <div class="math-line">
+                  <span class="math-result blue">ranking = argsort(scores)[::-1][:k]</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="code-block">
+<pre><code><span class="c-kw">from</span> sklearn.feature_extraction.text <span class="c-kw">import</span> TfidfVectorizer
+<span class="c-kw">from</span> sklearn.metrics.pairwise <span class="c-kw">import</span> cosine_similarity
+<span class="c-kw">import</span> numpy <span class="c-kw">as</span> np
+
+<span class="c-cmt"># 1. Build index</span>
+vec <span class="c-op">=</span> <span class="c-cls">TfidfVectorizer</span>()
+X   <span class="c-op">=</span> vec.<span class="c-fn">fit_transform</span>(korpus)
+
+<span class="c-kw">def</span> <span class="c-fn">search</span>(query, top_k<span class="c-op">=</span><span class="c-num">3</span>):
+    <span class="c-cmt"># 2. Vektorisasi query</span>
+    q_vec  <span class="c-op">=</span> vec.<span class="c-fn">transform</span>([query])
+    <span class="c-cmt"># 3. Cosine similarity</span>
+    scores <span class="c-op">=</span> <span class="c-fn">cosine_similarity</span>(q_vec, X)[<span class="c-num">0</span>]
+    <span class="c-cmt"># 4. Ranking</span>
+    top    <span class="c-op">=</span> np.<span class="c-fn">argsort</span>(scores)[::<span class="c-op">-</span><span class="c-num">1</span>][:top_k]
+    <span class="c-kw">return</span> [(korpus[i], scores[i]) <span class="c-kw">for</span> i <span class="c-kw">in</span> top <span class="c-kw">if</span> scores[i] <span class="c-op">></span> <span class="c-num">0</span>]
+
+<span class="c-fn">search</span>(<span class="c-str">"startup Indonesia pendanaan"</span>)
+<span class="c-cmt"># [("Startup Indonesia makin banyak...", 0.72),</span>
+<span class="c-cmt">#  ("Gojek startup unicorn...",        0.41)]</span></code></pre>
+        </div>
+
+        <div class="compare-2">
+          <div class="cmp-card">
+            <div class="cmp-head">✅ Kelebihan TF-IDF Search</div>
+            <ul class="cmp-list">
+              <li class="good">Sangat cepat — matrix multiplication di sparse space</li>
+              <li class="good">Tidak butuh training — hanya statistik korpus</li>
+              <li class="good">Interpretable — bisa lihat kata mana yang drive similarity</li>
+              <li class="good">Efektif untuk exact keyword matching</li>
+            </ul>
+          </div>
+          <div class="cmp-card">
+            <div class="cmp-head">❌ Keterbatasan</div>
+            <ul class="cmp-list">
+              <li class="bad">Tidak mengerti sinonim — "mobil" ≠ "kendaraan"</li>
+              <li class="bad">Tidak paham konteks — "bank sungai" vs "bank uang"</li>
+              <li class="bad">Vocabulary mismatch dengan query pendek</li>
+              <li class="bad">Tidak bisa generalisasi ke unseen terms</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══ SEC 6: PRA-PEMROSESAN ══ -->
+      <section class="lesson-sec" id="sec-preproses">
+        <div class="sec-header">
+          <span class="sec-num">06</span>
+          <div>
+            <h2 class="sec-title">Pra-pemrosesan Teks Bahasa Indonesia</h2>
+            <p class="sec-sub">TF-IDF hanya sebaik teks yang masuk — preprocessing menentukan kualitas representasi</p>
+          </div>
+        </div>
+
+        <div class="prose">
+          Bahasa Indonesia butuh pra-pemrosesan khusus sebelum TF-IDF bisa bekerja optimal. Ada tiga tahap utama: <strong>case folding</strong>, <strong>stopword filtering</strong>, dan <strong>stemming</strong>. Stemming Bahasa Indonesia jauh lebih kompleks dari Bahasa Inggris karena sistem afiksasi yang kaya.
+        </div>
+
+        <div class="worked-box">
+          <div class="wb-badge">⚙️ Pipeline Pra-pemrosesan Bahasa Indonesia</div>
+          <div class="wb-title">Teks Mentah → Siap TF-IDF</div>
+          <div class="calc-chain">
+            <div class="calc-step">
+              <div class="cs-num-circle" style="background:#2997ff;">1</div>
+              <div class="cs-content">
+                <div class="cs-label">Case Folding — Menyeragamkan huruf kecil</div>
+                <div class="math-line">
+                  <span class="math-term">"GoJek MELUNCURKAN Fitur BARU"</span>
+                  <span class="math-op">→</span>
+                  <span class="math-result blue">"gojek meluncurkan fitur baru"</span>
+                </div>
+                <div class="math-line"><span class="math-comment">// "GoJek" dan "gojek" = token berbeda tanpa ini</span></div>
+              </div>
+            </div>
+            <div class="calc-step">
+              <div class="cs-num-circle" style="background:#2997ff;">2</div>
+              <div class="cs-content">
+                <div class="cs-label">Stopword Removal — Hapus kata tidak bermakna</div>
+                <div class="math-line">
+                  <span class="math-term">"gojek meluncurkan fitur baru <span style="color:#ef4444">di</span> jakarta <span style="color:#ef4444">dan</span> bandung"</span>
+                </div>
+                <div class="math-line">
+                  <span class="math-op">→</span>
+                  <span class="math-result blue">"gojek meluncurkan fitur baru jakarta bandung"</span>
+                </div>
+                <div class="math-line"><span class="math-comment">// Daftar stopword B.Indonesia: ~758 kata (PNL-ITB)</span></div>
+              </div>
+            </div>
+            <div class="calc-step">
+              <div class="cs-num-circle" style="background:#2997ff;">3</div>
+              <div class="cs-content">
+                <div class="cs-label">Stemming Nazief-Adriani — Kembalikan ke kata dasar</div>
+                <div class="math-line">
+                  <span class="math-term">"meluncurkan"</span><span class="math-op">→</span><span class="math-result blue">"luncur"</span>
+                  <span class="math-op">&nbsp;&nbsp;</span>
+                  <span class="math-term">"pendanaan"</span><span class="math-op">→</span><span class="math-result blue">"dana"</span>
+                </div>
+                <div class="math-line">
+                  <span class="math-term">"mempertanggungjawabkan"</span><span class="math-op">→</span><span class="math-result blue">"tanggung jawab"</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stemming table -->
+        <div class="worked-box">
+          <div class="wb-badge">🌿 Algoritma Nazief-Adriani — Contoh Stemming</div>
+          <div class="wb-title">Stripping awalan dan akhiran bertahap</div>
+          <div class="stem-table-wrap">
+            <table class="stem-table">
+              <thead>
+                <tr>
+                  <th>Kata Asli</th>
+                  <th>Morfologi</th>
+                  <th>Kata Dasar</th>
+                  <th>Aturan</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td class="word-col">meluncurkan</td><td class="morph-col">me- + luncur + -kan</td><td class="stem-col">luncur</td><td class="rule-col">Strip me- → Strip -kan</td></tr>
+                <tr><td class="word-col">pendanaan</td><td class="morph-col">pe- + dana + -an</td><td class="stem-col">dana</td><td class="rule-col">Strip pe(N)- → Strip -an</td></tr>
+                <tr><td class="word-col">ketidakhadiran</td><td class="morph-col">ke- + tidak + hadir + -an</td><td class="stem-col">hadir</td><td class="rule-col">Strip ke- + tidak → Strip -an</td></tr>
+                <tr><td class="word-col">memberikan</td><td class="morph-col">mem- + beri + -kan</td><td class="stem-col">beri</td><td class="rule-col">Strip mem- → Strip -kan</td></tr>
+                <tr><td class="word-col">pemberitahuan</td><td class="morph-col">pe- + berita + -an + -an</td><td class="stem-col">berita</td><td class="rule-col">Strip pe(N)- → Strip -an (loop)</td></tr>
+                <tr><td class="word-col">memperjuangkan</td><td class="morph-col">memper- + juang + -kan</td><td class="stem-col">juang</td><td class="rule-col">Strip memper- → Strip -kan</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="code-block" style="margin-top:16px;">
+<pre><code><span class="c-cmt"># Install: pip install PySastrawi</span>
+<span class="c-kw">from</span> Sastrawi.Stemmer.StemmerFactory <span class="c-kw">import</span> StemmerFactory
+<span class="c-kw">from</span> Sastrawi.StopWordRemover.StopWordRemoverFactory <span class="c-kw">import</span> StopWordRemoverFactory
+
+factory  <span class="c-op">=</span> <span class="c-cls">StemmerFactory</span>()
+stemmer  <span class="c-op">=</span> factory.<span class="c-fn">create_stemmer</span>()
+
+sw_factory <span class="c-op">=</span> <span class="c-cls">StopWordRemoverFactory</span>()
+stopword   <span class="c-op">=</span> sw_factory.<span class="c-fn">create_stop_word_remover</span>()
+
+teks <span class="c-op">=</span> <span class="c-str">"Gojek sedang meluncurkan layanan pengiriman baru"</span>
+step1 <span class="c-op">=</span> teks.<span class="c-fn">lower</span>()
+step2 <span class="c-op">=</span> stopword.<span class="c-fn">remove</span>(step1)   <span class="c-cmt"># hapus "sedang"</span>
+step3 <span class="c-op">=</span> stemmer.<span class="c-fn">stem</span>(step2)       <span class="c-cmt"># → "gojek luncur layan kirim baru"</span></code></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══ SEC 7: LAB ══ -->
+      <section class="lesson-sec" id="sec-lab">
+        <div class="sec-header">
+          <span class="sec-num">07</span>
+          <div>
+            <h2 class="sec-title">Lab — TF-IDF Search Engine</h2>
+            <p class="sec-sub">Bangun mesin pencari dari dokumenmu sendiri. Tambah artikel, tulis query, lihat ranking real-time.</p>
+          </div>
+        </div>
+
+        <div class="prose">
+          Search engine di bawah ini berjalan sepenuhnya di browser. Tambah atau edit dokumen, build index, lalu cari — semua perhitungan TF-IDF dan cosine similarity dilakukan client-side tanpa server.
+        </div>
+
+        <div class="playground-box">
+          <div class="pgb-header">
+            <div class="pgb-badge">🔍 TF-IDF Search Engine — Real-time</div>
+            <div class="pgb-title">Mesin Pencari Interaktif</div>
+            <div class="pgb-sub">Tambah dokumen → Build Index → Cari</div>
+          </div>
+
+          <div class="pg-tabs">
+            <button class="pg-tab active" data-tab="corpus">📚 Korpus</button>
+            <button class="pg-tab" data-tab="index">📊 TF-IDF Index</button>
+            <button class="pg-tab" data-tab="search">🔍 Cari</button>
+          </div>
+
+          <!-- Tab: Corpus -->
+          <div class="pg-pane active" id="pane-corpus">
+            <div class="doc-inputs" id="corpusInputs">
+              <!-- rendered by JS -->
+            </div>
+            <div class="pg-actions" style="border-top:1px solid var(--border);padding-top:14px;">
+              <button class="pg-run-btn" id="btnAddDoc">+ Tambah Dokumen</button>
+              <button class="pg-run-btn" id="btnBuild" style="background:#2997ff;color:#fff;">⚡ Build Index</button>
+              <button class="pg-reset-btn" id="btnReset">↺ Reset</button>
+              <span class="pg-word-count" id="corpusInfo">—</span>
+            </div>
+          </div>
+
+          <!-- Tab: TF-IDF Index -->
+          <div class="pg-pane" id="pane-index">
+            <div class="matrix-section">
+              <div class="vs-header">
+                <span class="vs-title">Top keywords per dokumen (skor TF-IDF tertinggi)</span>
+                <span class="vs-count" id="indexInfo">—</span>
+              </div>
+              <div id="indexTable" style="padding:20px;font-family:var(--font-mono);font-size:11px;color:var(--text-3);">
+                Build index terlebih dahulu…
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab: Search -->
+          <div class="pg-pane" id="pane-search">
+            <div class="search-section">
+              <div class="vs-header" style="margin-bottom:12px;">
+                <span class="vs-title">Cari dokumen berdasarkan query</span>
+              </div>
+              <div class="search-row">
+                <input type="text" class="search-input" id="searchInput" placeholder="Ketik query pencarian…">
+                <button class="search-btn" id="searchBtn">🔍 Cari</button>
+              </div>
+              <!-- query analysis -->
+              <div id="queryAnalysis" style="display:none;padding:10px 0;"></div>
+              <div class="search-results" id="searchResults">
+                <div class="sr-empty">Build index terlebih dahulu, lalu masukkan query.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="next-lesson-cta">
+          <span class="nlc-label">Lesson berikutnya</span>
+          <h3 class="nlc-title">Word Vectors &amp; Embeddings →</h3>
+          <p class="nlc-desc">TF-IDF masih tidak paham sinonim atau makna. Word2Vec dan GloVe mengubah kata menjadi vektor padat di mana "ojek" dan "kendaraan" berdekatan secara geometris.</p>
+          <a href="/ai-lab/nlp/word-vectors.html" class="nlc-btn">Lanjut ke Word Vectors</a>
+        </div>
+      </section>
+
+    </div><!-- /lesson-body -->
+  </main>
+</div>
+
+<div id="footer-placeholder"></div>
+<script src="/js/shared.js"></script>
+<script src="/js/lang.js"></script>
+<script src="/js/tfidf.js"></script>
+</body>
+</html>

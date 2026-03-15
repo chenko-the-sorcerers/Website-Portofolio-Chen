@@ -1,0 +1,91 @@
+/* ═══════════════════════════════════════════════════════════════
+   cnn-relu.css — Aktivasi ReLU lesson styles
+   Extends cnn-intro.css + cnn-why.css patterns
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── ReLU Interactive Demo ───────────────────────────────────── */
+.relu-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.relu-input-row {
+  display: grid;
+  grid-template-columns: 140px 1fr 80px;
+  align-items: center;
+  gap: 16px;
+}
+
+.relu-output-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.relu-io-box {
+  flex: 1;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 16px;
+  text-align: center;
+}
+.relu-io-box.output { border-color: rgba(52,199,89,.3); background: rgba(52,199,89,.04); }
+
+.rio-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--text-3);
+  margin-bottom: 6px;
+}
+.rio-val {
+  font-family: var(--font-disp);
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text);
+  transition: color .2s;
+}
+
+.relu-arrow-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+.relu-fn {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+.relu-arrow {
+  font-size: 22px;
+  color: var(--text-3);
+}
+
+.relu-graph {
+  width: 100%;
+  height: 140px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  overflow: hidden;
+}
+
+/* ── Variant comparison rows ─────────────────────────────────── */
+#variantCompare {
+  margin-top: 4px;
+}
+
+/* ── Responsive ─────────────────────────────────────────────── */
+@media (max-width: 700px) {
+  .relu-input-row { grid-template-columns: 1fr; }
+  .relu-output-row { flex-direction: column; }
+  .relu-arrow-box { flex-direction: row; }
+  .relu-arrow { transform: none; }
+}

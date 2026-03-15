@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Image Processing with OpenCV — Computer Vision | AI Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/shared.css">
+<link rel="stylesheet" href="/css/image-processing-opencv.css">
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-follower" id="cursor-follower"></div>
+<div id="nav-placeholder"></div>
+
+<div class="read-progress"><div id="readBar"></div></div>
+
+<!-- Pyodide loading overlay -->
+<div class="py-loading" id="pyLoading">
+  <div class="py-loading-inner">
+    <div class="py-spinner"></div>
+    <div class="py-loading-text">Loading Python runtime...</div>
+    <div class="py-loading-sub">Pyodide (Python 3.11 via WebAssembly)</div>
+  </div>
+</div>
+
+<div class="lesson-layout">
+
+  <!-- ═══ SIDEBAR ═══ -->
+  <aside class="lesson-sidebar" id="lessonSidebar">
+    <div class="sb-top">
+      <a href="/pages/ai-lab/computer-vision.html" class="sb-back">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 3L5 8l5 5"/></svg>
+        Computer Vision
+      </a>
+      <div class="sb-studying">
+        <div class="sb-studying-label">Sedang belajar</div>
+        <div class="sb-studying-path">
+          <span class="sbp-item">AI Lab</span>
+          <span class="sbp-sep">›</span>
+          <span class="sbp-item">Computer Vision</span>
+          <span class="sbp-sep">›</span>
+          <span class="sbp-item active">Digital Image Fundamentals</span>
+        </div>
+      </div>
+      <div class="sb-chapter">Module 1 · Digital Image Fundamentals</div>
+      <div class="sb-lesson-title">Image Processing with OpenCV</div>
+      <div class="sb-tags">
+        <span class="sb-tag">Foundation</span>
+        <span class="sb-tag interactive">Interactive</span>
+        <span class="sb-tag coding">🐍 Python</span>
+      </div>
+    </div>
+
+    <nav class="lesson-nav">
+      <div class="nav-section-label">Dalam lesson ini</div>
+      <a href="#sec-load" class="lnav-item active" data-sec="sec-load"><span class="lnav-dot"></span><span class="lnav-text">Loading images</span><span class="lnav-num">01</span></a>
+      <a href="#sec-resize" class="lnav-item" data-sec="sec-resize"><span class="lnav-dot"></span><span class="lnav-text">Resize & scale</span><span class="lnav-num">02</span></a>
+      <a href="#sec-crop" class="lnav-item" data-sec="sec-crop"><span class="lnav-dot"></span><span class="lnav-text">Cropping & ROI</span><span class="lnav-num">03</span></a>
+      <a href="#sec-flip" class="lnav-item" data-sec="sec-flip"><span class="lnav-dot"></span><span class="lnav-text">Flipping & rotating</span><span class="lnav-num">04</span></a>
+      <a href="#sec-bitwise" class="lnav-item" data-sec="sec-bitwise"><span class="lnav-dot"></span><span class="lnav-text">Bitwise operations</span><span class="lnav-num">05</span></a>
+      <a href="#sec-playground" class="lnav-item" data-sec="sec-playground"><span class="lnav-dot"></span><span class="lnav-text">Full Playground</span><span class="lnav-num">06</span></a>
+      <a href="#sec-quiz" class="lnav-item" data-sec="sec-quiz"><span class="lnav-dot"></span><span class="lnav-text">Quiz + Coding</span><span class="lnav-num">07</span></a>
+    </nav>
+
+    <div class="sb-progress">
+      <div class="sb-prog-label"><span>Progress</span><span id="progPct">0%</span></div>
+      <div class="sb-prog-track"><div class="sb-prog-fill" id="progFill"></div></div>
+    </div>
+
+    <div class="sb-module-nav">
+      <div class="nav-section-label" style="padding:0 8px;margin-bottom:8px">Module 1 · semua topik</div>
+      <a href="pixel-anatomy.html" class="smn-item"><span class="smn-dot done"></span><span>Pixel Anatomy</span></a>
+      <a href="image-processing-opencv.html" class="smn-item current"><span class="smn-dot"></span><span>Image Processing with OpenCV</span></a>
+      <a href="#" class="smn-item locked"><span class="smn-dot"></span><span>Filtering &amp; Kernels</span><span class="smn-lock">🔒</span></a>
+      <a href="#" class="smn-item locked"><span class="smn-dot"></span><span>Morphological Transforms</span><span class="smn-lock">🔒</span></a>
+    </div>
+  </aside>
+
+  <!-- ═══ MAIN ═══ -->
+  <main class="lesson-main">
+    <div class="lesson-topbar">
+      <div class="ltb-left">
+        <button class="ltb-menu" id="menuBtn" onclick="toggleSidebar()">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg>
+        </button>
+        <span class="ltb-crumb">Image Processing with OpenCV</span>
+        <span class="py-status" id="pyStatus">⏳ Loading Python...</span>
+      </div>
+      <div class="ltb-right">
+        <a href="/pages/ai-lab/computer-vision.html" class="ltb-btn">← Back to CV</a>
+        <a href="#sec-quiz" class="ltb-btn primary">Take Quiz</a>
+      </div>
+    </div>
+
+    <div class="lesson-body">
+
+      <!-- ─── SEC 1: Loading ─── -->
+      <section class="lesson-sec" id="sec-load">
+        <div class="sec-header">
+          <span class="sec-num">01</span>
+          <div><h2 class="sec-title">Loading images with OpenCV</h2><p class="sec-sub">Reading, displaying, and understanding what cv2.imread actually returns</p></div>
+        </div>
+        <div class="prose">OpenCV's <code>cv2.imread()</code> is the entry point for almost every CV pipeline. It decodes an image file and returns a <strong>NumPy array</strong> — ready for manipulation without any extra conversion step.</div>
+        <div class="callout danger"><span class="callout-icon">🚨</span><div><strong>Critical gotcha:</strong> OpenCV loads images in <strong>BGR</strong> order, not RGB. If you pass a cv2 image directly to matplotlib or a neural network expecting RGB, colors will be wrong.</div></div>
+
+        <!-- Interactive: imread visualizer -->
+        <div class="widget-card">
+          <div class="widget-label">Interactive · What does imread return?</div>
+          <div class="imread-demo">
+            <canvas id="imreadCanvas" width="240" height="180"></canvas>
+            <div class="imread-info">
+              <div class="imd-row"><span class="imd-key">img.shape</span><span class="imd-val" id="imdShape">(180, 240, 3)</span></div>
+              <div class="imd-row"><span class="imd-key">img.dtype</span><span class="imd-val" id="imdDtype">uint8</span></div>
+              <div class="imd-row"><span class="imd-key">img.ndim</span><span class="imd-val" id="imdNdim">3</span></div>
+              <div class="imd-row"><span class="imd-key">img.size</span><span class="imd-val" id="imdSize">129,600</span></div>
+              <div class="imd-row"><span class="imd-key">pixel[0,0]</span><span class="imd-val mono" id="imdPixel">[B, G, R]</span></div>
+              <div class="imd-divider"></div>
+              <div class="imd-note">Hover over the image to inspect any pixel →</div>
+              <div class="imd-channels">
+                <div class="imd-ch"><span class="ch-letter b">B</span><div class="imd-bar-track"><div class="imd-bar-fill" id="barB" style="--c:#3b82f6"></div></div><span class="imd-ch-num" id="numB">0</span></div>
+                <div class="imd-ch"><span class="ch-letter g">G</span><div class="imd-bar-track"><div class="imd-bar-fill" id="barG" style="--c:#22c55e"></div></div><span class="imd-ch-num" id="numG">0</span></div>
+                <div class="imd-ch"><span class="ch-letter r">R</span><div class="imd-bar-track"><div class="imd-bar-fill" id="barR" style="--c:#ef4444"></div></div><span class="imd-ch-num" id="numR">0</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="code-block">
+          <div class="cb-label">cv2 · imread basics</div>
+<pre><code><span class="kw">import</span> cv2
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="cm"># Load an image (BGR format by default)</span>
+img = cv2.<span class="fn">imread</span>(<span class="str">"photo.jpg"</span>)           <span class="cm"># color (BGR)</span>
+gray = cv2.<span class="fn">imread</span>(<span class="str">"photo.jpg"</span>, <span class="num">0</span>)       <span class="cm"># grayscale</span>
+unchanged = cv2.<span class="fn">imread</span>(<span class="str">"icon.png"</span>, <span class="num">-1</span>) <span class="cm"># keep alpha</span>
+
+print(img.shape)   <span class="cm"># (height, width, 3)</span>
+print(img.dtype)   <span class="cm"># uint8</span>
+
+<span class="cm"># Convert BGR → RGB for matplotlib / PyTorch</span>
+rgb = cv2.<span class="fn">cvtColor</span>(img, cv2.COLOR_BGR2RGB)
+
+<span class="cm"># Save result</span>
+cv2.<span class="fn">imwrite</span>(<span class="str">"output.jpg"</span>, img)</code></pre>
+        </div>
+
+        <div class="callout info"><span class="callout-icon">💡</span><div>When <code>cv2.imread()</code> fails (file not found, bad path), it silently returns <code>None</code> instead of raising an error. Always check for <code>None</code> before proceeding.</div></div>
+
+        <div class="challenge-card" id="ch-1">
+          <div class="challenge-header"><span class="challenge-badge">🐍 Mini Challenge</span><span class="challenge-title">Simulate imread and inspect properties</span></div>
+          <div class="challenge-desc">We don't have a real image file here, so simulate what imread returns using NumPy. Then print the correct shape, dtype, and check how to access a pixel value.</div>
+          <div class="challenge-editor">
+            <div class="editor-tabs"><span class="editor-tab active">solution.py</span></div>
+            <div class="code-editor-wrap"><textarea class="code-editor" id="ce-1" spellcheck="false">import numpy as np
+
+# Simulate what cv2.imread returns for a 480x640 color image
+# OpenCV stores as (height, width, channels) in BGR order
+img = np.random.randint(0, 256, (___, ___, ___), dtype=np.uint8)
+
+# Print the shape
+print("Shape:", img.shape)
+
+# Print the dtype
+print("Dtype:", img.dtype)
+
+# Access the pixel at row=10, col=20 (returns [B, G, R])
+pixel = img[___, ___]
+print("Pixel [B,G,R]:", pixel)
+
+# How many total elements (pixels * channels)?
+print("Total elements:", img.size)</textarea></div>
+            <div class="editor-actions">
+              <button class="run-btn" onclick="runChallenge('ce-1','out-1','check-1')">▶ Run</button>
+              <button class="hint-btn" onclick="toggleHint('hint-1')">💡 Hint</button>
+              <button class="reset-btn" onclick="resetChallenge('ce-1',1)">↺ Reset</button>
+            </div>
+          </div>
+          <div class="hint-box" id="hint-1" style="display:none"><strong>Hints:</strong><br>• Shape order is <code>(height, width, channels)</code> → (480, 640, 3)<br>• Access pixel at row=10, col=20 → <code>img[10, 20]</code><br>• <code>img.size</code> = height × width × channels</div>
+          <div class="output-wrap" id="out-1" style="display:none"><div class="output-label">Output</div><pre class="output-pre" id="out-1-pre"></pre></div>
+          <div class="check-result" id="check-1" style="display:none"></div>
+          <div class="expected-box"><span class="expected-label">Expected:</span><code>Shape: (480, 640, 3)<br>Dtype: uint8<br>Pixel [B,G,R]: [...] (3 values, 0-255 range)<br>Total elements: 921600</code></div>
+        </div>
+      </section>
+
+      <!-- ─── SEC 2: Resize ─── -->
+      <section class="lesson-sec" id="sec-resize">
+        <div class="sec-header">
+          <span class="sec-num">02</span>
+          <div><h2 class="sec-title">Resize &amp; scale</h2><p class="sec-sub">Exact dimensions vs aspect-ratio-preserving scale factors</p></div>
+        </div>
+        <div class="prose"><code>cv2.resize()</code> is one of the most frequently called functions in any CV pipeline. You need to choose the right <strong>interpolation method</strong> depending on whether you're upscaling or downscaling.</div>
+
+        <!-- Interactive resize demo -->
+        <div class="widget-card">
+          <div class="widget-label">Interactive · Drag the slider to resize</div>
+          <div class="resize-demo">
+            <div class="resize-canvas-wrap">
+              <canvas id="resizeCanvas" width="300" height="225"></canvas>
+              <div class="resize-overlay" id="resizeOverlay"></div>
+            </div>
+            <div class="resize-controls">
+              <div class="rc-row">
+                <span class="rc-label">Scale</span>
+                <input type="range" min="10" max="200" value="100" id="scaleSlider" oninput="updateResize()">
+                <span class="rc-val" id="scaleVal">100%</span>
+              </div>
+              <div class="interp-btns">
+                <button class="interp-btn active" data-interp="NEAREST" onclick="setInterp(this)">NEAREST</button>
+                <button class="interp-btn" data-interp="LINEAR" onclick="setInterp(this)">LINEAR</button>
+                <button class="interp-btn" data-interp="CUBIC" onclick="setInterp(this)">CUBIC</button>
+                <button class="interp-btn" data-interp="AREA" onclick="setInterp(this)">AREA</button>
+              </div>
+              <div class="resize-stats">
+                <div class="rs-item"><span class="rs-label">Original</span><span class="rs-val" id="rsOrig">300 × 225</span></div>
+                <div class="rs-item"><span class="rs-label">Result</span><span class="rs-val" id="rsResult">300 × 225</span></div>
+                <div class="rs-item"><span class="rs-label">Pixels</span><span class="rs-val" id="rsPixels">67,500</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Interpolation comparison table -->
+        <div class="interp-table">
+          <div class="it-header">
+            <div>Method</div>
+            <div>Best for</div>
+            <div>Speed</div>
+            <div>Quality</div>
+          </div>
+          <div class="it-row">
+            <div class="it-name mono">INTER_NEAREST</div>
+            <div class="it-desc">Pixel art, mask labels</div>
+            <div class="it-speed fast">⚡ Fast</div>
+            <div class="it-q low">Low</div>
+          </div>
+          <div class="it-row">
+            <div class="it-name mono">INTER_LINEAR</div>
+            <div class="it-desc">General upscaling (default)</div>
+            <div class="it-speed mid">● Mid</div>
+            <div class="it-q mid">Good</div>
+          </div>
+          <div class="it-row">
+            <div class="it-name mono">INTER_CUBIC</div>
+            <div class="it-desc">High-quality upscaling</div>
+            <div class="it-speed slow">◎ Slow</div>
+            <div class="it-q high">High</div>
+          </div>
+          <div class="it-row accent">
+            <div class="it-name mono">INTER_AREA</div>
+            <div class="it-desc">Downscaling (anti-alias)</div>
+            <div class="it-speed mid">● Mid</div>
+            <div class="it-q high">Best ↓</div>
+          </div>
+        </div>
+
+        <div class="code-block">
+          <div class="cb-label">cv2 · resize</div>
+<pre><code><span class="kw">import</span> cv2
+
+img = cv2.<span class="fn">imread</span>(<span class="str">"photo.jpg"</span>)
+
+<span class="cm"># Exact dimensions</span>
+resized = cv2.<span class="fn">resize</span>(img, (<span class="num">640</span>, <span class="num">480</span>))  <span class="cm"># (width, height)!</span>
+
+<span class="cm"># Scale factor (0.5 = half size)</span>
+half = cv2.<span class="fn">resize</span>(img, None, fx=<span class="num">0.5</span>, fy=<span class="num">0.5</span>,
+                  interpolation=cv2.INTER_AREA)
+
+<span class="cm"># Preserve aspect ratio</span>
+h, w = img.shape[:<span class="num">2</span>]
+target_w = <span class="num">800</span>
+scale = target_w / w
+new_h = <span class="fn">int</span>(h * scale)
+resized_ar = cv2.<span class="fn">resize</span>(img, (target_w, new_h),
+                         interpolation=cv2.INTER_LINEAR)</code></pre>
+        </div>
+        <div class="callout warn"><span class="callout-icon">⚠️</span><div><strong>Width vs height order:</strong> <code>cv2.resize()</code> takes <code>(width, height)</code> as the destination size — the opposite of NumPy's <code>.shape</code> which returns <code>(height, width, channels)</code>. This trips up everyone at first.</div></div>
+
+        <div class="challenge-card" id="ch-2">
+          <div class="challenge-header"><span class="challenge-badge">🐍 Mini Challenge</span><span class="challenge-title">Resize while preserving aspect ratio</span></div>
+          <div class="challenge-desc">Given an image of unknown size, compute the correct target dimensions so the width becomes 512 without distorting the image.</div>
+          <div class="challenge-editor">
+            <div class="editor-tabs"><span class="editor-tab active">solution.py</span></div>
+            <div class="code-editor-wrap"><textarea class="code-editor" id="ce-2" spellcheck="false">import numpy as np
+
+# Simulate a 1080x1920 image (portrait phone photo)
+img = np.zeros((1080, 1920, 3), dtype=np.uint8)
+
+h, w = img.shape[___]   # get height and width only
+print(f"Original: {w} × {h}")
+
+TARGET_W = 512
+
+# Compute scale factor
+scale = ___ / ___        # target_width / original_width
+
+# Compute new height (preserve ratio)
+new_h = int(___ * scale)
+new_w = TARGET_W
+
+print(f"Scale factor: {scale:.4f}")
+print(f"Resized: {new_w} × {new_h}")
+
+# Verify ratio is preserved (should be equal)
+orig_ratio = round(w / h, 4)
+new_ratio  = round(new_w / new_h, 4)
+print(f"Aspect ratio preserved: {orig_ratio == new_ratio}")</textarea></div>
+            <div class="editor-actions">
+              <button class="run-btn" onclick="runChallenge('ce-2','out-2','check-2')">▶ Run</button>
+              <button class="hint-btn" onclick="toggleHint('hint-2')">💡 Hint</button>
+              <button class="reset-btn" onclick="resetChallenge('ce-2',2)">↺ Reset</button>
+            </div>
+          </div>
+          <div class="hint-box" id="hint-2" style="display:none"><strong>Hints:</strong><br>• <code>img.shape[:2]</code> returns <code>(height, width)</code> — assign as <code>h, w = ...</code><br>• scale = 512 / w (width you want / original width)<br>• new_h = h * scale, then convert to int</div>
+          <div class="output-wrap" id="out-2" style="display:none"><div class="output-label">Output</div><pre class="output-pre" id="out-2-pre"></pre></div>
+          <div class="check-result" id="check-2" style="display:none"></div>
+          <div class="expected-box"><span class="expected-label">Expected:</span><code>Original: 1920 × 1080<br>Scale factor: 0.2667<br>Resized: 512 × 288<br>Aspect ratio preserved: True</code></div>
+        </div>
+      </section>
+
+      <!-- ─── SEC 3: Crop ─── -->
+      <section class="lesson-sec" id="sec-crop">
+        <div class="sec-header">
+          <span class="sec-num">03</span>
+          <div><h2 class="sec-title">Cropping &amp; ROI</h2><p class="sec-sub">NumPy slicing as the native crop operation</p></div>
+        </div>
+        <div class="prose">In OpenCV, cropping is just <strong>NumPy array slicing</strong> — no special function needed. A Region of Interest (ROI) is a sub-array view. The syntax is <code>img[y1:y2, x1:x2]</code>, not <code>(x, y, w, h)</code>.</div>
+
+        <!-- Interactive crop demo -->
+        <div class="widget-card">
+          <div class="widget-label">Interactive · Drag to define a crop region</div>
+          <div class="crop-demo">
+            <div class="crop-canvas-wrap">
+              <canvas id="cropCanvas" width="320" height="240" style="cursor:crosshair"></canvas>
+              <canvas id="roiCanvas" width="320" height="240" style="display:none"></canvas>
+            </div>
+            <div class="crop-info-panel">
+              <div class="crop-coords" id="cropCoords">
+                <div class="cc-row"><span class="cc-label">y1</span><span class="cc-val" id="ccY1">—</span></div>
+                <div class="cc-row"><span class="cc-label">y2</span><span class="cc-val" id="ccY2">—</span></div>
+                <div class="cc-row"><span class="cc-label">x1</span><span class="cc-val" id="ccX1">—</span></div>
+                <div class="cc-row"><span class="cc-label">x2</span><span class="cc-val" id="ccX2">—</span></div>
+              </div>
+              <div class="crop-code-live" id="cropCodeLive">
+                <span class="cl-prompt">roi = img[</span><span id="ccSlice">—:—, —:—</span><span class="cl-prompt">]</span>
+              </div>
+              <div class="crop-size-info"><span id="cropSizeInfo">Draw a region on the image</span></div>
+              <button class="crop-btn" onclick="showROI()" id="showROIBtn" style="display:none">Preview ROI →</button>
+              <button class="crop-btn" onclick="resetCrop()" id="resetCropBtn" style="display:none">Reset</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="two-col">
+          <div class="code-block"><div class="cb-label">cropping</div>
+<pre><code><span class="cm"># Crop: img[y1:y2, x1:x2]</span>
+roi = img[<span class="num">50</span>:<span class="num">200</span>, <span class="num">100</span>:<span class="num">350</span>]
+
+<span class="cm"># Crop with bbox [x,y,w,h]</span>
+x, y, w, h = <span class="num">100</span>, <span class="num">50</span>, <span class="num">250</span>, <span class="num">150</span>
+roi = img[y:y+h, x:x+w]
+
+<span class="cm"># Center crop to 224×224</span>
+H, W = img.shape[:<span class="num">2</span>]
+cy, cx = H//<span class="num">2</span>, W//<span class="num">2</span>
+roi = img[cy-<span class="num">112</span>:cy+<span class="num">112</span>,
+          cx-<span class="num">112</span>:cx+<span class="num">112</span>]</code></pre></div>
+          <div class="info-card">
+            <div class="ic-title">⚠️ View, not copy</div>
+            <p>NumPy slices are <strong>views</strong> into the original array. Modifying <code>roi</code> modifies <code>img</code> too. Use <code>roi = img[...].copy()</code> to make an independent copy.</p>
+          </div>
+        </div>
+
+        <div class="challenge-card" id="ch-3">
+          <div class="challenge-header"><span class="challenge-badge">🐍 Mini Challenge</span><span class="challenge-title">Crop the center region of an image</span></div>
+          <div class="challenge-desc">Extract the center 200×200 region from a 480×640 image. Then draw a white rectangle into the original image's ROI zone (set pixels to 255).</div>
+          <div class="challenge-editor">
+            <div class="editor-tabs"><span class="editor-tab active">solution.py</span></div>
+            <div class="code-editor-wrap"><textarea class="code-editor" id="ce-3" spellcheck="false">import numpy as np
+
+# 480x640 random image
+np.random.seed(7)
+img = np.random.randint(50, 200, (480, 640, 3), dtype=np.uint8)
+
+H, W = img.shape[:2]
+cy, cx = H // 2, W // 2   # center pixel
+
+# Crop 200×200 center (100px from center in each direction)
+roi = img[cy-___:cy+___, cx-___:cx+___]
+print("ROI shape:", roi.shape)
+
+# Draw a white border on the TOP row of the ROI (set to 255)
+# Hint: the ROI is a view, so this modifies img directly
+roi[___, :] = 255    # top row
+
+# Verify: check the top-left pixel of the ROI
+print("ROI top-left pixel:", roi[0, 0])
+
+# Also print mean pixel value of the roi
+print("ROI mean:", round(float(roi.mean()), 2))</textarea></div>
+            <div class="editor-actions">
+              <button class="run-btn" onclick="runChallenge('ce-3','out-3','check-3')">▶ Run</button>
+              <button class="hint-btn" onclick="toggleHint('hint-3')">💡 Hint</button>
+              <button class="reset-btn" onclick="resetChallenge('ce-3',3)">↺ Reset</button>
+            </div>
+          </div>
+          <div class="hint-box" id="hint-3" style="display:none"><strong>Hints:</strong><br>• 200×200 centered → offsets of 100 from center: <code>cy-100:cy+100, cx-100:cx+100</code><br>• Top row of ROI = index 0 → <code>roi[0, :]</code><br>• After setting top row to 255, ROI mean will be higher than ~125</div>
+          <div class="output-wrap" id="out-3" style="display:none"><div class="output-label">Output</div><pre class="output-pre" id="out-3-pre"></pre></div>
+          <div class="check-result" id="check-3" style="display:none"></div>
+          <div class="expected-box"><span class="expected-label">Expected:</span><code>ROI shape: (200, 200, 3)<br>ROI top-left pixel: [255 255 255]<br>ROI mean: (value higher than 125)</code></div>
+        </div>
+      </section>
+
+      <!-- ─── SEC 4: Flip ─── -->
+      <section class="lesson-sec" id="sec-flip">
+        <div class="sec-header">
+          <span class="sec-num">04</span>
+          <div><h2 class="sec-title">Flipping &amp; rotating</h2><p class="sec-sub">cv2.flip and getRotationMatrix2D for geometric transforms</p></div>
+        </div>
+        <div class="prose">Flipping and rotation are the simplest forms of <strong>data augmentation</strong> — free labels, instant dataset expansion. Understanding the geometry helps you apply them correctly in production pipelines.</div>
+
+        <!-- Interactive flip demo -->
+        <div class="widget-card">
+          <div class="widget-label">Interactive · Apply geometric transforms</div>
+          <div class="flip-demo">
+            <canvas id="flipSrc" width="200" height="150"></canvas>
+            <div class="flip-controls">
+              <button class="flip-btn active" onclick="applyFlip(this, 0)">↕ Vertical<br><span class="flip-code">flipCode=0</span></button>
+              <button class="flip-btn" onclick="applyFlip(this, 1)">↔ Horizontal<br><span class="flip-code">flipCode=1</span></button>
+              <button class="flip-btn" onclick="applyFlip(this, -1)">↕↔ Both<br><span class="flip-code">flipCode=-1</span></button>
+              <button class="flip-btn rot" onclick="applyRotate(this, 90)">↻ 90°<br><span class="flip-code">rotate</span></button>
+              <button class="flip-btn rot" onclick="applyRotate(this, 45)">↻ 45°<br><span class="flip-code">rotate</span></button>
+            </div>
+            <canvas id="flipDst" width="200" height="150"></canvas>
+          </div>
+          <div class="flip-labels"><span>Original</span><span>Result</span></div>
+        </div>
+
+        <div class="two-col">
+          <div class="code-block"><div class="cb-label">cv2.flip</div>
+<pre><code><span class="cm"># 0  = vertical flip (top↔bottom)</span>
+<span class="cm"># 1  = horizontal flip (left↔right)</span>
+<span class="cm"># -1 = both axes</span>
+flipped = cv2.<span class="fn">flip</span>(img, <span class="num">1</span>)
+
+<span class="cm"># Rotation around center</span>
+h, w = img.shape[:<span class="num">2</span>]
+M = cv2.<span class="fn">getRotationMatrix2D</span>(
+    (w//<span class="num">2</span>, h//<span class="num">2</span>),  <span class="cm"># center (cx,cy)</span>
+    <span class="num">45</span>,              <span class="cm"># angle degrees CCW</span>
+    <span class="num">1.0</span>              <span class="cm"># scale</span>
+)
+rot = cv2.<span class="fn">warpAffine</span>(img, M, (w, h))</code></pre></div>
+          <div class="code-block"><div class="cb-label">data augmentation</div>
+<pre><code><span class="kw">import</span> random
+
+<span class="kw">def</span> <span class="fn">augment</span>(img):
+    <span class="cm"># 50% chance horizontal flip</span>
+    <span class="kw">if</span> random.<span class="fn">random</span>() > <span class="num">0.5</span>:
+        img = cv2.<span class="fn">flip</span>(img, <span class="num">1</span>)
+
+    <span class="cm"># Random rotation ±15°</span>
+    angle = random.<span class="fn">uniform</span>(-<span class="num">15</span>, <span class="num">15</span>)
+    h, w = img.shape[:<span class="num">2</span>]
+    M = cv2.<span class="fn">getRotationMatrix2D</span>(
+            (w//<span class="num">2</span>, h//<span class="num">2</span>), angle, <span class="num">1.0</span>)
+    img = cv2.<span class="fn">warpAffine</span>(img, M, (w, h))
+    <span class="kw">return</span> img</code></pre></div>
+        </div>
+
+        <div class="challenge-card" id="ch-4">
+          <div class="challenge-header"><span class="challenge-badge">🐍 Mini Challenge</span><span class="challenge-title">Simulate flip operations with NumPy</span></div>
+          <div class="challenge-desc">Implement horizontal and vertical flips manually using NumPy slicing — no cv2 allowed. This mirrors exactly what cv2.flip does internally.</div>
+          <div class="challenge-editor">
+            <div class="editor-tabs"><span class="editor-tab active">solution.py</span></div>
+            <div class="code-editor-wrap"><textarea class="code-editor" id="ce-4" spellcheck="false">import numpy as np
+
+img = np.array([
+    [[10, 20, 30], [40, 50, 60], [70, 80, 90]],
+    [[11, 21, 31], [41, 51, 61], [71, 81, 91]],
+    [[12, 22, 32], [42, 52, 62], [72, 82, 92]],
+], dtype=np.uint8)  # shape: (3, 3, 3)
+
+# Horizontal flip: reverse columns (axis=1)
+# Hint: img[:, ::-1] reverses columns
+h_flip = img[___, ___]
+print("Horizontal flip top-left pixel:", h_flip[0, 0])
+
+# Vertical flip: reverse rows (axis=0)
+# Hint: img[::-1, :] reverses rows
+v_flip = img[___, ___]
+print("Vertical flip top-left pixel:", v_flip[0, 0])
+
+# Both axes: reverse rows AND columns
+both_flip = img[___, ___]
+print("Both axes flip top-left pixel:", both_flip[0, 0])</textarea></div>
+            <div class="editor-actions">
+              <button class="run-btn" onclick="runChallenge('ce-4','out-4','check-4')">▶ Run</button>
+              <button class="hint-btn" onclick="toggleHint('hint-4')">💡 Hint</button>
+              <button class="reset-btn" onclick="resetChallenge('ce-4',4)">↺ Reset</button>
+            </div>
+          </div>
+          <div class="hint-box" id="hint-4" style="display:none"><strong>Hints:</strong><br>• Horizontal flip (left↔right) = reverse columns: <code>img[:, ::-1]</code><br>• Vertical flip (top↔bottom) = reverse rows: <code>img[::-1, :]</code><br>• Both axes: <code>img[::-1, ::-1]</code></div>
+          <div class="output-wrap" id="out-4" style="display:none"><div class="output-label">Output</div><pre class="output-pre" id="out-4-pre"></pre></div>
+          <div class="check-result" id="check-4" style="display:none"></div>
+          <div class="expected-box"><span class="expected-label">Expected:</span><code>Horizontal flip top-left pixel: [70 80 90]<br>Vertical flip top-left pixel: [12 22 32]<br>Both axes flip top-left pixel: [72 82 92]</code></div>
+        </div>
+      </section>
+
+      <!-- ─── SEC 5: Bitwise ─── -->
+      <section class="lesson-sec" id="sec-bitwise">
+        <div class="sec-header">
+          <span class="sec-num">05</span>
+          <div><h2 class="sec-title">Bitwise operations</h2><p class="sec-sub">AND, OR, XOR, NOT — pixel-level binary logic</p></div>
+        </div>
+        <div class="prose">Bitwise operations work on each bit of each pixel channel independently. They are the core of <strong>masking</strong> — selectively showing or hiding parts of an image. Mastering them is essential for background removal, image compositing, and ROI selection.</div>
+
+        <!-- Interactive bitwise demo -->
+        <div class="widget-card">
+          <div class="widget-label">Interactive · See bitwise ops on two shapes</div>
+          <div class="bitwise-demo">
+            <div class="bw-canvas-row">
+              <div class="bw-item">
+                <canvas id="bwA" width="120" height="120"></canvas>
+                <span class="bw-lbl">Image A</span>
+              </div>
+              <div class="bw-op-select">
+                <select id="bwOpSelect" onchange="updateBitwise()">
+                  <option value="and">AND</option>
+                  <option value="or">OR</option>
+                  <option value="xor">XOR</option>
+                  <option value="not">NOT (A)</option>
+                </select>
+              </div>
+              <div class="bw-item">
+                <canvas id="bwB" width="120" height="120"></canvas>
+                <span class="bw-lbl">Image B</span>
+              </div>
+              <div class="bw-eq">=</div>
+              <div class="bw-item">
+                <canvas id="bwResult" width="120" height="120"></canvas>
+                <span class="bw-lbl" id="bwResultLbl">AND result</span>
+              </div>
+            </div>
+            <div class="bw-desc" id="bwDesc">AND: keeps pixels where BOTH images are white (255). Used to apply a binary mask.</div>
+          </div>
+        </div>
+
+        <div class="code-block">
+          <div class="cb-label">cv2 · bitwise ops</div>
+<pre><code><span class="kw">import</span> cv2
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="cm"># Create a binary mask (white circle on black bg)</span>
+mask = np.<span class="fn">zeros</span>((<span class="num">200</span>, <span class="num">200</span>), dtype=np.uint8)
+cv2.<span class="fn">circle</span>(mask, (<span class="num">100</span>, <span class="num">100</span>), <span class="num">80</span>, <span class="num">255</span>, -<span class="num">1</span>)
+
+<span class="cm"># AND: keep only the masked region</span>
+result = cv2.<span class="fn">bitwise_and</span>(img, img, mask=mask)
+
+<span class="cm"># NOT: invert the mask</span>
+inv_mask = cv2.<span class="fn">bitwise_not</span>(mask)
+
+<span class="cm"># OR: combine two images</span>
+combined = cv2.<span class="fn">bitwise_or</span>(img_a, img_b)
+
+<span class="cm"># XOR: show differences</span>
+diff = cv2.<span class="fn">bitwise_xor</span>(img_a, img_b)</code></pre>
+        </div>
+
+        <!-- Use case cards -->
+        <div class="usecase-grid">
+          <div class="uc-card">
+            <div class="uc-icon">🎭</div>
+            <div class="uc-title">Background removal</div>
+            <div class="uc-desc">Create a binary mask of the foreground, then use AND to keep only the subject.</div>
+          </div>
+          <div class="uc-card">
+            <div class="uc-icon">🖼️</div>
+            <div class="uc-title">Image compositing</div>
+            <div class="uc-desc">Place a logo on an image: AND the logo region out, OR the logo in.</div>
+          </div>
+          <div class="uc-card">
+            <div class="uc-icon">🔍</div>
+            <div class="uc-title">Change detection</div>
+            <div class="uc-desc">XOR two frames to reveal exactly which pixels changed between them.</div>
+          </div>
+          <div class="uc-card">
+            <div class="uc-icon">🧩</div>
+            <div class="uc-title">ROI selection</div>
+            <div class="uc-desc">Use NOT to invert a mask and selectively apply different processing to foreground vs background.</div>
+          </div>
+        </div>
+
+        <div class="challenge-card" id="ch-5">
+          <div class="challenge-header"><span class="challenge-badge">🐍 Mini Challenge</span><span class="challenge-title">Apply a binary mask with bitwise AND</span></div>
+          <div class="challenge-desc">Create a circular mask and use bitwise AND to keep only the circular region of an image. Then verify that pixels outside the circle are 0.</div>
+          <div class="challenge-editor">
+            <div class="editor-tabs"><span class="editor-tab active">solution.py</span></div>
+            <div class="code-editor-wrap"><textarea class="code-editor" id="ce-5" spellcheck="false">import numpy as np
+
+# 100×100 image, all pixels = 200
+img = np.full((100, 100, 3), 200, dtype=np.uint8)
+
+# Create a circular mask: 1 inside circle, 0 outside
+# Circle centered at (50,50) with radius 40
+mask = np.zeros((100, 100), dtype=np.uint8)
+y_coords, x_coords = np.ogrid[:100, :100]
+circle = (x_coords - 50)**2 + (y_coords - 50)**2 <= 40**2
+mask[circle] = ___         # set inside circle to 255
+
+# Apply mask: keep pixels where mask=255, zero elsewhere
+# Replicate mask to 3 channels, then multiply
+mask_3ch = np.stack([___, ___, ___], axis=-1)   # shape (100,100,3)
+result = img * (mask_3ch // 255)
+
+# Verify: corner pixel (0,0) should be 0 (outside circle)
+print("Corner pixel:", result[0, 0])
+
+# Verify: center pixel (50,50) should be [200,200,200] (inside)
+print("Center pixel:", result[50, 50])
+
+# Count how many pixels are inside (non-zero)
+inside_count = np.count_nonzero(result[:,:,0])
+print("Pixels inside circle:", inside_count)</textarea></div>
+            <div class="editor-actions">
+              <button class="run-btn" onclick="runChallenge('ce-5','out-5','check-5')">▶ Run</button>
+              <button class="hint-btn" onclick="toggleHint('hint-5')">💡 Hint</button>
+              <button class="reset-btn" onclick="resetChallenge('ce-5',5)">↺ Reset</button>
+            </div>
+          </div>
+          <div class="hint-box" id="hint-5" style="display:none"><strong>Hints:</strong><br>• Set inside circle to 255: <code>mask[circle] = 255</code><br>• Stack mask 3 times: <code>np.stack([mask, mask, mask], axis=-1)</code><br>• Divide by 255 to get 0/1, multiply with img to zero out pixels outside</div>
+          <div class="output-wrap" id="out-5" style="display:none"><div class="output-label">Output</div><pre class="output-pre" id="out-5-pre"></pre></div>
+          <div class="check-result" id="check-5" style="display:none"></div>
+          <div class="expected-box"><span class="expected-label">Expected:</span><code>Corner pixel: [0 0 0]<br>Center pixel: [200 200 200]<br>Pixels inside circle: 5017</code></div>
+        </div>
+      </section>
+
+      <!-- ─── SEC 6: PLAYGROUND ─── -->
+      <section class="lesson-sec" id="sec-playground">
+        <div class="sec-header">
+          <span class="sec-num">06</span>
+          <div><h2 class="sec-title">Full Python Playground</h2><p class="sec-sub">Eksperimen bebas — tulis Python apapun</p></div>
+        </div>
+        <div class="prose">Python 3.11 + NumPy langsung di browser via <strong>Pyodide</strong>. Coba sendiri semua operasi yang sudah dipelajari hari ini.</div>
+        <div class="playground-card">
+          <div class="playground-toolbar">
+            <div class="pg-toolbar-left">
+              <span class="pg-title">🐍 Python 3.11 · NumPy ready</span>
+              <span class="py-ready-dot" id="pgReadyDot"></span>
+            </div>
+            <div class="pg-toolbar-right">
+              <button class="pg-snippet-btn" onclick="loadSnippet('imread')">imread</button>
+              <button class="pg-snippet-btn" onclick="loadSnippet('resize')">resize</button>
+              <button class="pg-snippet-btn" onclick="loadSnippet('crop')">crop</button>
+              <button class="pg-snippet-btn" onclick="loadSnippet('flip')">flip</button>
+              <button class="pg-snippet-btn" onclick="loadSnippet('bitwise')">bitwise</button>
+            </div>
+          </div>
+          <div class="code-editor-wrap">
+            <textarea class="code-editor playground-editor" id="playground-editor" spellcheck="false">import numpy as np
+
+# ── Simulate a 480×640 BGR image ──
+img = np.random.randint(0, 256, (480, 640, 3), dtype=np.uint8)
+print("Original shape:", img.shape)
+print("dtype:", img.dtype)
+
+# ── Resize to half using scale factor ──
+scale = 0.5
+new_h = int(img.shape[0] * scale)
+new_w = int(img.shape[1] * scale)
+resized = img[:new_h*2:2, :new_w*2:2]   # simple sub-sampling
+print("Resized shape:", resized.shape)
+
+# ── Crop center 200×200 ──
+h, w = img.shape[:2]
+cy, cx = h//2, w//2
+roi = img[cy-100:cy+100, cx-100:cx+100]
+print("ROI shape:", roi.shape)
+
+# ── Horizontal flip ──
+h_flip = img[:, ::-1]
+print("Flipped shape:", h_flip.shape)
+
+# ── Simple mask: keep top-left quadrant ──
+mask = np.zeros_like(img)
+mask[:h//2, :w//2] = 255
+result = img * (mask // 255)
+nonzero = np.count_nonzero(result[:,:,0])
+print("Visible pixels after mask:", nonzero)
+print("Expected:", (h//2)*(w//2))</textarea>
+          </div>
+          <div class="playground-actions">
+            <button class="run-btn large" onclick="runPlayground()">▶ Run Code</button>
+            <button class="reset-btn" onclick="resetPlayground()">↺ Reset</button>
+            <span class="pg-note">Ctrl+Enter to run</span>
+          </div>
+          <div class="output-wrap" id="pg-output" style="display:none"><div class="output-label">Output</div><pre class="output-pre" id="pg-output-pre"></pre></div>
+        </div>
+      </section>
+
+      <!-- ─── SEC 7: QUIZ ─── -->
+      <section class="lesson-sec" id="sec-quiz">
+        <div class="sec-header">
+          <span class="sec-num">07</span>
+          <div><h2 class="sec-title">Quiz + Coding Challenge</h2><p class="sec-sub">Teori + praktik — selesaikan keduanya untuk lulus</p></div>
+        </div>
+
+        <div class="quiz-block-title">Part A · Multiple Choice</div>
+        <div id="quizContainer"></div>
+
+        <div class="quiz-block-title" style="margin-top:40px">Part B · Coding Challenge</div>
+        <div class="prose" style="margin-bottom:20px">3 soal coding — fix the bug, fill in the blank, dan gabungan operasi.</div>
+
+        <!-- CQ 1 -->
+        <div class="challenge-card" id="cq-1">
+          <div class="challenge-header"><span class="challenge-badge quiz-badge">📝 Coding Quiz 1 · Fix the bug</span><span class="challenge-title">cv2.resize dimension order is wrong — fix it</span></div>
+          <div class="challenge-desc">Kode ini mau resize ke 640px wide dan 360px tall, tapi dimensinya tertukar. Perbaiki argumen <code>cv2.resize</code>.</div>
+          <div class="challenge-editor">
+            <div class="editor-tabs"><span class="editor-tab active">buggy.py</span></div>
+            <div class="code-editor-wrap"><textarea class="code-editor" id="cq-1-editor" spellcheck="false">import numpy as np
+
+img = np.zeros((1080, 1920, 3), dtype=np.uint8)
+
+# BUG: dimensions are (height, width) but cv2.resize needs (width, height)
+# Fix the tuple below
+target = (360, 640)  # WRONG ORDER — fix this
+
+# Simulate resize by simply slicing (no cv2 in playground)
+new_h, new_w = target  # after fix this should be new_h=360, new_w=640
+result = np.zeros((new_h, new_w, 3), dtype=np.uint8)
+
+print("Result shape:", result.shape)
+print("Expected: (360, 640, 3)")</textarea></div>
+            <div class="editor-actions">
+              <button class="run-btn" onclick="runChallenge('cq-1-editor','cq-1-out','cq-1-check')">▶ Run &amp; Check</button>
+              <button class="reset-btn" onclick="resetCodingQuiz(1)">↺ Reset</button>
+            </div>
+          </div>
+          <div class="output-wrap" id="cq-1-out" style="display:none"><div class="output-label">Output</div><pre class="output-pre" id="cq-1-out-pre"></pre></div>
+          <div class="check-result" id="cq-1-check" style="display:none"></div>
+          <div class="expected-box"><span class="expected-label">Expected:</span><code>Result shape: (360, 640, 3)<br>Expected: (360, 640, 3)</code></div>
+        </div>
+
+        <!-- CQ 2 -->
+        <div class="challenge-card" id="cq-2">
+          <div class="challenge-header"><span class="challenge-badge quiz-badge">📝 Coding Quiz 2 · Fill in the blank</span><span class="challenge-title">Extract and analyze a ROI</span></div>
+          <div class="challenge-desc">Crop the bottom-right quadrant of the image and compute its mean pixel value.</div>
+          <div class="challenge-editor">
+            <div class="editor-tabs"><span class="editor-tab active">solution.py</span></div>
+            <div class="code-editor-wrap"><textarea class="code-editor" id="cq-2-editor" spellcheck="false">import numpy as np
+
+np.random.seed(99)
+img = np.random.randint(0, 256, (200, 300, 3), dtype=np.uint8)
+
+H, W = img.shape[:2]
+
+# Crop the bottom-right quadrant
+# Rows: from H//2 to end, Cols: from W//2 to end
+roi = img[___:___, ___:___]
+
+print("ROI shape:", roi.shape)            # should be (100, 150, 3)
+print("ROI mean:", round(float(roi.mean()), 2))  # some value ~127
+print("ROI min:", int(roi.min()))
+print("ROI max:", int(roi.max()))</textarea></div>
+            <div class="editor-actions">
+              <button class="run-btn" onclick="runChallenge('cq-2-editor','cq-2-out','cq-2-check')">▶ Run &amp; Check</button>
+              <button class="reset-btn" onclick="resetCodingQuiz(2)">↺ Reset</button>
+            </div>
+          </div>
+          <div class="output-wrap" id="cq-2-out" style="display:none"><div class="output-label">Output</div><pre class="output-pre" id="cq-2-out-pre"></pre></div>
+          <div class="check-result" id="cq-2-check" style="display:none"></div>
+          <div class="expected-box"><span class="expected-label">Expected:</span><code>ROI shape: (100, 150, 3)<br>ROI mean: 127.19<br>ROI min: 0<br>ROI max: 255</code></div>
+        </div>
+
+        <!-- CQ 3 -->
+        <div class="challenge-card" id="cq-3">
+          <div class="challenge-header"><span class="challenge-badge quiz-badge">📝 Coding Quiz 3 · Combined ops</span><span class="challenge-title">Pipeline: resize → crop → flip → mask</span></div>
+          <div class="challenge-desc">Apply a full pipeline: simulate resize to 50%, crop the top-left 100×100, flip it horizontally, then zero-out the top 10 rows.</div>
+          <div class="challenge-editor">
+            <div class="editor-tabs"><span class="editor-tab active">solution.py</span></div>
+            <div class="code-editor-wrap"><textarea class="code-editor" id="cq-3-editor" spellcheck="false">import numpy as np
+
+np.random.seed(42)
+img = np.random.randint(0, 256, (200, 200, 3), dtype=np.uint8)
+
+# Step 1: Resize to 50% via sub-sampling
+step1 = img[___::2, ___::2]       # take every 2nd row and col from start
+print("After resize:", step1.shape)
+
+# Step 2: Crop top-left 100×100
+step2 = step1[___:___, ___:___]
+print("After crop:", step2.shape)
+
+# Step 3: Horizontal flip
+step3 = step2[___, ___]
+print("After flip:", step3.shape)
+
+# Step 4: Zero-out top 10 rows
+step4 = step3.copy()
+step4[___:___, :] = 0
+print("Top-left after zeroing:", step4[0, 0])
+print("Row 10 pixel:", step4[10, 0])</textarea></div>
+            <div class="editor-actions">
+              <button class="run-btn" onclick="runChallenge('cq-3-editor','cq-3-out','cq-3-check')">▶ Run &amp; Check</button>
+              <button class="reset-btn" onclick="resetCodingQuiz(3)">↺ Reset</button>
+            </div>
+          </div>
+          <div class="output-wrap" id="cq-3-out" style="display:none"><div class="output-label">Output</div><pre class="output-pre" id="cq-3-out-pre"></pre></div>
+          <div class="check-result" id="cq-3-check" style="display:none"></div>
+          <div class="expected-box"><span class="expected-label">Expected:</span><code>After resize: (100, 100, 3)<br>After crop: (100, 100, 3)<br>After flip: (100, 100, 3)<br>Top-left after zeroing: [0 0 0]<br>Row 10 pixel: (some non-zero value)</code></div>
+        </div>
+
+        <div class="final-score-card" id="finalScore" style="display:none">
+          <div class="fs-title">Lesson Complete! 🎉</div>
+          <div class="fs-scores" id="fsScores"></div>
+          <div class="fs-msg" id="fsMsg"></div>
+        </div>
+
+        <div class="next-lesson-cta" id="nextLesson" style="display:none">
+          <div class="nlc-inner">
+            <span class="nlc-label">Next lesson</span>
+            <h3 class="nlc-title">Filtering &amp; Kernels →</h3>
+            <p class="nlc-desc">Gaussian blur, Median filter, Otsu's thresholding, and spatial convolution.</p>
+            <a href="#" class="nlc-btn">Continue</a>
+          </div>
+        </div>
+      </section>
+
+        <!-- Permanent lesson navigation -->
+        <div class="lesson-pagination">
+          <a href="/pages/ai-lab/pixel-anatomy.html" class="lpag-btn prev">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 8H3M7 4L3 8l4 4"/></svg>
+            Pixel Anatomy
+          </a>
+          <span class="lpag-label">Module 1 · 2 of 4</span>
+          <a href="#" class="lpag-btn next disabled">
+            Filtering &amp; Kernels
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+          </a>
+        </div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<div id="footer-placeholder"></div>
+
+<script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
+<script src="/js/shared.js"></script>
+<script src="/js/lang.js"></script>
+<script src="/js/image-processing-opencv.js"></script>
+</body>
+</html>

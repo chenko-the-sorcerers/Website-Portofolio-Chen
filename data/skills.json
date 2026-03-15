@@ -1,0 +1,84 @@
+{
+  "categories": [
+    {
+      "name": "AI & Machine Learning",
+      "items": [
+        {
+          "name": "Python",
+          "level": 95,
+          "icon": "🐍"
+        },
+        {
+          "name": "PyTorch",
+          "level": 90,
+          "icon": "🔥"
+        },
+        {
+          "name": "TensorFlow",
+          "level": 85,
+          "icon": "🧠"
+        },
+        {
+          "name": "Computer Vision (CNN, OCR)",
+          "level": 92,
+          "icon": "👁️"
+        },
+        {
+          "name": "NLP / LLM",
+          "level": 90,
+          "icon": "💬"
+        },
+        {
+          "name": "Multimodal AI",
+          "level": 88,
+          "icon": "🤖"
+        }
+      ]
+    },
+    {
+      "name": "Engineering & Cloud",
+      "items": [
+        {
+          "name": "GCP / Docker",
+          "level": 80,
+          "icon": "☁️"
+        },
+        {
+          "name": "MLOps",
+          "level": 78,
+          "icon": "⚙️"
+        },
+        {
+          "name": "CFD / OpenFOAM",
+          "level": 75,
+          "icon": "🌊"
+        },
+        {
+          "name": "Cybersecurity",
+          "level": 72,
+          "icon": "🔐"
+        }
+      ]
+    },
+    {
+      "name": "Research & Science",
+      "items": [
+        {
+          "name": "Bioinformatics (Nextflow, Seqera)",
+          "level": 70,
+          "icon": "🧬"
+        },
+        {
+          "name": "Computational Optimization",
+          "level": 82,
+          "icon": "📐"
+        },
+        {
+          "name": "Web3 / Blockchain",
+          "level": 68,
+          "icon": "⛓️"
+        }
+      ]
+    }
+  ]
+}

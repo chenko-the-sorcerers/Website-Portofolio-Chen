@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Architecture Builder — Deep Learning for Vision | AI Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/shared.css">
+<link rel="stylesheet" href="/css/cnn-intro.css">
+<link rel="stylesheet" href="/css/cnn-why.css">
+<link rel="stylesheet" href="/css/cnn-arch.css">
+<link rel="stylesheet" href="/css/cnn-arch-builder.css">
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-follower" id="cursor-follower"></div>
+<div id="nav-placeholder"></div>
+<div class="read-progress"><div id="readBar"></div></div>
+
+<div class="lesson-layout">
+
+  <!-- ═══ SIDEBAR ═══ -->
+  <aside class="lesson-sidebar" id="lessonSidebar">
+    <div class="sb-top">
+      <a href="/pages/ai-lab/computer-vision.html" class="sb-back">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 3L5 8l5 5"/></svg>
+        Computer Vision
+      </a>
+      <div class="sb-studying">
+        <div class="sb-studying-label">Sedang belajar</div>
+        <div class="sb-studying-path">
+          <span class="sbp-item">AI Lab</span><span class="sbp-sep">›</span>
+          <span class="sbp-item">Computer Vision</span><span class="sbp-sep">›</span>
+          <span class="sbp-item active">Deep Learning for Vision</span>
+        </div>
+      </div>
+      <div class="sb-chapter">Module 3 · Deep Learning for Vision</div>
+      <div class="sb-lesson-title">Architecture Builder</div>
+      <div class="sb-tags">
+        <span class="sb-tag interactive">🏗️ Builder</span>
+        <span class="sb-tag upload">📷 Upload</span>
+      </div>
+    </div>
+
+    <nav class="lesson-nav">
+      <div class="nav-section-label">Dalam lesson ini</div>
+      <a href="#sec-builder" class="lnav-item active" data-sec="sec-builder">
+        <span class="lnav-dot"></span><span class="lnav-text">Architecture Builder</span><span class="lnav-num">01</span>
+      </a>
+      <a href="#sec-gradient" class="lnav-item" data-sec="sec-gradient">
+        <span class="lnav-dot"></span><span class="lnav-text">Gradient Flow Sim</span><span class="lnav-num">02</span>
+      </a>
+      <a href="#sec-resblock" class="lnav-item" data-sec="sec-resblock">
+        <span class="lnav-dot"></span><span class="lnav-text">Residual Block Config</span><span class="lnav-num">03</span>
+      </a>
+      <a href="#sec-effscale" class="lnav-item" data-sec="sec-effscale">
+        <span class="lnav-dot"></span><span class="lnav-text">EfficientNet Explorer</span><span class="lnav-num">04</span>
+      </a>
+      <a href="#sec-upload" class="lnav-item" data-sec="sec-upload">
+        <span class="lnav-dot"></span><span class="lnav-text">Upload &amp; Feature Maps</span><span class="lnav-num">05</span>
+      </a>
+    </nav>
+
+    <div class="sb-progress">
+      <div class="sb-prog-label"><span>Progress</span><span id="progPct">0%</span></div>
+      <div class="sb-prog-track"><div class="sb-prog-fill" id="progFill"></div></div>
+    </div>
+
+    <div class="sb-module-nav">
+      <div class="nav-section-label" style="padding:0 8px;margin-bottom:8px">Module 3 · Deep Learning for Vision</div>
+      <a href="/pages/ai-lab/cnn-why.html"          class="smn-item done">   <span class="smn-dot done"></span><span>Mengapa CNN?</span></a>
+      <a href="/pages/ai-lab/cnn-intro.html"         class="smn-item done">   <span class="smn-dot done"></span><span>Introduction to CNNs</span></a>
+      <a href="/pages/ai-lab/cnn-relu.html"          class="smn-item done">   <span class="smn-dot done"></span><span>Aktivasi ReLU</span></a>
+      <a href="/pages/ai-lab/cnn-fc.html"            class="smn-item done">   <span class="smn-dot done"></span><span>FC Layer &amp; Softmax</span></a>
+      <a href="/pages/ai-lab/cnn-hands.html"         class="smn-item done">   <span class="smn-dot done"></span><span>Hands-on: CNN Pertama</span></a>
+      <a href="/pages/ai-lab/cnn-arch.html"          class="smn-item done">   <span class="smn-dot done"></span><span>Popular Architectures</span></a>
+      <a href="/pages/ai-lab/cnn-arch-builder.html"  class="smn-item current"><span class="smn-dot done"></span><span>Architecture Builder</span></a>
+    </div>
+  </aside>
+
+  <!-- ═══ MAIN ═══ -->
+  <main class="lesson-main">
+    <div class="lesson-topbar">
+      <div class="ltb-left">
+        <button class="ltb-menu" id="menuBtn" onclick="toggleSidebar()">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg>
+        </button>
+        <span class="ltb-crumb">Architecture Builder</span>
+      </div>
+      <div class="ltb-right">
+        <a href="/pages/ai-lab/cnn-arch.html" class="ltb-btn">← Popular Architectures</a>
+        <a href="/pages/ai-lab/computer-vision.html" class="ltb-btn primary">Selesai ✓</a>
+      </div>
+    </div>
+
+    <div class="lesson-body">
+
+      <!-- ═══ SEC 1: ARCHITECTURE BUILDER ═══ -->
+      <section class="lesson-sec" id="sec-builder">
+        <div class="sec-header">
+          <span class="sec-num">01</span>
+          <div>
+            <h2 class="sec-title">Architecture Builder</h2>
+            <p class="sec-sub">Bangun CNN layer per layer — dimensi tensor, params, dan FLOPS update real-time</p>
+          </div>
+        </div>
+
+        <div class="prose">
+          Pilih preset arsitektur atau bangun dari nol. Tambah, hapus, dan edit tiap layer —
+          visualisasi pipeline dan statistik model langsung diperbarui.
+        </div>
+
+        <div class="worked-box" style="padding:20px">
+          <div class="wb-badge">🏗️ Interactive Builder</div>
+
+          <!-- Preset + input config -->
+          <div class="builder-top">
+            <div class="preset-row">
+              <span class="preset-label">Preset:</span>
+              <div class="preset-btns" id="presetBtns">
+                <button class="preset-btn active" data-preset="alexnet">AlexNet</button>
+                <button class="preset-btn" data-preset="vgg16">VGG-16</button>
+                <button class="preset-btn" data-preset="resnet50">ResNet-50</button>
+                <button class="preset-btn" data-preset="efficientb0">EfficientNet-B0</button>
+                <button class="preset-btn" data-preset="custom">✦ Custom</button>
+              </div>
+            </div>
+            <div class="input-config">
+              <div class="ic-item">
+                <label class="ic-label">Input H×W</label>
+                <select id="selResolution" class="ic-select">
+                  <option value="32">32×32</option>
+                  <option value="64">64×64</option>
+                  <option value="128">128×128</option>
+                  <option value="224" selected>224×224</option>
+                  <option value="299">299×299</option>
+                  <option value="456">456×456</option>
+                </select>
+              </div>
+              <div class="ic-item">
+                <label class="ic-label">Channels</label>
+                <select id="selChannels" class="ic-select">
+                  <option value="1">1 (grayscale)</option>
+                  <option value="3" selected>3 (RGB)</option>
+                </select>
+              </div>
+              <div class="ic-item">
+                <label class="ic-label">Classes</label>
+                <input type="number" id="inpClasses" class="ic-input" value="1000" min="2" max="10000">
+              </div>
+            </div>
+          </div>
+
+          <!-- Layer editor -->
+          <div class="layer-editor">
+            <div class="le-header">
+              <span class="le-title">Layers</span>
+              <div class="le-add-btns">
+                <button class="le-add" data-type="conv">+ Conv</button>
+                <button class="le-add" data-type="pool">+ Pool</button>
+                <button class="le-add" data-type="bn">+ BN</button>
+                <button class="le-add" data-type="relu">+ ReLU</button>
+                <button class="le-add" data-type="dropout">+ Dropout</button>
+                <button class="le-add" data-type="fc">+ FC</button>
+                <button class="le-add" data-type="gap">+ GAP</button>
+                <button class="le-add" data-type="residual">+ Residual</button>
+              </div>
+            </div>
+            <div class="layer-list" id="layerList"><!-- filled by JS --></div>
+          </div>
+
+          <!-- Pipeline visualization -->
+          <div class="pipeline-viz" id="pipelineViz"><!-- filled by JS --></div>
+
+          <!-- Stats bar -->
+          <div class="stats-bar" id="statsBar">
+            <div class="stat-item">
+              <div class="stat-label">Total Params</div>
+              <div class="stat-val" id="statParams">—</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-label">FLOPS</div>
+              <div class="stat-val" id="statFlops">—</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-label">Model Size</div>
+              <div class="stat-val" id="statSize">—</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-label">Output Shape</div>
+              <div class="stat-val" id="statOutput">—</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══ SEC 2: GRADIENT FLOW ═══ -->
+      <section class="lesson-sec" id="sec-gradient">
+        <div class="sec-header">
+          <span class="sec-num">02</span>
+          <div>
+            <h2 class="sec-title">Gradient Flow Simulation</h2>
+            <p class="sec-sub">Visualisasi mengapa skip connection mencegah vanishing gradient</p>
+          </div>
+        </div>
+
+        <div class="prose">
+          Geser slider untuk mengubah kedalaman jaringan dan lihat bagaimana gradient mengecil
+          di jaringan biasa, tapi tetap kuat di ResNet berkat skip connection.
+        </div>
+
+        <div class="worked-box">
+          <div class="wb-badge">🔬 Canvas Interaktif</div>
+          <div class="wb-title">Gradient per Layer saat Backpropagation</div>
+
+          <div class="gradient-sim">
+            <div class="gs-controls">
+              <div class="gs-ctrl-item">
+                <label class="gs-label">Jumlah Layer</label>
+                <input type="range" id="slLayers" min="2" max="20" step="1" value="8">
+                <span class="gs-val" id="valLayers">8</span>
+              </div>
+              <div class="gs-ctrl-item">
+                <label class="gs-label">Gradient awal</label>
+                <input type="range" id="slGradInit" min="0.1" max="2" step="0.1" value="1.0">
+                <span class="gs-val" id="valGradInit">1.0</span>
+              </div>
+              <div class="gs-switch">
+                <button class="gs-mode-btn active" id="btnShowBoth">Keduanya</button>
+                <button class="gs-mode-btn" id="btnShowVanilla">Tanpa Skip</button>
+                <button class="gs-mode-btn" id="btnShowResnet">ResNet</button>
+              </div>
+            </div>
+            <div class="gs-canvas-wrap">
+              <canvas id="gradientCanvas" width="700" height="280"></canvas>
+            </div>
+            <div class="gs-legend">
+              <span class="gs-leg-item"><span class="gs-dot" style="background:#ff3b30"></span>Vanilla (tanpa skip)</span>
+              <span class="gs-leg-item"><span class="gs-dot" style="background:#34c759"></span>ResNet (dengan skip)</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══ SEC 3: RESIDUAL BLOCK ═══ -->
+      <section class="lesson-sec" id="sec-resblock">
+        <div class="sec-header">
+          <span class="sec-num">03</span>
+          <div>
+            <h2 class="sec-title">Residual Block Configurator</h2>
+            <p class="sec-sub">Konfigurasi Basic vs Bottleneck block — lihat diagram dan jumlah params berubah</p>
+          </div>
+        </div>
+
+        <div class="prose">
+          Geser slider untuk mengubah jumlah channel input/output dan lihat bagaimana
+          arsitektur block berubah beserta jumlah parameter tepatnya.
+        </div>
+
+        <div class="worked-box">
+          <div class="wb-badge">🧱 Residual Block Designer</div>
+          <div class="wb-title">Basic Block vs Bottleneck — Konfigurasi Manual</div>
+
+          <div class="resblock-config">
+            <div class="rb-type-toggle">
+              <button class="rb-type-btn active" data-type="basic">Basic Block</button>
+              <button class="rb-type-btn" data-type="bottleneck">Bottleneck</button>
+            </div>
+            <div class="rb-sliders">
+              <div class="rbs-row">
+                <label class="rbs-label">In channels</label>
+                <input type="range" id="slInCh" min="32" max="512" step="32" value="64">
+                <span class="rbs-val" id="valInCh">64</span>
+              </div>
+              <div class="rbs-row">
+                <label class="rbs-label">Out channels</label>
+                <input type="range" id="slOutCh" min="32" max="512" step="32" value="64">
+                <span class="rbs-val" id="valOutCh">64</span>
+              </div>
+              <div class="rbs-row" id="bottleneckRow" style="display:none">
+                <label class="rbs-label">Bottleneck ratio</label>
+                <input type="range" id="slBnRatio" min="2" max="8" step="1" value="4">
+                <span class="rbs-val" id="valBnRatio">4</span>
+              </div>
+            </div>
+            <div class="rb-diagram" id="rbDiagram"><!-- drawn by JS --></div>
+            <div class="rb-stats" id="rbStats"><!-- filled by JS --></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══ SEC 4: EFFICIENTNET ═══ -->
+      <section class="lesson-sec" id="sec-effscale">
+        <div class="sec-header">
+          <span class="sec-num">04</span>
+          <div>
+            <h2 class="sec-title">EfficientNet Compound Scaling Explorer</h2>
+            <p class="sec-sub">Satu slider φ mengontrol depth, width, resolution, params, dan accuracy sekaligus</p>
+          </div>
+        </div>
+
+        <div class="prose">
+          Geser dari B0 ke B7 dan perhatikan bagaimana ketiga dimensi naik secara proporsional —
+          bukan hanya satu dimensi yang di-scale sendiri.
+        </div>
+
+        <div class="worked-box">
+          <div class="wb-badge">🎛️ EfficientNet B0 → B7</div>
+          <div class="wb-title">Compound Scaling Real-time</div>
+
+          <div class="eff-explorer">
+            <div class="eff-phi-control">
+              <div class="eff-phi-labels">
+                <span>B0</span><span>B1</span><span>B2</span><span>B3</span><span>B4</span><span>B5</span><span>B6</span><span>B7</span>
+              </div>
+              <input type="range" id="slEffPhi" min="0" max="7" step="1" value="0" class="eff-phi-slider">
+              <div class="eff-phi-val">EfficientNet-B<span id="valEffPhi">0</span></div>
+            </div>
+            <div class="eff-grid" id="effGrid"><!-- filled by JS --></div>
+            <div class="eff-bottom" id="effBottom"><!-- filled by JS --></div>
+          </div>
+        </div>
+
+        <div class="worked-box">
+          <div class="wb-badge">📊 Single vs Compound Scaling</div>
+          <div class="wb-title">Akurasi per ~4B FLOPS — Compound selalu menang</div>
+          <div class="scaling-compare" id="scalingCompare"><!-- filled by JS --></div>
+        </div>
+      </section>
+
+      <!-- ═══ SEC 5: UPLOAD ═══ -->
+      <section class="lesson-sec" id="sec-upload">
+        <div class="sec-header">
+          <span class="sec-num">05</span>
+          <div>
+            <h2 class="sec-title">Upload Gambar — Visualisasi Feature Maps</h2>
+            <p class="sec-sub">Upload gambarmu, pilih arsitektur, lihat apa yang "dilihat" tiap layer</p>
+          </div>
+        </div>
+
+        <div class="prose">
+          Semua proses berjalan di browser menggunakan JavaScript — tidak perlu server.
+          Konvolusi dilakukan secara nyata dengan filter-filter yang sama digunakan oleh CNN modern.
+          Untuk feature map dari model PyTorch pretrained, jalankan <code>cnn-arch-server.py</code> secara lokal.
+        </div>
+
+        <div class="worked-box upload-pipeline-box">
+          <div class="wb-badge">📷 Upload &amp; Process</div>
+
+          <div class="up-layout">
+            <!-- Kiri: upload + config -->
+            <div class="up-left">
+              <div class="upload-drop-zone" id="uploadDropZone">
+                <canvas id="uploadPreview" width="224" height="224"></canvas>
+                <div class="udz-overlay" id="udzOverlay">
+                  <div class="udz-icon">📷</div>
+                  <div class="udz-text">Drop gambar di sini</div>
+                  <div class="udz-sub">atau</div>
+                  <button class="udz-btn" id="udzBtn">Pilih File</button>
+                  <input type="file" id="fileInput" accept="image/*" style="display:none">
+                </div>
+              </div>
+
+              <div class="up-arch-select">
+                <label class="up-label">Arsitektur</label>
+                <select id="selUpArch" class="ic-select" style="width:100%">
+                  <option value="alexnet">AlexNet (8 layers)</option>
+                  <option value="vgg16">VGG-16 (16 layers)</option>
+                  <option value="resnet50" selected>ResNet-50 (50 layers)</option>
+                  <option value="efficientb0">EfficientNet-B0</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="up-label">Tampilkan layer</label>
+                <div class="up-layer-btns" id="upLayerBtns"><!-- filled by JS --></div>
+              </div>
+
+              <button class="up-run-btn" id="upRunBtn" disabled>
+                <span id="upRunLabel">▶ Proses Gambar</span>
+              </button>
+
+              <div class="up-server-hint">
+                <span class="ush-icon">💡</span>
+                <div>
+                  <div class="ush-title">Gunakan model PyTorch sungguhan</div>
+                  <div class="ush-desc">Jalankan <code>python3 cnn-arch-server.py</code> lalu centang opsi di bawah.</div>
+                  <label class="ush-check">
+                    <input type="checkbox" id="chkServer">
+                    Gunakan backend server (localhost:5050)
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Kanan: feature maps -->
+            <div class="up-right">
+              <div>
+                <div class="up-right-title" id="upRightTitle">Feature Maps</div>
+                <div class="up-right-sub" id="upRightSub">Upload gambar untuk mulai</div>
+              </div>
+              <div class="feature-map-grid" id="featureMapGrid">
+                <div class="fm-placeholder">
+                  <div class="fmp-icon">🔲</div>
+                  <div class="fmp-text">Feature maps akan muncul di sini</div>
+                </div>
+              </div>
+              <div class="fm-layer-info" id="fmLayerInfo" style="display:none"><!-- filled by JS --></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step-by-step tensor flow -->
+        <div class="worked-box">
+          <div class="wb-badge">🎬 Pipeline Step-by-Step</div>
+          <div class="wb-title">Tensor Flow — Animasi Layer per Layer</div>
+
+          <div class="tensor-flow" id="tensorFlow">
+            <div class="tf-placeholder">Upload gambar dan klik "Proses Gambar" untuk memulai</div>
+          </div>
+
+          <div class="tf-controls" id="tfControls" style="display:none">
+            <button class="ctrl-btn" id="tfPrev">← Prev</button>
+            <div class="tf-step-indicator" id="tfStepIndicator">—</div>
+            <button class="ctrl-btn" id="tfNext">Next →</button>
+            <button class="ctrl-btn play" id="tfPlay">▶ Auto-play</button>
+          </div>
+        </div>
+
+        <!-- Module complete CTA -->
+        <div class="next-lesson-cta" style="border-color:rgba(52,199,89,.3);background:rgba(52,199,89,.04);margin-top:48px">
+          <div class="nlc-inner">
+            <span class="nlc-label" style="color:#34c759">🎉 Module 3 Selesai!</span>
+            <h3 class="nlc-title">Deep Learning for Vision — Tuntas</h3>
+            <p class="nlc-desc">
+              Dari "mengapa CNN?" sampai membangun arsitektur sendiri dan melihat feature map nyata.
+              Modul berikutnya: <strong>Object Detection &amp; Segmentation</strong>.
+            </p>
+            <a href="/pages/ai-lab/computer-vision.html" class="nlc-btn" style="background:#34c759;color:#000">
+              ← Kembali ke Computer Vision
+            </a>
+          </div>
+        </div>
+      </section>
+
+    </div><!-- /lesson-body -->
+  </main>
+</div><!-- /lesson-layout -->
+
+<div id="footer-placeholder"></div>
+<script src="/js/shared.js"></script>
+<script src="/js/lang.js"></script>
+<script src="/js/cnn-arch-builder.js"></script>
+</body>
+</html>

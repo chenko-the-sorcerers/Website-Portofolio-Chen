@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Projects — Marchel Andrian Shevchenko</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/shared.css">
+<link rel="stylesheet" href="/css/projects.css">
+</head>
+<body>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-follower" id="cursor-follower"></div>
+<div id="nav-placeholder"></div>
+
+<div class="page-hero">
+  <div class="page-hero-bg"></div>
+  <div class="page-inner">
+    <p class="page-label">Work</p>
+    <h1 class="page-title">Projects<span>.</span></h1>
+    <p class="page-sub">20+ AI systems built across NLP, Computer Vision, Healthcare, Manufacturing, Culture, and Web3.</p>
+  </div>
+</div>
+
+<div class="filter-bar" id="filter-bar">
+  <button class="filter-btn active" data-filter="all" data-i18n="proj.filter.all">All</button>
+  <button class="filter-btn" data-filter="nlp" data-i18n="proj.filter.nlp">NLP / LLM</button>
+  <button class="filter-btn" data-filter="cv" data-i18n="proj.filter.cv">Computer Vision</button>
+  <button class="filter-btn" data-filter="health" data-i18n="proj.filter.health">Healthcare</button>
+  <button class="filter-btn" data-filter="culture" data-i18n="proj.filter.culture">Culture</button>
+  <button class="filter-btn" data-filter="mfg" data-i18n="proj.filter.mfg">Manufacturing</button>
+  <button class="filter-btn" data-filter="web3" data-i18n="proj.filter.web3">Web3</button>
+</div>
+
+<div class="projects-wrap">
+  <div class="bento" id="bento-grid">
+
+    <!-- Arutala v2.2 -->
+    <div class="bc c8 r2 bc-feat reveal" data-tags="nlp culture">
+      <span class="bc-tag" data-i18n="proj.p1.tag">Flagship · Multimodal AI</span>
+      <div class="bc-icon">🌐</div>
+      <div class="bc-title">Arutala v2.2 — Multimodal AI Ecosystem</div>
+      <div class="bc-desc" data-i18n="proj.p1.desc" style="font-size:14px;line-height:1.75;max-width:460px;">
+        Full multimodal AI learning environment for Indonesian local languages. Integrates LLM and VLM pipelines with 21 regional personas via Dialekta v1.0. Includes the ARUNA 7B and DIALEKTA 2B foundation models, and is powered by the SABDA algorithm for script intelligence.
+      </div>
+      <div style="margin-top:24px;display:flex;gap:8px;flex-wrap:wrap;">
+        <span style="font-size:11px;background:rgba(0,113,227,.12);border:1px solid rgba(41,151,255,.2);color:var(--blue2);padding:5px 12px;border-radius:980px;">LLM</span>
+        <span style="font-size:11px;background:rgba(0,113,227,.12);border:1px solid rgba(41,151,255,.2);color:var(--blue2);padding:5px 12px;border-radius:980px;">VLM</span>
+        <span style="font-size:11px;background:rgba(0,113,227,.12);border:1px solid rgba(41,151,255,.2);color:var(--blue2);padding:5px 12px;border-radius:980px;">Multimodal</span>
+        <span style="font-size:11px;background:rgba(0,113,227,.12);border:1px solid rgba(41,151,255,.2);color:var(--blue2);padding:5px 12px;border-radius:980px;">PyTorch</span>
+      </div>
+    </div>
+
+    <!-- IndoLLNet -->
+    <div class="bc c4 reveal d1" data-tags="nlp cv culture">
+      <span class="bc-tag" data-i18n="proj.p2.tag">NLP · OCR</span>
+      <div class="bc-icon">✍️</div>
+      <div class="bc-title">IndoLLNet v2.1</div>
+      <div class="bc-desc" data-i18n="proj.p2.desc">CNN-based OCR for Indonesian indigenous Nusantara scripts. Powers Arutala Aksara with 600K+ users. Presented at Sorcery Gathering 4.0 & 5.0.</div>
+    </div>
+
+    <!-- ARUNA 7B -->
+    <div class="bc c4 reveal d2" data-tags="nlp">
+      <span class="bc-tag" data-i18n="proj.p3.tag">Foundation Model</span>
+      <div class="bc-num">7B</div>
+      <div class="bc-title">ARUNA 7B</div>
+      <div class="bc-desc" data-i18n="proj.p3.desc">LLM foundation model for Indonesian local languages and dialects. Core infrastructure of the Arutala ecosystem.</div>
+    </div>
+
+    <!-- DIALEKTA 2B -->
+    <div class="bc c4 reveal d3" data-tags="nlp culture">
+      <span class="bc-tag" data-i18n="proj.p4.tag">Foundation Model</span>
+      <div class="bc-num">2B</div>
+      <div class="bc-title">DIALEKTA 2B</div>
+      <div class="bc-desc" data-i18n="proj.p4.desc">Foundation model specialized for Indonesian dialect understanding and generation. 21 communication personas.</div>
+    </div>
+
+    <!-- SABDARANA -->
+    <div class="bc c4 reveal" data-tags="web3 culture">
+      <span class="bc-tag" data-i18n="proj.p5.tag">Web3 · Cultural</span>
+      <div class="bc-icon">🔗</div>
+      <div class="bc-title">SABDARANA</div>
+      <div class="bc-desc" data-i18n="proj.p5.desc">Web3 & NFT-based Cultural Learn-to-Earn application. Presented at Garuda Hacks 2025.</div>
+      <div class="bc-venue">→ Garuda Hacks 2025</div>
+    </div>
+
+    <!-- KERTI KAWISTA -->
+    <div class="bc c4 reveal d1" data-tags="cv">
+      <span class="bc-tag">Computer Vision</span>
+      <div class="bc-icon">🏗️</div>
+      <div class="bc-title">KERTI KAWISTA</div>
+      <div class="bc-desc" data-i18n="proj.p6.desc">Construction site app with face recognition attendance, safety gear detection, and real-time CCTV monitoring.</div>
+      <div class="bc-venue">→ Garuda Hacks 2023</div>
+    </div>
+
+    <!-- MANDALA -->
+    <div class="bc c4 reveal d2" data-tags="cv">
+      <span class="bc-tag" data-i18n="proj.p7.tag">Railway · Safety</span>
+      <div class="bc-icon">🚆</div>
+      <div class="bc-title">MANDALA</div>
+      <div class="bc-desc" data-i18n="proj.p7.desc">Monitoring Safety and Railway Navigation system. Presented to PT. KAI (Indonesia Railway Company) 2025.</div>
+      <div class="bc-venue">→ PT. KAI 2025</div>
+    </div>
+
+    <!-- BIOBOT -->
+    <div class="bc c6 reveal" data-tags="health nlp">
+      <span class="bc-tag" data-i18n="proj.p8.tag">Healthcare · NLP</span>
+      <div class="bc-icon">💊</div>
+      <div class="bc-title">BIOBOT Framework</div>
+      <div class="bc-desc" data-i18n="proj.p8.desc">Machine Learning-driven drug recommendation system for healthcare in a multilingual environment. Features multilingual NLP for patient interaction and personalized treatment pathways.</div>
+      <div class="bc-venue">→ ICPAPS 2023 · Winner 3M Presentation</div>
+    </div>
+
+    <!-- Health Chatbot -->
+    <div class="bc c6 reveal d1" data-tags="health nlp">
+      <span class="bc-tag" data-i18n="proj.p9.tag">Healthcare · LLM</span>
+      <div class="bc-icon">🤖</div>
+      <div class="bc-title">Health Consultation Chatbot</div>
+      <div class="bc-desc" data-i18n="proj.p9.desc">LSTM and BERT-powered health consultation system with diagnostic conversation flow. Presented at Final Thesis Defence and MIT Hacking Medicine 2023 (2nd Place).</div>
+      <div class="bc-venue">→ MIT Hacking Medicine 2023 · 2nd Place</div>
+    </div>
+
+    <!-- Spray Dryer -->
+    <div class="bc c4 reveal" data-tags="mfg">
+      <span class="bc-tag" data-i18n="proj.p10.tag">Manufacturing · CFD</span>
+      <div class="bc-icon">⚙️</div>
+      <div class="bc-title">Spray Dryer Optimization</div>
+      <div class="bc-desc" data-i18n="proj.p10.desc">Energy optimization for industrial spray dryers using CFD, TFLSTM, Large Eddy Simulation. Kalbe Farma.</div>
+    </div>
+
+    <!-- Moisture LSTM -->
+    <div class="bc c4 reveal d1" data-tags="mfg">
+      <span class="bc-tag" data-i18n="proj.p11.tag">Manufacturing · ML</span>
+      <div class="bc-icon">🧪</div>
+      <div class="bc-title">Milk Moisture Predictor</div>
+      <div class="bc-desc" data-i18n="proj.p11.desc">Predicted moisture content in pharmaceutical milk production with LSTM, XGBoost, and decision trees. Kalbe Farma.</div>
+    </div>
+
+    <!-- Neural Soundscapes -->
+    <div class="bc c4 reveal d2" data-tags="culture">
+      <span class="bc-tag" data-i18n="proj.p12.tag">Audio · AI</span>
+      <div class="bc-icon">🎵</div>
+      <div class="bc-title">Neural Soundscapes</div>
+      <div class="bc-desc" data-i18n="proj.p12.desc">Audio restoration for reconstructing traditional instruments of the Yogyakarta Palace Guard. Javanese Cultural Symposium 2024.</div>
+      <div class="bc-venue">→ Javanese Cultural Symposium 2024</div>
+    </div>
+
+    <!-- Health Lifestyle -->
+    <div class="bc c6 reveal" data-tags="health">
+      <span class="bc-tag" data-i18n="proj.p13.tag">Health · RecSys</span>
+      <div class="bc-icon">💪</div>
+      <div class="bc-title">Health Lifestyle Recommendation System</div>
+      <div class="bc-desc" data-i18n="proj.p13.desc">Built with LightFM and Surprise collaborative filtering. Featured in Indonesia National Data Science Tournament. Personalized health and fitness recommendations at scale.</div>
+    </div>
+
+    <!-- Construction CV -->
+    <div class="bc c6 reveal d1" data-tags="cv">
+      <span class="bc-tag">Computer Vision</span>
+      <div class="bc-icon">👷</div>
+      <div class="bc-title">Construction Safety Classifier</div>
+      <div class="bc-desc" data-i18n="proj.p14.desc">Multi-task classification of safety equipment and helmet color using ResNet-15. Real-time worksite safety enforcement.</div>
+      <div class="bc-venue">→ PyCon Indonesia 2024</div>
+    </div>
+
+    <!-- Cat Face -->
+    <div class="bc c4 reveal" data-tags="cv">
+      <span class="bc-tag" data-i18n="proj.p15.tag">CV · Edge AI</span>
+      <div class="bc-icon">🐱</div>
+      <div class="bc-title">Automatic Cat Feeder</div>
+      <div class="bc-desc" data-i18n="proj.p15.desc">Cat face recognition using HOG feature extraction + KNN classifier for automated feeding system.</div>
+    </div>
+
+    <!-- Agriculture -->
+    <div class="bc c4 reveal d1" data-tags="nlp">
+      <span class="bc-tag" data-i18n="proj.p16.tag">Data Science · Policy</span>
+      <div class="bc-icon">🌾</div>
+      <div class="bc-title">Agriculture Distribution Analysis</div>
+      <div class="bc-desc" data-i18n="proj.p16.desc">Route data correlation for agriculture partnerships in Magelang, Central Java. Food security insights.</div>
+      <div class="bc-venue">→ UNSD International Conference 2022</div>
+    </div>
+
+    <!-- PyCon Pipeline -->
+    <div class="bc c4 reveal d2" data-tags="nlp">
+      <span class="bc-tag" data-i18n="proj.p17.tag">MLOps · Python</span>
+      <div class="bc-icon">⚡</div>
+      <div class="bc-title">Concurrency-Aware Data Pipelines</div>
+      <div class="bc-desc" data-i18n="proj.p17.desc">Benchmarking threading, multiprocessing, and async execution for large-scale model pipelines.</div>
+      <div class="bc-venue">→ PyCon Indonesia 2025</div>
+    </div>
+
+    <!-- Radiomics -->
+    <div class="bc c6 reveal" data-tags="health cv">
+      <span class="bc-tag" data-i18n="proj.p18.tag">Medical AI · NVIDIA</span>
+      <div class="bc-icon">🧠</div>
+      <div class="bc-title">DVH & Radiomic Evaluation from IMRT</div>
+      <div class="bc-desc" data-i18n="proj.p18.desc">Neural network approach for optimizing Dose-Volume Histogram and radiomic evaluation from IMRT radiotherapy. Final project at NVIDIA × UGM scholarship.</div>
+    </div>
+
+    <!-- Dota2 -->
+    <div class="bc c6 reveal d1" data-tags="nlp">
+      <span class="bc-tag">ML · Gaming</span>
+      <div class="bc-icon">🎮</div>
+      <div class="bc-title">Dota 2 Result Classifier</div>
+      <div class="bc-desc">Game result classification using Multi-Layer Perceptron. Feature engineering from match statistics and hero compositions for win probability prediction.</div>
+    </div>
+
+  </div>
+</div>
+
+<div id="footer-placeholder"></div>
+
+<script src="/js/shared.js"></script>
+<script src="/js/lang.js"></script>
+<script src="/js/projects.js"></script>
+</body>
+</html>

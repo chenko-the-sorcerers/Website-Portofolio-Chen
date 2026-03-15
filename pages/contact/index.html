@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact — Marchel Andrian Shevchenko</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/shared.css">
+<link rel="stylesheet" href="/css/contact.css">
+</head>
+<body>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-follower" id="cursor-follower"></div>
+<div id="nav-placeholder"></div>
+
+<div class="contact-page">
+  <!-- LEFT -->
+  <div class="contact-left">
+    <div class="contact-left-bg"></div>
+    <p class="contact-label" data-i18n="con.label">Get in Touch</p>
+    <h1 class="contact-heading">Let's build<br><span>something</span><br>great.</h1>
+    <p class="contact-text">Whether it's a research collaboration, AI project, speaking invitation, mentoring opportunity, or just a conversation about technology and culture — I'd love to hear from you.</p>
+
+    <div class="contact-links">
+      <a href="mailto:Rianari990@gmail.com" class="c-link">
+        <div class="c-link-icon">✉️</div>
+        <div>
+          <div class="c-link-label" data-i18n="con.lbl.email">Email</div>
+          <div class="c-link-val">Rianari990@gmail.com</div>
+        </div>
+        <span class="c-link-arrow">→</span>
+      </a>
+      <a href="tel:+6282243990884" class="c-link">
+        <div class="c-link-icon">📱</div>
+        <div>
+          <div class="c-link-label" data-i18n="con.lbl.phone">Phone / WhatsApp</div>
+          <div class="c-link-val">+62 822 4399 0884</div>
+        </div>
+        <span class="c-link-arrow">→</span>
+      </a>
+      <div class="c-link" style="cursor:default;">
+        <div class="c-link-icon">📍</div>
+        <div>
+          <div class="c-link-label" data-i18n="con.lbl.location">Location</div>
+          <div class="c-link-val">Yogyakarta, Indonesia</div>
+        </div>
+      </div>
+      <div class="c-link" style="cursor:default;">
+        <div class="c-link-icon">🎓</div>
+        <div>
+          <div class="c-link-label" data-i18n="con.lbl.academic">Academic</div>
+          <div class="c-link-val" data-i18n="con.val.academic">MIT · Pre-PhD Computational Science</div>
+        </div>
+      </div>
+      <div class="c-link" style="cursor:default;">
+        <div class="c-link-icon">🏢</div>
+        <div>
+          <div class="c-link-label" data-i18n="con.lbl.company">Company</div>
+          <div class="c-link-val" data-i18n="con.val.company">CEO, PT. Data Sorcerers Indonesia</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT -->
+  <div class="contact-right">
+    <div class="contact-form">
+      <div class="form-title" data-i18n="con.form.title">Send a Message</div>
+      <div class="form-sub">Fill out the form below and I'll get back to you within 24 hours.</div>
+
+      <div id="form-wrap">
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label" data-i18n="con.form.fname">First Name</label>
+            <input class="form-input" type="text" placeholder="John" id="fname">
+          </div>
+          <div class="form-group">
+            <label class="form-label" data-i18n="con.form.lname">Last Name</label>
+            <input class="form-input" type="text" placeholder="Doe" id="lname">
+          </div>
+          <div class="form-group">
+            <label class="form-label" data-i18n="con.form.email">Email</label>
+            <input class="form-input" type="email" placeholder="john@example.com" id="email">
+          </div>
+          <div class="form-group">
+            <label class="form-label" data-i18n="con.form.org">Organization</label>
+            <input class="form-input" type="text" placeholder="Company / University" id="org">
+          </div>
+          <div class="form-group full">
+            <label class="form-label" data-i18n="con.form.subject">Subject</label>
+            <input class="form-input" type="text" placeholder="Collaboration / Speaking / Research..." id="subject">
+          </div>
+          <div class="form-group full">
+            <label class="form-label" data-i18n="con.form.msg">Message</label>
+            <textarea class="form-textarea" placeholder="Tell me about your project or idea..." id="message"></textarea>
+          </div>
+        </div>
+        <button class="form-btn" onclick="handleSubmit()" data-i18n="con.form.btn">Send Message →</button>
+      </div>
+
+      <div class="form-success" id="form-success">
+        <div class="form-success-icon">✅</div>
+        <div class="form-success-title" data-i18n="con.form.sent">Message Sent!</div>
+        <div class="form-success-text">Thank you for reaching out. I'll respond within 24 hours at Rianari990@gmail.com</div>
+      </div>
+
+      <div class="quick-links">
+        <a href="/projects/" class="q-link" data-i18n="con.ql.projects">View Projects →</a>
+        <a href="/experience/" class="q-link" data-i18n="con.ql.exp">Experience →</a>
+        <a href="/achievements/" class="q-link" data-i18n="con.ql.ach">Achievements →</a>
+        <a href="/skills/" class="q-link" data-i18n="con.ql.skills">Skills →</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="footer-placeholder"></div>
+
+<script src="/js/shared.js"></script>
+<script src="/js/lang.js"></script>
+<script src="/js/contact.js"></script>
+</body>
+</html>

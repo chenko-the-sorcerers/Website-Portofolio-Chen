@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Apa itu Machine Learning? — AI Lab | Marchel Andrian Shevchenko</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/shared.css">
+<link rel="stylesheet" href="/css/lesson-base.css">
+<link rel="stylesheet" href="/css/ml-intro.css">
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-follower" id="cursor-follower"></div>
+<div id="nav-placeholder"></div>
+<div class="read-progress"><div id="readBar"></div></div>
+
+<div class="lesson-layout">
+
+  <!-- ═══ SIDEBAR ═══ -->
+  <aside class="lesson-sidebar" id="lessonSidebar">
+    <div class="sb-top">
+      <a href="/pages/ai-lab/machine-learning.html" class="sb-back">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 3L5 8l5 5"/></svg>
+        Machine Learning
+      </a>
+      <div class="sb-studying">
+        <div class="sb-studying-label">Sedang belajar</div>
+        <div class="sb-studying-path">
+          <span class="sbp-item">AI Lab</span>
+          <span class="sbp-sep">›</span>
+          <span class="sbp-item">Machine Learning</span>
+          <span class="sbp-sep">›</span>
+          <span class="sbp-item active">Pengantar ML</span>
+        </div>
+      </div>
+      <div class="sb-chapter">Modul 1 · Pengantar Machine Learning</div>
+      <div class="sb-lesson-title">Apa itu Machine Learning?</div>
+      <div class="sb-tags">
+        <span class="sb-tag">Konsep</span>
+        <span class="sb-tag interactive">💡 Intuisi</span>
+      </div>
+    </div>
+
+    <div class="lesson-nav">
+      <div class="nav-section-label">Dalam lesson ini</div>
+      <a href="#sec-definisi" class="lnav-item active" data-sec="sec-definisi">
+        <span class="lnav-dot"></span><span class="lnav-text">Definisi ML</span><span class="lnav-num">01</span>
+      </a>
+      <a href="#sec-paradigma" class="lnav-item" data-sec="sec-paradigma">
+        <span class="lnav-dot"></span><span class="lnav-text">3 Paradigma Utama</span><span class="lnav-num">02</span>
+      </a>
+      <a href="#sec-supervised" class="lnav-item" data-sec="sec-supervised">
+        <span class="lnav-dot"></span><span class="lnav-text">Supervised Learning</span><span class="lnav-num">03</span>
+      </a>
+      <a href="#sec-unsupervised" class="lnav-item" data-sec="sec-unsupervised">
+        <span class="lnav-dot"></span><span class="lnav-text">Unsupervised Learning</span><span class="lnav-num">04</span>
+      </a>
+      <a href="#sec-reinforcement" class="lnav-item" data-sec="sec-reinforcement">
+        <span class="lnav-dot"></span><span class="lnav-text">Reinforcement Learning</span><span class="lnav-num">05</span>
+      </a>
+      <a href="#sec-kapan" class="lnav-item" data-sec="sec-kapan">
+        <span class="lnav-dot"></span><span class="lnav-text">Kapan Pakai ML?</span><span class="lnav-num">06</span>
+      </a>
+    </div>
+
+    <div class="sb-progress">
+      <div class="sb-prog-label"><span>Progress</span><span id="progPct">0%</span></div>
+      <div class="sb-prog-track"><div class="sb-prog-fill" id="progFill"></div></div>
+    </div>
+
+    <div class="sb-module-nav">
+      <div class="nav-section-label" style="padding:0 8px;margin-bottom:8px">Modul 1 · Pengantar ML</div>
+      <a href="/pages/ai-lab/ml-intro.html" class="smn-item current"><span class="smn-dot done"></span><span>Apa itu Machine Learning?</span></a>
+      <a href="/pages/ai-lab/ml-hypothesis.html" class="smn-item locked"><span class="smn-dot"></span><span>Hipotesis & Model</span><span class="smn-lock">🔒</span></a>
+      <a href="/pages/ai-lab/ml-vc-dim.html" class="smn-item locked"><span class="smn-dot"></span><span>VC-Dimension</span><span class="smn-lock">🔒</span></a>
+      <a href="/pages/ai-lab/ml-bias-variance.html" class="smn-item locked"><span class="smn-dot"></span><span>Bias-Variance Tradeoff</span><span class="smn-lock">🔒</span></a>
+    </div>
+  </aside>
+
+  <!-- ═══ MAIN ═══ -->
+  <main class="lesson-main">
+    <div class="lesson-topbar">
+      <div class="ltb-left">
+        <button class="ltb-menu" id="menuBtn" onclick="toggleSidebar()">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg>
+        </button>
+        <span class="ltb-crumb">Apa itu Machine Learning?</span>
+      </div>
+      <div class="ltb-right">
+        <a href="/pages/ai-lab/machine-learning.html" class="ltb-btn">← Kembali ke ML</a>
+        <a href="/pages/ai-lab/ml-hypothesis.html" class="ltb-btn primary">Berikutnya: Hipotesis →</a>
+      </div>
+    </div>
+
+    <div class="lesson-body">
+
+      <!-- ═══ SEC 1: DEFINISI ═══ -->
+      <section class="lesson-sec" id="sec-definisi">
+        <div class="sec-header">
+          <span class="sec-num">01</span>
+          <div>
+            <h2 class="sec-title">Apa itu Machine Learning?</h2>
+            <p class="sec-sub">Perbedaan fundamental antara pemrograman klasik dan ML</p>
+          </div>
+        </div>
+
+        <div class="prose">
+          Pemrograman klasik bekerja dengan cara sederhana: programmer menulis <strong>aturan eksplisit</strong>,
+          komputer mengeksekusinya. Tapi ada kelas masalah — mengenali wajah, memahami kalimat,
+          memprediksi harga saham — di mana tidak ada manusia yang bisa menuliskan aturannya secara eksplisit.
+          Di sinilah <strong>Machine Learning</strong> masuk.
+        </div>
+
+        <!-- Classic vs ML diagram -->
+        <div class="paradigm-compare">
+          <div class="pc-col">
+            <div class="pc-header classic">Pemrograman Klasik</div>
+            <div class="pc-flow">
+              <div class="pc-box input">📥 Data Input</div>
+              <div class="pc-arrow">+</div>
+              <div class="pc-box rules">📋 Aturan (oleh programmer)</div>
+              <div class="pc-arrow">↓</div>
+              <div class="pc-box output">📤 Output / Jawaban</div>
+            </div>
+            <div class="pc-example">
+              <span class="pce-label">Contoh:</span>
+              <code>if suhu > 38: return "demam"</code>
+            </div>
+          </div>
+
+          <div class="pc-vs">VS</div>
+
+          <div class="pc-col">
+            <div class="pc-header ml">Machine Learning</div>
+            <div class="pc-flow">
+              <div class="pc-box input">📥 Data Input</div>
+              <div class="pc-arrow">+</div>
+              <div class="pc-box answers">✅ Jawaban (label/output)</div>
+              <div class="pc-arrow">↓</div>
+              <div class="pc-box rules ml-rules">🤖 Aturan ditemukan sendiri oleh model</div>
+            </div>
+            <div class="pc-example">
+              <span class="pce-label">Contoh:</span>
+              <code>model.fit(data_pasien, diagnosa)</code>
+            </div>
+          </div>
+        </div>
+
+        <div class="insight-callout">
+          <div class="ic-icon">💡</div>
+          <div class="ic-body">
+            <strong>Definisi formal (Tom Mitchell, 1997):</strong> "A computer program is said to learn from
+            experience E with respect to some task T and performance measure P, if its performance on T,
+            as measured by P, improves with experience E."
+            <br><br>
+            Dengan kata lain: ML adalah program yang <strong>menjadi lebih baik seiring bertambahnya data</strong>.
+          </div>
+        </div>
+
+        <!-- Why ML exists -->
+        <div class="worked-box">
+          <div class="wb-badge">🎯 Motivasi</div>
+          <div class="wb-title">Mengapa ML Dibutuhkan?</div>
+          <div class="motivation-grid">
+            <div class="motiv-card">
+              <div class="motiv-icon">🧩</div>
+              <div class="motiv-title">Masalah Terlalu Kompleks</div>
+              <div class="motiv-desc">Pengenalan wajah, penerjemahan bahasa, diagnosis medis — tidak ada manusia yang bisa menulis aturannya secara eksplisit.</div>
+            </div>
+            <div class="motiv-card">
+              <div class="motiv-icon">📊</div>
+              <div class="motiv-title">Data Tersedia Masif</div>
+              <div class="motiv-desc">Internet menghasilkan miliaran titik data setiap hari. ML bisa memanfaatkan data ini untuk menemukan pola yang tidak terlihat manusia.</div>
+            </div>
+            <div class="motiv-card">
+              <div class="motiv-icon">🔄</div>
+              <div class="motiv-title">Lingkungan Dinamis</div>
+              <div class="motiv-desc">Filter spam harus adaptif — spammer terus berubah taktik. Aturan statis tidak bisa mengikuti, tapi model ML bisa belajar terus.</div>
+            </div>
+            <div class="motiv-card">
+              <div class="motiv-icon">🔍</div>
+              <div class="motiv-title">Menemukan Pola Tersembunyi</div>
+              <div class="motiv-desc">Pola dalam data genomik, perilaku finansial, atau cuaca — terlalu kompleks dan multidimensional untuk ditemukan secara manual.</div>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ═══ SEC 2: PARADIGMA ═══ -->
+      <section class="lesson-sec" id="sec-paradigma">
+        <div class="sec-header">
+          <span class="sec-num">02</span>
+          <div>
+            <h2 class="sec-title">Tiga Paradigma Utama ML</h2>
+            <p class="sec-sub">Cara yang berbeda untuk belajar dari data, tergantung informasi apa yang tersedia</p>
+          </div>
+        </div>
+
+        <div class="prose">
+          ML bukan satu algoritma — melainkan keluarga besar pendekatan. Perbedaan paling mendasar ada di
+          <strong>jenis sinyal pembelajaran</strong>: apakah kita punya jawaban benar? Apakah data sudah berlabel?
+          Dari sini muncul tiga paradigma utama.
+        </div>
+
+        <div class="three-paradigms">
+          <div class="para-card supervised">
+            <div class="para-num">01</div>
+            <div class="para-icon">🎯</div>
+            <div class="para-title">Supervised Learning</div>
+            <div class="para-tagline">Belajar dari contoh berlabel</div>
+            <div class="para-desc">
+              Setiap data latih memiliki label yang diketahui. Model belajar memetakan
+              input ke output yang benar.
+            </div>
+            <div class="para-signal">
+              <span class="ps-label">Sinyal:</span>
+              <span class="ps-val supervised">Label eksplisit y untuk setiap x</span>
+            </div>
+            <div class="para-examples">
+              <div class="pe-row"><span class="pe-task">Klasifikasi email</span><span class="pe-label-ex">spam / bukan spam</span></div>
+              <div class="pe-row"><span class="pe-task">Prediksi harga rumah</span><span class="pe-label-ex">nilai numerik Rp</span></div>
+              <div class="pe-row"><span class="pe-task">Deteksi penyakit</span><span class="pe-label-ex">positif / negatif</span></div>
+            </div>
+          </div>
+
+          <div class="para-card unsupervised">
+            <div class="para-num">02</div>
+            <div class="para-icon">🔍</div>
+            <div class="para-title">Unsupervised Learning</div>
+            <div class="para-tagline">Temukan struktur tanpa label</div>
+            <div class="para-desc">
+              Tidak ada label. Model harus menemukan sendiri pola, kelompok,
+              atau struktur tersembunyi dalam data.
+            </div>
+            <div class="para-signal">
+              <span class="ps-label">Sinyal:</span>
+              <span class="ps-val unsupervised">Hanya data x, tanpa label y</span>
+            </div>
+            <div class="para-examples">
+              <div class="pe-row"><span class="pe-task">Segmentasi pelanggan</span><span class="pe-label-ex">cluster otomatis</span></div>
+              <div class="pe-row"><span class="pe-task">Kompresi data</span><span class="pe-label-ex">representasi ringkas</span></div>
+              <div class="pe-row"><span class="pe-task">Anomali detection</span><span class="pe-label-ex">pola tidak biasa</span></div>
+            </div>
+          </div>
+
+          <div class="para-card reinforcement">
+            <div class="para-num">03</div>
+            <div class="para-icon">🎮</div>
+            <div class="para-title">Reinforcement Learning</div>
+            <div class="para-tagline">Belajar dari interaksi & reward</div>
+            <div class="para-desc">
+              Agen belajar dengan mencoba aksi dan menerima sinyal reward/penalti
+              dari lingkungan. Tidak ada dataset statis.
+            </div>
+            <div class="para-signal">
+              <span class="ps-label">Sinyal:</span>
+              <span class="ps-val reinforcement">Reward r setelah aksi a di state s</span>
+            </div>
+            <div class="para-examples">
+              <div class="pe-row"><span class="pe-task">AlphaGo / chess AI</span><span class="pe-label-ex">menang / kalah</span></div>
+              <div class="pe-row"><span class="pe-task">Robot navigasi</span><span class="pe-label-ex">reach target</span></div>
+              <div class="pe-row"><span class="pe-task">Rekomendasi konten</span><span class="pe-label-ex">klik / scroll</span></div>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ═══ SEC 3: SUPERVISED ═══ -->
+      <section class="lesson-sec" id="sec-supervised">
+        <div class="sec-header">
+          <span class="sec-num">03</span>
+          <div>
+            <h2 class="sec-title">Supervised Learning — Lebih Dalam</h2>
+            <p class="sec-sub">Paradigma paling umum — fondasi sebagian besar aplikasi ML di industri</p>
+          </div>
+        </div>
+
+        <div class="prose">
+          Supervised learning adalah paradigma paling dominan di industri. Hampir semua model produksi —
+          dari filter konten hingga sistem rekomendasi — dibangun di atasnya. Ada dua sub-tugas utama:
+          <strong>klasifikasi</strong> dan <strong>regresi</strong>.
+        </div>
+
+        <div class="task-split">
+          <div class="ts-col">
+            <div class="ts-header">
+              <span class="ts-icon">🏷️</span>
+              <div>
+                <div class="ts-title">Klasifikasi</div>
+                <div class="ts-sub">Output diskrit</div>
+              </div>
+            </div>
+            <div class="ts-formula">
+              <span class="math-term blue">h</span>
+              <span class="math-op">:</span>
+              <span class="math-term">X</span>
+              <span class="math-op">→</span>
+              <span class="math-term purple">{C₁, C₂, …, Cₖ}</span>
+            </div>
+            <div class="ts-desc">Menetapkan kelas kategorikal ke setiap input. Bisa binary (2 kelas) atau multi-class (k kelas).</div>
+            <div class="ts-examples">
+              <div class="tse-item">Email → spam / ham</div>
+              <div class="tse-item">Foto → anjing / kucing / burung</div>
+              <div class="tse-item">Transaksi → fraud / normal</div>
+            </div>
+          </div>
+          <div class="ts-divider"></div>
+          <div class="ts-col">
+            <div class="ts-header">
+              <span class="ts-icon">📈</span>
+              <div>
+                <div class="ts-title">Regresi</div>
+                <div class="ts-sub">Output kontinu</div>
+              </div>
+            </div>
+            <div class="ts-formula">
+              <span class="math-term blue">h</span>
+              <span class="math-op">:</span>
+              <span class="math-term">X</span>
+              <span class="math-op">→</span>
+              <span class="math-term green">ℝ</span>
+            </div>
+            <div class="ts-desc">Memprediksi nilai numerik kontinu. Perbedaannya dengan klasifikasi hanya pada tipe output.</div>
+            <div class="ts-examples">
+              <div class="tse-item">Fitur rumah → harga Rp</div>
+              <div class="tse-item">Data cuaca → suhu besok °C</div>
+              <div class="tse-item">Profil pengguna → revenue prediksi</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="worked-box">
+          <div class="wb-badge">⚙️ Bagaimana Supervised Learning Bekerja</div>
+          <div class="wb-title">Pipeline Lengkap — 4 Langkah</div>
+          <div class="pipeline-steps">
+            <div class="ps-step">
+              <div class="ps-circle">1</div>
+              <div class="ps-content">
+                <div class="ps-title">Kumpulkan Training Data</div>
+                <div class="ps-desc">Dataset D = {(x⁽¹⁾, y⁽¹⁾), ..., (x⁽ᴺ⁾, y⁽ᴺ⁾)}. Setiap contoh adalah pasangan input-output. Kualitas dan kuantitas data sangat menentukan hasil.</div>
+              </div>
+            </div>
+            <div class="ps-arrow">↓</div>
+            <div class="ps-step">
+              <div class="ps-circle">2</div>
+              <div class="ps-content">
+                <div class="ps-title">Pilih Model (Ruang Hipotesis H)</div>
+                <div class="ps-desc">Tentukan keluarga fungsi yang akan dicari: linear, polynomial, decision tree, neural network. Pilihan ini disebut <em>induktif bias</em>.</div>
+              </div>
+            </div>
+            <div class="ps-arrow">↓</div>
+            <div class="ps-step">
+              <div class="ps-circle">3</div>
+              <div class="ps-content">
+                <div class="ps-title">Training — Minimalkan Loss</div>
+                <div class="ps-desc">Cari parameter θ yang meminimalkan fungsi loss L(θ) — ukuran kesalahan prediksi di atas training data. Biasanya via gradient descent.</div>
+              </div>
+            </div>
+            <div class="ps-arrow">↓</div>
+            <div class="ps-step">
+              <div class="ps-circle">4</div>
+              <div class="ps-content">
+                <div class="ps-title">Evaluasi Generalisasi</div>
+                <div class="ps-desc">Uji pada test set yang tidak pernah dilihat model. Tujuan bukan menghafal data latih — tapi bisa memprediksi data baru dengan akurat.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ═══ SEC 4: UNSUPERVISED ═══ -->
+      <section class="lesson-sec" id="sec-unsupervised">
+        <div class="sec-header">
+          <span class="sec-num">04</span>
+          <div>
+            <h2 class="sec-title">Unsupervised Learning</h2>
+            <p class="sec-sub">Menemukan struktur tersembunyi tanpa label</p>
+          </div>
+        </div>
+
+        <div class="prose">
+          Memberi label data itu mahal dan lambat. Untungnya, banyak hal berguna bisa dipelajari dari
+          data yang <strong>tidak berlabel</strong> — menemukan kelompok alami, memampatkan representasi,
+          atau mendeteksi anomali.
+        </div>
+
+        <div class="unsup-tasks">
+          <div class="ut-card">
+            <div class="ut-accent" style="background:#2997ff"></div>
+            <div class="ut-icon">🎯</div>
+            <div class="ut-title">Clustering</div>
+            <div class="ut-desc">Mengelompokkan data berdasarkan kemiripan tanpa label. <strong>K-Means</strong> mencari K cluster dengan meminimalkan jarak intra-cluster. <strong>DBSCAN</strong> menemukan cluster bentuk arbitrer berdasarkan density.</div>
+            <div class="ut-algos">
+              <span class="uta">K-Means</span>
+              <span class="uta">DBSCAN</span>
+              <span class="uta">Agglomerative</span>
+              <span class="uta">GMM</span>
+            </div>
+          </div>
+          <div class="ut-card">
+            <div class="ut-accent" style="background:#a855f7"></div>
+            <div class="ut-icon">📉</div>
+            <div class="ut-title">Dimensionality Reduction</div>
+            <div class="ut-desc">Meringkas data berdimensi tinggi ke representasi lebih padat tanpa kehilangan informasi penting. Berguna untuk visualisasi, kompresi, dan feature engineering sebelum supervised learning.</div>
+            <div class="ut-algos">
+              <span class="uta">PCA</span>
+              <span class="uta">t-SNE</span>
+              <span class="uta">Autoencoder</span>
+              <span class="uta">UMAP</span>
+            </div>
+          </div>
+          <div class="ut-card">
+            <div class="ut-accent" style="background:#ff375f"></div>
+            <div class="ut-icon">⚠️</div>
+            <div class="ut-title">Anomaly Detection</div>
+            <div class="ut-desc">Mengidentifikasi titik data yang menyimpang jauh dari pola normal. Tidak perlu label "anomali" — cukup pelajari distribusi data normal, lalu flagging yang tidak cocok.</div>
+            <div class="ut-algos">
+              <span class="uta">Isolation Forest</span>
+              <span class="uta">Autoencoder</span>
+              <span class="uta">LOF</span>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ═══ SEC 5: REINFORCEMENT ═══ -->
+      <section class="lesson-sec" id="sec-reinforcement">
+        <div class="sec-header">
+          <span class="sec-num">05</span>
+          <div>
+            <h2 class="sec-title">Reinforcement Learning</h2>
+            <p class="sec-sub">Belajar dari konsekuensi aksi — seperti cara manusia belajar</p>
+          </div>
+        </div>
+
+        <div class="prose">
+          RL paling mirip dengan cara manusia belajar secara alami: mencoba sesuatu, melihat hasilnya,
+          dan menyesuaikan perilaku. Tidak ada dataset statis — agen <strong>mengumpulkan pengalamannya sendiri</strong>
+          melalui interaksi dengan lingkungan.
+        </div>
+
+        <!-- RL Loop -->
+        <div class="rl-loop">
+          <div class="rll-center">
+            <div class="rll-agent">
+              <div class="rll-icon">🤖</div>
+              <div class="rll-label">Agent</div>
+            </div>
+            <div class="rll-env">
+              <div class="rll-icon">🌍</div>
+              <div class="rll-label">Environment</div>
+            </div>
+          </div>
+          <div class="rll-arrows">
+            <div class="rll-arrow top">
+              <div class="rll-arrow-line"></div>
+              <div class="rll-arrow-label">aksi <span class="math-term blue">a</span></div>
+            </div>
+            <div class="rll-arrow bottom">
+              <div class="rll-arrow-line"></div>
+              <div class="rll-arrow-label">state <span class="math-term green">s</span>, reward <span class="math-term purple">r</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="rl-concepts">
+          <div class="rlc-row">
+            <div class="rlc-term">State <code>s</code></div>
+            <div class="rlc-def">Representasi situasi lingkungan saat ini yang dilihat agen. Misalnya: posisi robot, posisi bidak catur, frame video game.</div>
+          </div>
+          <div class="rlc-row">
+            <div class="rlc-term">Action <code>a</code></div>
+            <div class="rlc-def">Pilihan yang bisa dilakukan agen di suatu state. Bisa diskrit (maju/mundur/kiri/kanan) atau kontinu (torsi motor 0–100%).</div>
+          </div>
+          <div class="rlc-row">
+            <div class="rlc-term">Reward <code>r</code></div>
+            <div class="rlc-def">Sinyal skalar dari lingkungan setelah agen melakukan aksi. Positif = bagus (menang, skor naik), negatif = buruk (jatuh, kalah). Ini <em>satu-satunya</em> sinyal pembelajaran.</div>
+          </div>
+          <div class="rlc-row">
+            <div class="rlc-term">Policy <code>π</code></div>
+            <div class="rlc-def">Strategi agen — fungsi yang memetakan state ke aksi: π(s) = a. Tujuan RL adalah menemukan policy optimal yang memaksimalkan cumulative reward.</div>
+          </div>
+        </div>
+
+        <div class="insight-callout">
+          <div class="ic-icon">🎮</div>
+          <div class="ic-body">
+            <strong>AlphaGo Zero (DeepMind, 2017)</strong> — belajar bermain Go dari nol hanya dengan RL,
+            tanpa data partai manusia sama sekali. Setelah 3 hari, ia mengalahkan AlphaGo versi sebelumnya
+            (yang sudah mengalahkan juara dunia manusia) dengan skor 100-0.
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ═══ SEC 6: KAPAN PAKAI ML ═══ -->
+      <section class="lesson-sec" id="sec-kapan">
+        <div class="sec-header">
+          <span class="sec-num">06</span>
+          <div>
+            <h2 class="sec-title">Kapan Pakai ML — dan Kapan Tidak</h2>
+            <p class="sec-sub">ML bukan solusi untuk semua masalah. Memilih dengan tepat sama pentingnya dengan kemampuan teknis.</p>
+          </div>
+        </div>
+
+        <div class="prose">
+          Salah satu skill paling berharga seorang ML practitioner adalah tahu kapan <em>tidak</em> menggunakan ML.
+          ML butuh data, waktu, dan sumber daya — sering ada solusi lebih sederhana yang lebih baik.
+        </div>
+
+        <div class="when-grid">
+          <div class="when-col use">
+            <div class="when-header">✅ Gunakan ML</div>
+            <div class="when-list">
+              <div class="wl-item">
+                <div class="wl-icon">📦</div>
+                <div class="wl-content">
+                  <div class="wl-title">Aturan tidak bisa ditulis manual</div>
+                  <div class="wl-desc">Pengenalan wajah, pemahaman bahasa natural — terlalu kompleks untuk di-hardcode.</div>
+                </div>
+              </div>
+              <div class="wl-item">
+                <div class="wl-icon">📊</div>
+                <div class="wl-content">
+                  <div class="wl-title">Data latih tersedia banyak</div>
+                  <div class="wl-desc">ML butuh data untuk belajar. Semakin banyak data berkualitas, semakin baik hasilnya.</div>
+                </div>
+              </div>
+              <div class="wl-item">
+                <div class="wl-icon">🎯</div>
+                <div class="wl-content">
+                  <div class="wl-title">Performa bisa diukur</div>
+                  <div class="wl-desc">Ada metrik jelas (accuracy, F1, RMSE) untuk menentukan apakah model cukup baik.</div>
+                </div>
+              </div>
+              <div class="wl-item">
+                <div class="wl-icon">🔄</div>
+                <div class="wl-content">
+                  <div class="wl-title">Pola bisa berubah seiring waktu</div>
+                  <div class="wl-desc">Model bisa di-retrain dengan data baru, sedangkan aturan statis butuh update manual.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="when-col avoid">
+            <div class="when-header">❌ Jangan Pakai ML</div>
+            <div class="when-list">
+              <div class="wl-item">
+                <div class="wl-icon">📋</div>
+                <div class="wl-content">
+                  <div class="wl-title">Aturan sudah jelas dan simpel</div>
+                  <div class="wl-desc">if-else yang simpel lebih cepat, lebih mudah di-debug, dan lebih explainable dari model ML manapun.</div>
+                </div>
+              </div>
+              <div class="wl-item">
+                <div class="wl-icon">🗂️</div>
+                <div class="wl-content">
+                  <div class="wl-title">Data sangat sedikit</div>
+                  <div class="wl-desc">Model ML butuh data yang cukup untuk generalisasi. Dengan data terlalu sedikit, hasil tidak bisa dipercaya.</div>
+                </div>
+              </div>
+              <div class="wl-item">
+                <div class="wl-icon">⚖️</div>
+                <div class="wl-content">
+                  <div class="wl-title">Interpretabilitas kritis</div>
+                  <div class="wl-desc">Sistem hukum, medis, keuangan sering butuh penjelasan tiap keputusan — "black box" tidak bisa diterima.</div>
+                </div>
+              </div>
+              <div class="wl-item">
+                <div class="wl-icon">💰</div>
+                <div class="wl-content">
+                  <div class="wl-title">Biaya lebih besar dari manfaat</div>
+                  <div class="wl-desc">Mengumpulkan data, training, deployment, monitoring — semua berbiaya. Pastikan ROI-nya worth it.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Next lesson CTA -->
+        <div class="next-lesson-cta">
+          <div class="nlc-inner">
+            <span class="nlc-label">Lesson berikutnya</span>
+            <h3 class="nlc-title">Hipotesis & Model →</h3>
+            <p class="nlc-desc">Sekarang kamu tahu APA itu ML — saatnya pelajari bahasa matematisnya. Apa itu hipotesis, ruang hipotesis H, dan bagaimana model diparameterisasi.</p>
+            <a href="/pages/ai-lab/ml-hypothesis.html" class="nlc-btn">Lanjut ke Hipotesis & Model</a>
+          </div>
+        </div>
+
+      </section>
+
+    </div><!-- /lesson-body -->
+  </main>
+</div><!-- /lesson-layout -->
+
+<div id="footer-placeholder"></div>
+<script src="/js/shared.js"></script>
+<script src="/js/lang.js"></script>
+<script src="/js/ml-intro.js"></script>
+</body>
+</html>

@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Natural Language Processing — AI Lab | Marchel Andrian Shevchenko</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/shared.css">
+<link rel="stylesheet" href="/css/nlp.css">
+</head>
+<body>
+
+<!-- Custom cursor -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-follower" id="cursor-follower"></div>
+
+<!-- Nav placeholder -->
+<div id="nav-placeholder"></div>
+
+<!-- ═══════════════════════════════════════════ HERO ═══ -->
+<header class="cv-hero">
+  <div class="hero-scanlines"></div>
+  <div class="hero-grid-bg"></div>
+  <div class="hero-inner">
+    <div class="hero-breadcrumb">
+      <a href="/ai-lab.html">AI Lab</a>
+      <span class="sep">›</span>
+      <span>Natural Language Processing</span>
+    </div>
+    <div class="hero-tag-row">
+      <span class="hero-tag">03 / 08</span>
+      <span class="hero-tag live">🧠 Language Intelligence</span>
+    </div>
+    <h1 class="hero-title">
+      <span class="title-line">Language</span>
+      <span class="title-line accent">Models.</span>
+    </h1>
+    <p class="hero-sub">
+      Transformers, tokenization, language models, RAG, and the full pipeline from raw text to meaning — built from scratch.
+    </p>
+    <div class="hero-stats">
+      <div class="stat">
+        <span class="stat-num">6</span>
+        <span class="stat-label">Modules</span>
+      </div>
+      <div class="stat-div"></div>
+      <div class="stat">
+        <span class="stat-num">38+</span>
+        <span class="stat-label">Topics</span>
+      </div>
+      <div class="stat-div"></div>
+      <div class="stat">
+        <span class="stat-num">∞</span>
+        <span class="stat-label">Applications</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating NLP chip decorations -->
+  <div class="hero-chip chip-1">token[0..n]</div>
+  <div class="hero-chip chip-2">attention(Q,K,V)</div>
+  <div class="hero-chip chip-3">perplexity: 12.3</div>
+  <div class="hero-chip chip-4">RAG pipeline</div>
+</header>
+
+<!-- ═══════════════════════════════════════════ PROGRESS BAR ═══ -->
+<div class="progress-strip">
+  <div class="progress-inner" id="readProgress"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════ CURRICULUM ═══ -->
+<main class="cv-main">
+
+  <!-- Sticky sidebar TOC -->
+  <aside class="cv-toc" id="cvToc">
+    <p class="toc-label">Contents</p>
+    <ul class="toc-list">
+      <li><a href="#m1" class="toc-link active" data-module="m1"><span class="toc-num">01</span>Text Fundamentals</a></li>
+      <li><a href="#m2" class="toc-link" data-module="m2"><span class="toc-num">02</span>Text Representations</a></li>
+      <li><a href="#m3" class="toc-link" data-module="m3"><span class="toc-num">03</span>Classical NLP Models</a></li>
+      <li><a href="#m4" class="toc-link" data-module="m4"><span class="toc-num">04</span>Deep Learning for NLP</a></li>
+      <li><a href="#m5" class="toc-link" data-module="m5"><span class="toc-num">05</span>Sequential Models</a></li>
+      <li><a href="#m6" class="toc-link" data-module="m6"><span class="toc-num">06</span>Transformers &amp; Modern NLP</a></li>
+    </ul>
+  </aside>
+
+  <!-- Content area -->
+  <div class="cv-content">
+
+    <!-- ── MODULE 1 ── -->
+    <section class="module reveal" id="m1" data-color="#bf5af2">
+      <div class="module-header">
+        <div class="module-num-badge" style="--mc:#bf5af2">01</div>
+        <div class="module-meta">
+          <span class="module-tag" style="--mc:#bf5af2">Foundation</span>
+          <h2 class="module-title">Text Fundamentals</h2>
+          <p class="module-sub">Before touching any model, understand what text truly is — and the challenges machines face reading it.</p>
+        </div>
+      </div>
+
+      <div class="topic-list">
+
+        <div class="topic-item reveal-up">
+          <div class="topic-icon" style="--tc:#bf5af2">✂️</div>
+          <div class="topic-body">
+            <h3 class="topic-name"><a href="/pages/ai-lab/tokenization.html" style="color:inherit;text-decoration:none;"> Tokenization </a></h3>
+            <p class="topic-desc">The usual first step in any NLP pipeline. Chopping documents into smaller pieces (tokens) sounds simple, but edge cases abound — contractions, punctuation, emojis, compound words. We cover word-level, subword (BPE, WordPiece, SentencePiece), and character-level strategies and when to choose each.</p>
+            <div class="topic-tags">
+              <span class="ttag">BPE</span><span class="ttag">WordPiece</span><span class="ttag">SentencePiece</span><span class="ttag">NLTK</span><span class="ttag">spaCy</span>
+            </div>
+          </div>
+          <div class="topic-code">
+<pre><code><span class="c-kw">from</span> transformers <span class="c-kw">import</span> AutoTokenizer
+tok <span class="c-op">=</span> AutoTokenizer.<span class="c-fn">from_pretrained</span>(
+  <span class="c-str">"bert-base-uncased"</span>)
+ids <span class="c-op">=</span> tok.<span class="c-fn">encode</span>(
+  <span class="c-str">"Hello, world!"</span>, add_special_tokens<span class="c-op">=</span><span class="c-kw">True</span>)
+<span class="c-cmt"># [101, 7592, 1010, 2088, 999, 102]</span></code></pre>
+          </div>
+        </div>
+
+        <div class="topic-item reveal-up delay-1">
+          <div class="topic-icon" style="--tc:#bf5af2">🧹</div>
+          <div class="topic-body">
+            <h3 class="topic-name"><a href="/pages/ai-lab/preprocessing.html" style="color:inherit;text-decoration:none;"> Basic Preprocessing </a></h3>
+            <p class="topic-desc">Depending on the goal, raw tokens need further cleaning. Case-folding collapses vocabulary size. Stop word removal strips high-frequency noise. Stemming aggressively chops suffixes (Porter, Snowball). Lemmatization does it properly using vocabulary and morphology — slower but smarter.</p>
+            <div class="topic-tags">
+              <span class="ttag">Case-folding</span><span class="ttag">Stop Words</span><span class="ttag">Stemming</span><span class="ttag">Lemmatization</span><span class="ttag">NLTK</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="topic-item reveal-up delay-2">
+          <div class="topic-icon" style="--tc:#bf5af2">🏷️</div>
+          <div class="topic-body">
+            <h3 class="topic-name"><a href="/pages/ai-lab/pos-ner.html" style="color:inherit;text-decoration:none;">Advanced Preprocessing — POS &amp; NER</a></h3>
+            <p class="topic-desc">Tagging tokens with Part-of-Speech labels (NN, VBZ, JJ…) reveals grammatical roles. Named Entity Recognition (NER) extracts people, places, and organizations. Dependency parsing maps syntactic relationships. Constituency parsing shows phrase structure. Collectively, these unlock the deeper grammar of a sentence.</p>
+            <div class="topic-tags">
+              <span class="ttag">POS Tagging</span><span class="ttag">NER</span><span class="ttag">Dependency Parse</span><span class="ttag">spaCy</span><span class="ttag">Constituency</span>
+            </div>
+          </div>
+          <div class="topic-code">
+<pre><code><span class="c-kw">import</span> spacy
+nlp <span class="c-op">=</span> spacy.<span class="c-fn">load</span>(<span class="c-str">"en_core_web_sm"</span>)
+doc <span class="c-op">=</span> <span class="c-fn">nlp</span>(<span class="c-str">"Apple is in Cupertino."</span>)
+<span class="c-kw">for</span> ent <span class="c-kw">in</span> doc.ents:
+  <span class="c-fn">print</span>(ent.text, ent.label_)
+<span class="c-cmt"># Apple ORG   Cupertino GPE</span></code></pre>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── MODULE 2 ── -->
+    <section class="module reveal" id="m2" data-color="#30d158">
+      <div class="module-header">
+        <div class="module-num-badge" style="--mc:#30d158">02</div>
+        <div class="module-meta">
+          <span class="module-tag" style="--mc:#30d158">Representations</span>
+          <h2 class="module-title">Text Representations</h2>
+          <p class="module-sub">To run math on language, we first need to turn words into numbers — and the choice of representation matters enormously.</p>
+        </div>
+      </div>
+
+      <div class="topic-list">
+
+        <div class="topic-item reveal-up">
+          <div class="topic-icon" style="--tc:#30d158">🛍️</div>
+          <div class="topic-body">
+            <h3 class="topic-name"><a href="/pages/ai-lab/bow.html" style="color:inherit;text-decoration:none;">Bag-of-Words &amp; Document Similarity</a></h3>
+            <p class="topic-desc">The simplest possible representation — a vector of word counts, ignoring order. Despite its naivety, BoW still powers many real-world systems. We derive document similarity using cosine distance, build vocabulary matrices, and explore when this sparse representation is surprisingly effective.</p>
+            <div class="topic-tags">
+              <span class="ttag">BoW</span><span class="ttag">CountVectorizer</span><span class="ttag">Cosine Similarity</span><span class="ttag">Sparse Matrix</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="topic-item reveal-up delay-1">
+          <div class="topic-icon" style="--tc:#30d158">📊</div>
+          <div class="topic-body">
+            <h3 class="topic-name"><a href="/pages/ai-lab/tfidf.html" style="color:inherit;text-decoration:none;">TF-IDF &amp; Document Search</a></h3>
+            <p class="topic-desc">Term Frequency — Inverse Document Frequency fixes BoW's biggest flaw: common words dominate. TF-IDF down-weights words that appear in every document and up-weights rare discriminative terms. We build a simple but effective document search engine from scratch using TF-IDF vectors and cosine retrieval.</p>
+            <div class="topic-tags">
+              <span class="ttag">TF-IDF</span><span class="ttag">TfidfVectorizer</span><span class="ttag">Document Search</span><span class="ttag">Retrieval</span><span class="ttag">sklearn</span>
+            </div>
+          </div>
+          <div class="topic-code">
+<pre><code><span class="c-kw">from</span> sklearn.feature_extraction.text <span class="c-kw">import</span> TfidfVectorizer
+<span class="c-kw">from</span> sklearn.metrics.pairwise <span class="c-kw">import</span> cosine_similarity
+
+vec  <span class="c-op">=</span> <span class="c-fn">TfidfVectorizer</span>()
+X    <span class="c-op">=</span> vec.<span class="c-fn">fit_transform</span>(corpus)
+sims <span class="c-op">=</span> <span class="c-fn">cosine_similarity</span>(query_vec, X)</code></pre>
+          </div>
+        </div>
+
+        <div class="topic-item reveal-up delay-2">
+          <div class="topic-icon" style="--tc:#30d158">🔢</div>
+          <div class="topic-body">
+            <h3 class="topic-name">Word Vectors &amp; Embeddings</h3>
+            <p class="topic-desc">The breakthrough that changed NLP — vectors where similar words are geometrically close. Word2Vec (CBOW &amp; Skip-gram) learns from co-occurrence. GloVe captures global statistics. FastText handles out-of-vocabulary words via subword embeddings. Downstream tasks can now leverage pre-trained semantic spaces as starting points.</p>
+            <div class="topic-tags">
+              <span class="ttag">Word2Vec</span><span class="ttag">GloVe</span><span class="ttag">FastText</span><span class="ttag">Embeddings</span><span class="ttag">Semantic Space</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── MODULE 3 ── -->
+    <section class="module reveal" id="m3" data-color="#ff9f0a">
+      <div class="module-header">
+        <div class="module-num-badge" style="--mc:#ff9f0a">03</div>
+        <div class="module-meta">
+          <span class="module-tag" style="--mc:#ff9f0a">Classical ML</span>
+          <h2 class="module-title">Classical NLP Models</h2>
+          <p class="module-sub">Before transformers took over, these algorithms powered production NLP for decades — and many still do.</p>
+        </div>
+      </div>
+
+      <!-- Model evaluation compare -->
+      <div class="compare-grid reveal-up">
+        <div class="compare-card">
+          <div class="ccard-title">Precision</div>
+          <div class="ccard-desc">Of all predicted positives, how many were actually correct?</div>
+          <ul class="ccard-list">
+            <li>TP / (TP + FP)</li>
+            <li>Penalizes false alarms</li>
+            <li>Use when FP is costly</li>
+          </ul>
+          <span class="ccard-badge">Spam filter</span>
+        </div>
+        <div class="compare-vs">VS</div>
+        <div class="compare-card">
+          <div class="ccard-title">Recall</div>
+          <div class="ccard-desc">Of all actual positives, how many did the model catch?</div>
+          <ul class="ccard-list">
+            <li>TP / (TP + FN)</li>
+            <li>Penalizes missed cases</li>
+            <li>Use when FN is costly</li>
+          </ul>
+          <span class="ccard-badge real">Medical NLP</span>
+        </div>
+      </div>
+
+      <div class="topic-list">
+
+        <div class="topic-item reveal-up">
+          <div class="topic-icon" style="--tc:#ff9f0a">🏗️</div>
+          <div class="topic-body">
+            <h3 class="topic-name">Building &amp; Evaluating Models</h3>
+            <p class="topic-desc">A high-level tour of the ML modelling loop for NLP. Supervised vs unsupervised tasks. Train/dev/test splits and why they matter. Overfitting, bias-variance tradeoff, and class imbalance in text data. Precision, recall, F1, and when accuracy alone misleads.</p>
+            <div class="topic-tags">
+              <span class="ttag">Train/Test Split</span><span class="ttag">F1 Score</span><span class="ttag">Cross-Validation</span><span class="ttag">Overfitting</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="topic-item reveal-up delay-1">
+          <div class="topic-icon" style="--tc:#ff9f0a">🔮</div>
+          <div class="topic-body">
+            <h3 class="topic-name">Naïve Bayes Text Classification</h3>
+            <p class="topic-desc">Fast, interpretable, and surprisingly powerful for text. Naïve Bayes uses Bayes' theorem with the strong independence assumption that each word contributes independently to the class probability. We cover Bernoulli and Multinomial variants, Laplace smoothing for unseen words, and build a full sentiment classifier that rivals modern baselines on many benchmarks.</p>
+            <div class="topic-tags">
+              <span class="ttag">Naïve Bayes</span><span class="ttag">Bayes Theorem</span><span class="ttag">Laplace Smoothing</span><span class="ttag">Sentiment</span><span class="ttag">Text Classification</span>
+            </div>
+          </div>
+          <div class="topic-code">
+<pre><code><span class="c-kw">from</span> sklearn.naive_bayes <span class="c-kw">import</span> MultinomialNB
+<span class="c-kw">from</span> sklearn.pipeline <span class="c-kw">import</span> make_pipeline
+
+clf <span class="c-op">=</span> <span class="c-fn">make_pipeline</span>(
+  <span class="c-fn">TfidfVectorizer</span>(),
+  <span class="c-fn">MultinomialNB</span>(alpha<span class="c-op">=</span><span class="c-num">1.0</span>))
+clf.<span class="c-fn">fit</span>(X_train, y_train)</code></pre>
+          </div>
+        </div>
+
+        <div class="topic-item reveal-up delay-2">
+          <div class="topic-icon" style="--tc:#ff9f0a">🗂️</div>
+          <div class="topic-body">
+            <h3 class="topic-name">Topic Modelling — LDA</h3>
+            <p class="topic-desc">What do you do with a pile of unlabelled documents? Latent Dirichlet Allocation models each document as a mixture of topics, and each topic as a distribution over words. The model discovers hidden thematic structure without any labels. We cover the generative process, how to tune the number of topics, and build an LDA pipeline with Gensim for unsupervised document exploration.</p>
+            <div class="topic-tags">
+              <span class="ttag">LDA</span><span class="ttag">Topic Modelling</span><span class="ttag">Gensim</span><span class="ttag">Unsupervised</span><span class="ttag">Perplexity</span><span class="ttag">Coherence</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── MODULE 4 ── -->
+    <section class="module reveal" id="m4" data-color="#2997ff">
+      <div class="module-header">
+        <div class="module-num-badge" style="--mc:#2997ff">04</div>
+        <div class="module-meta">
+          <span class="module-tag" style="--mc:#2997ff">Deep Learning</span>
+          <h2 class="module-title">Deep Learning for NLP</h2>
+          <p class="module-sub">Neural networks turned NLP from rule-based heuristics into learned representations — starting from the very basics.</p>
+        </div>
+      </div>
+
+      <!-- Architecture timeline -->
+      <div class="arch-timeline reveal-up">
+        <div class="arch-node" style="--mc:#2997ff">
+          <span class="arch-year">Classic</span>
+          <span class="arch-name">BoW / TF-IDF</span>
+          <span class="arch-note">Sparse vectors</span>
+        </div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-node" style="--mc:#2997ff">
+          <span class="arch-year">2013</span>
+          <span class="arch-name">Word2Vec</span>
+          <span class="arch-note">Dense embeddings</span>
+        </div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-node" style="--mc:#2997ff">
+          <span class="arch-year">2014–17</span>
+          <span class="arch-name">LSTM / GRU</span>
+          <span class="arch-note">Sequential memory</span>
+        </div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-node" style="--mc:#2997ff">
+          <span class="arch-year">2017</span>
+          <span class="arch-name">Attention</span>
+          <span class="arch-note">Seq2Seq boost</span>
+        </div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-node" style="--mc:#2997ff">
+          <span class="arch-year">2017+</span>
+          <span class="arch-name">Transformer</span>
+          <span class="arch-note">Attention only</span>
+        </div>
+      </div>
+
+      <div class="topic-list">
+
+        <div class="topic-item reveal-up">
+          <div class="topic-icon" style="--tc:#2997ff">🧬</div>
+          <div class="topic-body">
+            <h3 class="topic-name">Neural Networks I — Core Mechanics</h3>
+            <p class="topic-desc">Forward pass, loss functions, and backpropagation from first principles. Activation functions (ReLU, sigmoid, tanh) and their gradients. We implement a feedforward network from scratch in NumPy to cement intuition before moving to frameworks. By the end you'll understand exactly how a network "learns."</p>
+            <div class="topic-tags">
+              <span class="ttag">Backprop</span><span class="ttag">Gradient Descent</span><span class="ttag">ReLU</span><span class="ttag">Loss Function</span><span class="ttag">NumPy</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="topic-item reveal-up delay-1">
+          <div class="topic-icon" style="--tc:#2997ff">⚙️</div>
+          <div class="topic-body">
+            <h3 class="topic-name">Neural Networks II — Effective Training</h3>
+            <p class="topic-desc">Learning rate schedules (warmup, cosine decay) and adaptive optimizers (Adam, AdamW). Regularization via dropout, weight decay, and batch normalization. Early stopping and learning curves to diagnose overfitting vs underfitting. We then return to NLP and build a deep text classifier in PyTorch with all these techniques applied.</p>
+            <div class="topic-tags">
+              <span class="ttag">Adam</span><span class="ttag">Dropout</span><span class="ttag">LR Schedule</span><span class="ttag">Weight Decay</span><span class="ttag">PyTorch</span>
+            </div>
+          </div>
+          <div class="topic-code">
+<pre><code><span class="c-kw">import</span> torch
+<span class="c-kw">from</span> torch <span class="c-kw">import</span> nn
+
+optimizer <span class="c-op">=</span> torch.optim.<span class="c-fn">AdamW</span>(
+  model.<span class="c-fn">parameters</span>(),
+  lr<span class="c-op">=</span><span class="c-num">2e-5</span>, weight_decay<span class="c-op">=</span><span class="c-num">0.01</span>)
+scheduler <span class="c-op">=</span> <span class="c-fn">get_linear_schedule_with_warmup</span>(
+  optimizer, num_warmup_steps<span class="c-op">=</span><span class="c-num">100</span>,
+  num_training_steps<span class="c-op">=</span>total_steps)</code></pre>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── MODULE 5 ── -->
+    <section class="module reveal" id="m5" data-color="#ff6b6b">
+      <div class="module-header">
+        <div class="module-num-badge" style="--mc:#ff6b6b">05</div>
+        <div class="module-meta">
+          <span class="module-tag" style="--mc:#ff6b6b">Sequential</span>
+          <h2 class="module-title">Sequential Models</h2>
+          <p class="module-sub">Go beyond bags of words — model the order of language, generate coherent text, and translate between sequences.</p>
+        </div>
+      </div>
+
+      <div class="topic-list">
+
+        <div class="topic-item reveal-up">
+          <div class="topic-icon" style="--tc:#ff6b6b">🔄</div>
+          <div class="topic-body">
+            <h3 class="topic-name">Recurrent Neural Networks &amp; Language Models</h3>
+            <p class="topic-desc">Recurrence adds memory — a hidden state carries information across time steps. Vanilla RNNs suffer from vanishing gradients over long sequences. LSTMs solve this with forget, input, and output gates. GRUs offer a lighter alternative. We build a character-level language model that generates text, and a POS tagger that processes sequences end-to-end.</p>
+            <div class="topic-tags">
+              <span class="ttag">RNN</span><span class="ttag">LSTM</span><span class="ttag">GRU</span><span class="ttag">Language Model</span><span class="ttag">Vanishing Gradient</span><span class="ttag">Teacher Forcing</span>
+            </div>
+          </div>
+          <div class="topic-code">
+<pre><code><span class="c-kw">class</span> <span class="c-fn">LSTMClassifier</span>(nn.Module):
+  <span class="c-kw">def</span> <span class="c-fn">__init__</span>(<span class="c-kw">self</span>, vocab, emb, hid):
+    <span class="c-fn">super</span>().<span class="c-fn">__init__</span>()
+    <span class="c-kw">self</span>.emb  <span class="c-op">=</span> nn.<span class="c-fn">Embedding</span>(vocab, emb)
+    <span class="c-kw">self</span>.lstm <span class="c-op">=</span> nn.<span class="c-fn">LSTM</span>(emb, hid,
+                         batch_first<span class="c-op">=</span><span class="c-kw">True</span>)
+    <span class="c-kw">self</span>.fc   <span class="c-op">=</span> nn.<span class="c-fn">Linear</span>(hid, <span class="c-num">2</span>)</code></pre>
+          </div>
+        </div>
+
+        <div class="topic-item reveal-up delay-1">
+          <div class="topic-icon" style="--tc:#ff6b6b">🔁</div>
+          <div class="topic-body">
+            <h3 class="topic-name">Sequence-to-Sequence &amp; Attention</h3>
+            <p class="topic-desc">Many NLP tasks are sequence transformation problems — translation, summarization, question answering. The encoder-decoder architecture compresses the input into a context vector then decodes the output. The bottleneck hurts for long inputs. Bahdanau Attention fixes this by letting the decoder selectively attend to any encoder state. We build a neural machine translator and visualize the attention heatmap.</p>
+            <div class="topic-tags">
+              <span class="ttag">Encoder-Decoder</span><span class="ttag">Bahdanau Attention</span><span class="ttag">Beam Search</span><span class="ttag">BLEU Score</span><span class="ttag">Translation</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="topic-item reveal-up delay-2">
+          <div class="topic-icon" style="--tc:#ff6b6b">📐</div>
+          <div class="topic-body">
+            <h3 class="topic-name">Attention Mechanics Deep Dive</h3>
+            <p class="topic-desc">Breaking down the attention equation: Q·Kᵀ / √d_k gives alignment scores, softmax normalises them into weights, and the weighted sum of V is the context vector. Scaled dot-product attention vs additive attention. Multi-head attention and why multiple heads capture different relationship types simultaneously.</p>
+            <div class="topic-tags">
+              <span class="ttag">Q K V</span><span class="ttag">Scaled Dot-Product</span><span class="ttag">Multi-Head</span><span class="ttag">Alignment</span><span class="ttag">Context Vector</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── MODULE 6 ── -->
+    <section class="module reveal" id="m6" data-color="#00c7be">
+      <div class="module-header">
+        <div class="module-num-badge" style="--mc:#00c7be">06</div>
+        <div class="module-meta">
+          <span class="module-tag" style="--mc:#00c7be">Modern NLP</span>
+          <h2 class="module-title">Transformers &amp; Modern NLP</h2>
+          <p class="module-sub">Attention is all you need — and then some. From building transformers from scratch to RAG pipelines in production.</p>
+        </div>
+      </div>
+
+      <!-- RAG pipeline visual -->
+      <div class="deploy-pipeline reveal-up">
+        <div class="dp-step" style="--mc:#00c7be">
+          <span class="dp-icon">📄</span>
+          <span class="dp-label">Documents</span>
+        </div>
+        <div class="dp-arrow">→</div>
+        <div class="dp-step" style="--mc:#00c7be">
+          <span class="dp-icon">✂️</span>
+          <span class="dp-label">Chunk</span>
+        </div>
+        <div class="dp-arrow">→</div>
+        <div class="dp-step" style="--mc:#00c7be">
+          <span class="dp-icon">🔢</span>
+          <span class="dp-label">Embed</span>
+        </div>
+        <div class="dp-arrow">→</div>
+        <div class="dp-step" style="--mc:#00c7be">
+          <span class="dp-icon">🔍</span>
+          <span class="dp-label">Retrieve</span>
+        </div>
+        <div class="dp-arrow">→</div>
+        <div class="dp-step" style="--mc:#00c7be">
+          <span class="dp-icon">🤖</span>
+          <span class="dp-label">Generate</span>
+        </div>
+      </div>
+
+      <div class="topic-list">
+
+        <div class="topic-item reveal-up">
+          <div class="topic-icon" style="--tc:#00c7be">⚡</div>
+          <div class="topic-body">
+            <h3 class="topic-name">Transformers From Scratch</h3>
+            <p class="topic-desc">The 2017 "Attention is All You Need" architecture replaced recurrence entirely. Positional encoding injects token order without recurrence. Layer norm and residual connections stabilise training. The encoder stack (BERT-style) vs decoder stack (GPT-style) vs full encoder-decoder (T5). We build a mini-transformer from scratch in PyTorch and use it to answer questions.</p>
+            <div class="topic-tags">
+              <span class="ttag">Positional Encoding</span><span class="ttag">Layer Norm</span><span class="ttag">BERT</span><span class="ttag">GPT</span><span class="ttag">T5</span><span class="ttag">Residual</span>
+            </div>
+          </div>
+          <div class="topic-code">
+<pre><code><span class="c-kw">from</span> transformers <span class="c-kw">import</span> AutoModelForQA
+<span class="c-kw">import</span> torch
+
+model <span class="c-op">=</span> AutoModelForQA.<span class="c-fn">from_pretrained</span>(
+  <span class="c-str">"deepset/roberta-base-squad2"</span>)
+outputs <span class="c-op">=</span> <span class="c-fn">model</span>(input_ids<span class="c-op">=</span>ids,
+               attention_mask<span class="c-op">=</span>mask)
+start <span class="c-op">=</span> outputs.start_logits.<span class="c-fn">argmax</span>()</code></pre>
+          </div>
+        </div>
+
+        <div class="topic-item reveal-up delay-1">
+          <div class="topic-icon" style="--tc:#00c7be">🎯</div>
+          <div class="topic-body">
+            <h3 class="topic-name">Pre-training &amp; Fine-tuning</h3>
+            <p class="topic-desc">Foundation models are pre-trained on massive corpora with self-supervised objectives — Masked Language Modelling (BERT), Causal LM (GPT), or denoising (T5). Fine-tuning adapts them to specific tasks with far less data. Parameter-efficient fine-tuning via LoRA and adapters makes it possible to specialise large models on consumer hardware.</p>
+            <div class="topic-tags">
+              <span class="ttag">MLM</span><span class="ttag">CLM</span><span class="ttag">Fine-tuning</span><span class="ttag">LoRA</span><span class="ttag">Hugging Face</span><span class="ttag">PEFT</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="topic-item reveal-up delay-2">
+          <div class="topic-icon" style="--tc:#00c7be">🗄️</div>
+          <div class="topic-body">
+            <h3 class="topic-name">RAG — Retrieval Augmented Generation</h3>
+            <p class="topic-desc">LLMs hallucinate when their parametric memory runs dry. RAG grounds the model in fresh, factual context by retrieving relevant chunks at inference time. Documents are split, embedded into a vector store (FAISS, Chroma, Pinecone), then the top-k nearest chunks are injected into the prompt before generation. Hybrid search (dense + sparse BM25) further improves recall.</p>
+            <div class="topic-tags">
+              <span class="ttag">Vector Store</span><span class="ttag">FAISS</span><span class="ttag">BM25</span><span class="ttag">LangChain</span><span class="ttag">LlamaIndex</span><span class="ttag">Hybrid Search</span>
+            </div>
+          </div>
+          <div class="topic-code">
+<pre><code><span class="c-kw">from</span> langchain.vectorstores <span class="c-kw">import</span> Chroma
+<span class="c-kw">from</span> langchain.embeddings <span class="c-kw">import</span> OpenAIEmbeddings
+
+db  <span class="c-op">=</span> Chroma.<span class="c-fn">from_documents</span>(
+       docs, <span class="c-fn">OpenAIEmbeddings</span>())
+ret <span class="c-op">=</span> db.<span class="c-fn">as_retriever</span>(search_k<span class="c-op">=</span><span class="c-num">4</span>)
+chain <span class="c-op">=</span> <span class="c-fn">RetrievalQA</span>.<span class="c-fn">from_chain_type</span>(
+          llm, retriever<span class="c-op">=</span>ret)</code></pre>
+          </div>
+        </div>
+
+        <div class="topic-item reveal-up delay-3">
+          <div class="topic-icon" style="--tc:#00c7be">📏</div>
+          <div class="topic-body">
+            <h3 class="topic-name">Evaluation in Modern NLP</h3>
+            <p class="topic-desc">Perplexity measures how surprised a language model is by held-out text — lower is better. BLEU and ROUGE score generated text against references. BERTScore leverages contextual embeddings for semantic similarity beyond n-gram overlap. For RAG systems, faithfulness and answer relevance require specialized evaluation frameworks like RAGAS.</p>
+            <div class="topic-tags">
+              <span class="ttag">Perplexity</span><span class="ttag">BLEU</span><span class="ttag">ROUGE</span><span class="ttag">BERTScore</span><span class="ttag">RAGAS</span><span class="ttag">Faithfulness</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </div><!-- /cv-content -->
+</main>
+
+<!-- ═══════════════════════════════════════════ NEXT MODULE CTA ═══ -->
+<div class="next-module-cta">
+  <div class="nmc-inner">
+    <span class="nmc-label">Up next in AI Lab</span>
+    <h3 class="nmc-title">Reinforcement Learning →</h3>
+    <p class="nmc-desc">Agents, rewards, policies, and the algorithms that learn from interaction — from Q-learning to PPO.</p>
+    <a href="/ai-lab/reinforcement-learning.html" class="nmc-btn">Continue →</a>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ SCRIPTS ═══ -->
+<script src="/js/shared.js"></script>
+<script src="/js/nlp.js"></script>
+
+</body>
+</html>

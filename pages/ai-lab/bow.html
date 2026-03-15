@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bag-of-Words — Text Representations | NLP | AI Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/shared.css">
+<link rel="stylesheet" href="/css/bow.css">
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-follower" id="cursor-follower"></div>
+<div id="nav-placeholder"></div>
+<div class="read-progress"><div id="readBar"></div></div>
+
+<div class="lesson-layout">
+
+  <!-- ═══ SIDEBAR ═══ -->
+  <aside class="lesson-sidebar" id="lessonSidebar">
+    <div class="sb-top">
+      <a href="/ai-lab/nlp.html" class="sb-back">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 3L5 8l5 5"/></svg>
+        Natural Language Processing
+      </a>
+      <div class="sb-studying">
+        <div class="sb-studying-label">Sedang belajar</div>
+        <div class="sb-studying-path">
+          <span class="sbp-item">AI Lab</span>
+          <span class="sbp-sep">›</span>
+          <span class="sbp-item">NLP</span>
+          <span class="sbp-sep">›</span>
+          <span class="sbp-item active">Bag-of-Words</span>
+        </div>
+      </div>
+      <div class="sb-chapter">Modul 2 · Text Representations</div>
+      <div class="sb-lesson-title">Bag-of-Words &amp; Document Similarity</div>
+      <div class="sb-tags">
+        <span class="sb-tag">Representasi Teks</span>
+        <span class="sb-tag interactive">🧮 Math</span>
+        <span class="sb-tag interactive">🔍 Interaktif</span>
+      </div>
+    </div>
+
+    <nav class="lesson-nav">
+      <div class="nav-section-label">Dalam lesson ini</div>
+      <a href="#sec-intuisi" class="lnav-item active" data-sec="sec-intuisi">
+        <span class="lnav-dot"></span><span class="lnav-text">Intuisi BoW</span><span class="lnav-num">01</span>
+      </a>
+      <a href="#sec-membangun" class="lnav-item" data-sec="sec-membangun">
+        <span class="lnav-dot"></span><span class="lnav-text">Membangun Vocabulary</span><span class="lnav-num">02</span>
+      </a>
+      <a href="#sec-cosine" class="lnav-item" data-sec="sec-cosine">
+        <span class="lnav-dot"></span><span class="lnav-text">Cosine Similarity</span><span class="lnav-num">03</span>
+      </a>
+      <a href="#sec-batas" class="lnav-item" data-sec="sec-batas">
+        <span class="lnav-dot"></span><span class="lnav-text">Batas &amp; Kelebihan</span><span class="lnav-num">04</span>
+      </a>
+      <a href="#sec-lab" class="lnav-item" data-sec="sec-lab">
+        <span class="lnav-dot"></span><span class="lnav-text">🧪 Lab Interaktif</span><span class="lnav-num">05</span>
+      </a>
+    </nav>
+
+    <div class="sb-progress">
+      <div class="sb-prog-label"><span>Progress</span><span id="progPct">0%</span></div>
+      <div class="sb-prog-track"><div class="sb-prog-fill" id="progFill"></div></div>
+    </div>
+
+    <div class="sb-module-nav">
+      <div class="nav-section-label" style="padding:0 8px;margin-bottom:8px">Modul 2 · Text Representations</div>
+      <a href="/ai-lab/nlp/bow.html" class="smn-item current"><span class="smn-dot"></span><span>Bag-of-Words</span></a>
+      <a href="/ai-lab/nlp/tfidf.html" class="smn-item locked"><span class="smn-dot"></span><span>TF-IDF</span><span class="smn-lock">🔒</span></a>
+      <a href="/ai-lab/nlp/word-vectors.html" class="smn-item locked"><span class="smn-dot"></span><span>Word Vectors</span><span class="smn-lock">🔒</span></a>
+    </div>
+  </aside>
+
+  <!-- ═══ MAIN ═══ -->
+  <main class="lesson-main">
+    <div class="lesson-topbar">
+      <div class="ltb-left">
+        <button class="ltb-menu" id="menuBtn" onclick="toggleSidebar()">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg>
+        </button>
+        <span class="ltb-crumb">Bag-of-Words</span>
+      </div>
+      <div class="ltb-right">
+        <a href="/ai-lab/nlp/tokenisasi.html" class="ltb-btn">← Tokenisasi</a>
+        <a href="/ai-lab/nlp/tfidf.html" class="ltb-btn primary">TF-IDF →</a>
+      </div>
+    </div>
+
+    <div class="lesson-body">
+
+      <!-- ══════════ SEC 1: INTUISI ══════════ -->
+      <section class="lesson-sec" id="sec-intuisi">
+        <div class="sec-header">
+          <span class="sec-num">01</span>
+          <div>
+            <h2 class="sec-title">Intuisi Bag-of-Words</h2>
+            <p class="sec-sub">Cara paling sederhana mengubah teks menjadi angka — dan mengapa itu masih cukup berguna</p>
+          </div>
+        </div>
+
+        <div class="prose">
+          Bayangkan kamu menerima ratusan artikel berita dan perlu mengelompokkannya berdasarkan topik — ekonomi, olahraga, teknologi. Kamu tidak perlu membaca tiap kalimat dengan cermat. Cukup lihat <strong>kata-kata apa yang paling sering muncul</strong>. Artikel yang banyak menyebut "saham", "inflasi", "rupiah" kemungkinan besar membahas ekonomi.
+        </div>
+
+        <div class="prose">
+          Inilah inti dari <strong>Bag-of-Words (BoW)</strong>: representasi teks sebagai kumpulan kata tanpa mempedulikan urutan. Seperti kantong berisi kata-kata — yang penting ada atau tidak ada, dan berapa banyak. Informasi gramatikal, konteks, dan urutan diabaikan sepenuhnya.
+        </div>
+
+        <!-- Three-sentence demo -->
+        <div class="worked-box">
+          <div class="wb-badge">🛍️ Demo Sederhana</div>
+          <div class="wb-title">Tiga Kalimat → Tiga Vektor</div>
+          <div class="bow-vector-demo" id="staticBowDemo">
+            <!-- Populated by JS -->
+          </div>
+          <div style="margin-top:12px;font-family:var(--font-mono);font-size:11px;color:var(--text-3);">
+            ↑ Sel hijau = kata muncul. Angka = berapa kali. Urutan kata <strong style="color:var(--text)">tidak tersimpan</strong>.
+          </div>
+        </div>
+
+        <div class="insight-callout">
+          <div class="ic-icon">💡</div>
+          <div class="ic-body">
+            <strong>Mengapa ini berguna?</strong> Karena vektor angka bisa dihitung jaraknya, dimasukkan ke algoritma ML, dan dibandingkan secara matematis. Teks mentah tidak bisa — angka bisa. BoW adalah jembatan paling sederhana dari bahasa ke matematika.
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ══════════ SEC 2: MEMBANGUN VOCABULARY ══════════ -->
+      <section class="lesson-sec" id="sec-membangun">
+        <div class="sec-header">
+          <span class="sec-num">02</span>
+          <div>
+            <h2 class="sec-title">Membangun Vocabulary &amp; Vektor</h2>
+            <p class="sec-sub">Pipeline step-by-step: dari kumpulan dokumen ke document-term matrix</p>
+          </div>
+        </div>
+
+        <div class="prose">
+          Vocabulary adalah <strong>daftar semua kata unik</strong> yang muncul di seluruh korpus. Setiap dokumen kemudian direpresentasikan sebagai vektor dengan panjang sesuai jumlah kata dalam vocabulary, di mana setiap elemen adalah frekuensi kata tersebut dalam dokumen itu.
+        </div>
+
+        <div class="worked-box">
+          <div class="wb-badge">⚙️ Pipeline BoW — Step by Step</div>
+          <div class="wb-title">Dari Tiga Berita ke Document-Term Matrix</div>
+          <div class="calc-chain">
+            <div class="calc-step">
+              <div class="cs-num-circle">1</div>
+              <div class="cs-content">
+                <div class="cs-label">Kumpulkan semua dokumen (korpus)</div>
+                <div class="math-line">
+                  <span class="math-term">D1: <span style="color:#30d158">"gojek ojek online jakarta"</span></span>
+                </div>
+                <div class="math-line">
+                  <span class="math-term">D2: <span style="color:#2997ff">"tokopedia shopee belanja online"</span></span>
+                </div>
+                <div class="math-line">
+                  <span class="math-term">D3: <span style="color:#bf5af2">"gojek tokopedia startup indonesia"</span></span>
+                </div>
+              </div>
+            </div>
+            <div class="calc-step">
+              <div class="cs-num-circle">2</div>
+              <div class="cs-content">
+                <div class="cs-label">Bangun Vocabulary — semua kata unik, diurutkan</div>
+                <div class="math-line">
+                  <span class="math-term blue">V</span>
+                  <span class="math-op">=</span>
+                  <span class="math-result">["belanja", "gojek", "indonesia", "jakarta", "ojek", "online", "shopee", "startup", "tokopedia"]</span>
+                </div>
+                <div class="math-line"><span class="math-comment">// |V| = 9 kata unik</span></div>
+              </div>
+            </div>
+            <div class="calc-step">
+              <div class="cs-num-circle">3</div>
+              <div class="cs-content">
+                <div class="cs-label">Hitung frekuensi tiap kata per dokumen</div>
+                <div class="math-line">
+                  <span class="math-term" style="color:#30d158">D1</span>
+                  <span class="math-op">=</span>
+                  <span class="math-result">[0, 1, 0, 1, 1, 1, 0, 0, 0]</span>
+                  <span class="math-comment">// gojek=1, jakarta=1, ojek=1, online=1</span>
+                </div>
+                <div class="math-line">
+                  <span class="math-term" style="color:#2997ff">D2</span>
+                  <span class="math-op">=</span>
+                  <span class="math-result">[1, 0, 0, 0, 0, 1, 1, 0, 1]</span>
+                  <span class="math-comment">// belanja=1, online=1, shopee=1, tokopedia=1</span>
+                </div>
+                <div class="math-line">
+                  <span class="math-term" style="color:#bf5af2">D3</span>
+                  <span class="math-op">=</span>
+                  <span class="math-result">[0, 1, 1, 0, 0, 0, 0, 1, 1]</span>
+                  <span class="math-comment">// gojek=1, indonesia=1, startup=1, tokopedia=1</span>
+                </div>
+              </div>
+            </div>
+            <div class="calc-step">
+              <div class="cs-num-circle">4</div>
+              <div class="cs-content">
+                <div class="cs-label">Hasil: Document-Term Matrix (3 dokumen × 9 kata)</div>
+                <div style="overflow-x:auto;margin-top:8px;">
+                  <table style="border-collapse:collapse;font-family:var(--font-mono);font-size:11px;min-width:480px;">
+                    <thead>
+                      <tr>
+                        <th style="padding:6px 10px;border:1px solid var(--border);color:var(--text-3);text-align:left;">Dok</th>
+                        <th style="padding:6px 10px;border:1px solid var(--border);color:var(--text-3);">belanja</th>
+                        <th style="padding:6px 10px;border:1px solid var(--border);color:var(--text-3);">gojek</th>
+                        <th style="padding:6px 10px;border:1px solid var(--border);color:var(--text-3);">indonesia</th>
+                        <th style="padding:6px 10px;border:1px solid var(--border);color:var(--text-3);">jakarta</th>
+                        <th style="padding:6px 10px;border:1px solid var(--border);color:var(--text-3);">ojek</th>
+                        <th style="padding:6px 10px;border:1px solid var(--border);color:var(--text-3);">online</th>
+                        <th style="padding:6px 10px;border:1px solid var(--border);color:var(--text-3);">shopee</th>
+                        <th style="padding:6px 10px;border:1px solid var(--border);color:var(--text-3);">startup</th>
+                        <th style="padding:6px 10px;border:1px solid var(--border);color:var(--text-3);">tokopedia</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td style="padding:6px 10px;border:1px solid var(--border);color:#30d158;font-weight:600;">D1</td>
+                        <td style="padding:6px 10px;border:1px solid var(--border);color:var(--text-3);text-align:center;">0</td>
+                        <td style="padding:6px 10px;border:1px solid var(--border);color:#30d158;font-weight:700;text-align:center;background:rgba(48,209,88,.08);">1</td>
+                        <td style="padding:6px 10px;border:1px solid var(--border);color:var(--text-3);text-align:center;">0</td>
+                        <td style="padding:6px 10px;border:1px solid var(--border);color:#30d158;font-weight:700;text-align:center;background:rgba(48,209,88,.08);">1</td>
+                        <td style="padding:6px 10px;border:1px solid var(--border);color:#30d158;font-weight:700;text-align:center;background:rgba(48,209,88,.08);">1</td>
+                        <td style="padding:6px 10px;border:1px solid var(--border);color:#30d158;font-weight:700;text-align:center;background:rgba(48,209,88,.08);">1</td>
+                        <td style="padding:6px 10px;border:1px solid var(--border);color:var(--text-3);text-align:center;">0</td>
+                        <td style="padding:6px 10px;border:1px solid var(--border);color:var(--text-3);text-align:center;">0</td>
+                        <td style="padding:6px 10px;border:1px solid var(--border);color:var(--text-3);text-align:center;">0</td>
+                      </tr>
+                      <tr>
+                        <td style="padding:6px 10px;border:1px solid var(--border);color:#2997ff;font-weight:600;">D2</td>
+                        <td style="padding:6px 10px;border:1px solid var(--border);color:#2997ff;font-weight:700;text-align:center;background:rgba(41,151,255,.08);">1</td>
+                        <td style="padding:6px 10px;border:1px solid var(--border);color:var(--text-3);text-align:center;">0</td>
+                        <td style="padding:6px 10px;border:1px solid var(--border);color:var(--text-3);text-align:center;">0</td>
+                        <td style="padding:6px 10px;border:1px solid var(--border);color:var(--text-3);text-align:center;">0</td>
+                        <td style="padding:6px 10px;border:1px solid var(--border);color:var(--text-3);text-align:center;">0</td>
+                        <td style="padding:6px 10px;border:1px solid var(--border);color:#2997ff;font-weight:700;text-align:center;background:rgba(41,151,255,.08);">1</td>
+                        <td style="padding:6px 10px;border:1px solid var(--border);color:#2997ff;font-weight:700;text-align:center;background:rgba(41,151,255,.08);">1</td>
+                        <td style="padding:6px 10px;border:1px solid var(--border);color:var(--text-3);text-align:center;">0</td>
+                        <td style="padding:6px 10px;border:1px solid var(--border);color:#2997ff;font-weight:700;text-align:center;background:rgba(41,151,255,.08);">1</td>
+                      </tr>
+                      <tr>
+                        <td style="padding:6px 10px;border:1px solid var(--border);color:#bf5af2;font-weight:600;">D3</td>
+                        <td style="padding:6px 10px;border:1px solid var(--border);color:var(--text-3);text-align:center;">0</td>
+                        <td style="padding:6px 10px;border:1px solid var(--border);color:#bf5af2;font-weight:700;text-align:center;background:rgba(191,90,242,.08);">1</td>
+                        <td style="padding:6px 10px;border:1px solid var(--border);color:#bf5af2;font-weight:700;text-align:center;background:rgba(191,90,242,.08);">1</td>
+                        <td style="padding:6px 10px;border:1px solid var(--border);color:var(--text-3);text-align:center;">0</td>
+                        <td style="padding:6px 10px;border:1px solid var(--border);color:var(--text-3);text-align:center;">0</td>
+                        <td style="padding:6px 10px;border:1px solid var(--border);color:var(--text-3);text-align:center;">0</td>
+                        <td style="padding:6px 10px;border:1px solid var(--border);color:var(--text-3);text-align:center;">0</td>
+                        <td style="padding:6px 10px;border:1px solid var(--border);color:#bf5af2;font-weight:700;text-align:center;background:rgba(191,90,242,.08);">1</td>
+                        <td style="padding:6px 10px;border:1px solid var(--border);color:#bf5af2;font-weight:700;text-align:center;background:rgba(191,90,242,.08);">1</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="code-block">
+<pre><code><span class="c-kw">from</span> sklearn.feature_extraction.text <span class="c-kw">import</span> CountVectorizer
+
+korpus <span class="c-op">=</span> [
+    <span class="c-str">"gojek ojek online jakarta"</span>,
+    <span class="c-str">"tokopedia shopee belanja online"</span>,
+    <span class="c-str">"gojek tokopedia startup indonesia"</span>,
+]
+
+vec <span class="c-op">=</span> <span class="c-cls">CountVectorizer</span>()
+X   <span class="c-op">=</span> vec.<span class="c-fn">fit_transform</span>(korpus)   <span class="c-cmt"># sparse matrix (3 × 9)</span>
+
+<span class="c-fn">print</span>(vec.<span class="c-fn">get_feature_names_out</span>())
+<span class="c-cmt"># ['belanja', 'gojek', 'indonesia', 'jakarta', 'ojek',</span>
+<span class="c-cmt">#  'online', 'shopee', 'startup', 'tokopedia']</span>
+
+<span class="c-fn">print</span>(X.<span class="c-fn">toarray</span>())
+<span class="c-cmt"># [[0, 1, 0, 1, 1, 1, 0, 0, 0],   ← D1 (ojek online)</span>
+<span class="c-cmt">#  [1, 0, 0, 0, 0, 1, 1, 0, 1],   ← D2 (belanja online)</span>
+<span class="c-cmt">#  [0, 1, 1, 0, 0, 0, 0, 1, 1]]   ← D3 (startup)</span></code></pre>
+        </div>
+
+        <div class="insight-callout warn">
+          <div class="ic-icon">🎯</div>
+          <div class="ic-body">
+            <strong>Masalah Sparse Matrix:</strong> Dalam praktik nyata, vocabulary bisa mencapai ratusan ribu kata. Tapi tiap dokumen hanya menggunakan segelintir kata — 99%+ nilai dalam matrix adalah nol. Matrix seperti ini disebut <em>sparse</em>. Sklearn menggunakan format CSR (Compressed Sparse Row) agar hemat memori — hanya menyimpan nilai non-nol dan posisinya.
+          </div>
+        </div>
+
+        <!-- Sparse visual -->
+        <div class="worked-box">
+          <div class="wb-badge">📊 Visualisasi Sparse Matrix</div>
+          <div class="wb-title">Majority Nol — Realita BoW di Skala Besar</div>
+          <div class="prose" style="margin-bottom:12px;">
+            Bayangkan 500 dokumen berita dengan vocabulary 10.000 kata. Tiap dokumen rata-rata menggunakan 200 kata unik. Ini berarti hanya <strong>2% sel yang berisi angka</strong>, sisanya nol.
+          </div>
+          <div id="sparseVisual" style="overflow-x:auto;"></div>
+          <div style="margin-top:8px;font-family:var(--font-mono);font-size:11px;color:var(--text-3);">
+            ↑ Simulasi 20 dokumen × 60 kata. Hijau = ada nilai. Gelap = nol. Representasi sebenarnya jauh lebih sparse dari ini.
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ══════════ SEC 3: COSINE SIMILARITY ══════════ -->
+      <section class="lesson-sec" id="sec-cosine">
+        <div class="sec-header">
+          <span class="sec-num">03</span>
+          <div>
+            <h2 class="sec-title">Cosine Similarity</h2>
+            <p class="sec-sub">Mengukur kemiripan dua dokumen berdasarkan sudut antar vektornya — bukan jarak Euclidean</p>
+          </div>
+        </div>
+
+        <div class="prose">
+          Setelah teks diubah menjadi vektor, kita perlu cara mengukur seberapa mirip dua dokumen. Pendekatan paling intuitif adalah <strong>jarak Euclidean</strong> — tapi ini bermasalah karena dokumen panjang punya vektor dengan nilai besar hanya karena panjangnya, bukan karena isinya berbeda.
+        </div>
+
+        <div class="prose">
+          Solusinya adalah <strong>Cosine Similarity</strong> — mengukur sudut antara dua vektor, bukan jaraknya. Sudut kecil (mendekati 0°) berarti sangat mirip (nilai mendekati 1). Sudut besar (mendekati 90°) berarti sangat berbeda (nilai mendekati 0). Cosine similarity tidak terpengaruh panjang dokumen.
+        </div>
+
+        <div class="formula-box">
+          <div class="fb-label">Formula Cosine Similarity</div>
+          <div class="fb-eq">
+            cos(<span class="fv">A</span>, <span class="fb">B</span>)
+            <span class="op"> = </span>
+            <span class="fv">A</span><span class="op">·</span><span class="fb">B</span>
+            <span class="op"> / (</span>‖<span class="fv">A</span>‖ <span class="op">×</span> ‖<span class="fb">B</span>‖<span class="op">)</span>
+          </div>
+          <div class="fb-legend">
+            <div class="fb-leg"><span class="fb-sym" style="color:#30d158;">A·B</span> <span class="fb-desc">= dot product (jumlah elemen berpasangan dikalikan)</span></div>
+            <div class="fb-leg"><span class="fb-sym" style="color:#2997ff;">‖A‖</span> <span class="fb-desc">= magnitudo vektor A (akar kuadrat jumlah elemen²)</span></div>
+          </div>
+        </div>
+
+        <div class="worked-box">
+          <div class="wb-badge">🧮 Perhitungan Manual</div>
+          <div class="wb-title">Cosine Similarity D1 vs D2 — Dihitung Langkah demi Langkah</div>
+          <div class="calc-chain">
+            <div class="calc-step">
+              <div class="cs-num-circle">1</div>
+              <div class="cs-content">
+                <div class="cs-label">Vektor dua dokumen (dari vocabulary 9 kata di atas)</div>
+                <div class="math-line">
+                  <span class="math-term" style="color:#30d158;">D1</span>
+                  <span class="math-op">=</span>
+                  <span class="math-term">[0, 1, 0, 1, 1, 1, 0, 0, 0]</span>
+                </div>
+                <div class="math-line">
+                  <span class="math-term" style="color:#2997ff;">D2</span>
+                  <span class="math-op">=</span>
+                  <span class="math-term">[1, 0, 0, 0, 0, 1, 1, 0, 1]</span>
+                </div>
+              </div>
+            </div>
+            <div class="calc-step">
+              <div class="cs-num-circle">2</div>
+              <div class="cs-content">
+                <div class="cs-label">Hitung Dot Product — kalikan elemen yang sama posisi</div>
+                <div class="math-line">
+                  <span class="math-term green">D1·D2</span>
+                  <span class="math-op">=</span>
+                  <span class="math-term">(0×1) + (1×0) + (0×0) + (1×0) + (1×0) + (1×1) + (0×1) + (0×0) + (0×1)</span>
+                </div>
+                <div class="math-line">
+                  <span class="math-op">=</span>
+                  <span class="math-result green">0 + 0 + 0 + 0 + 0 + 1 + 0 + 0 + 0</span>
+                  <span class="math-op">=</span>
+                  <span class="math-result green">1</span>
+                  <span class="math-comment">// hanya "online" yang sama!</span>
+                </div>
+              </div>
+            </div>
+            <div class="calc-step">
+              <div class="cs-num-circle">3</div>
+              <div class="cs-content">
+                <div class="cs-label">Hitung Magnitudo tiap vektor</div>
+                <div class="math-line">
+                  <span class="math-term">‖D1‖</span>
+                  <span class="math-op">=</span>
+                  <span class="math-term">√(0²+1²+0²+1²+1²+1²+0²+0²+0²)</span>
+                  <span class="math-op">=</span>
+                  <span class="math-term">√4</span>
+                  <span class="math-op">=</span>
+                  <span class="math-result">2.0</span>
+                </div>
+                <div class="math-line">
+                  <span class="math-term">‖D2‖</span>
+                  <span class="math-op">=</span>
+                  <span class="math-term">√(1²+0²+0²+0²+0²+1²+1²+0²+1²)</span>
+                  <span class="math-op">=</span>
+                  <span class="math-term">√4</span>
+                  <span class="math-op">=</span>
+                  <span class="math-result">2.0</span>
+                </div>
+              </div>
+            </div>
+            <div class="calc-step">
+              <div class="cs-num-circle">4</div>
+              <div class="cs-content">
+                <div class="cs-label">Hasil akhir</div>
+                <div class="math-line">
+                  <span class="math-term">cos(D1, D2)</span>
+                  <span class="math-op">=</span>
+                  <span class="math-term">1</span>
+                  <span class="math-op">÷</span>
+                  <span class="math-term">(2.0 × 2.0)</span>
+                  <span class="math-op">=</span>
+                  <span class="math-result green">0.25</span>
+                  <span class="math-comment">// mirip 25% — hanya berbagi 1 kata "online"</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Three pairwise results -->
+        <div class="sim-trio">
+          <div class="sim-card">
+            <div class="sim-pair">D1 · D2</div>
+            <div class="sim-score" style="color:#ff9f0a;">0.25</div>
+            <div class="sim-interp">Sedikit mirip — hanya berbagi kata "online"</div>
+            <div class="sim-bar"><div class="sim-bar-fill" style="width:25%;background:#ff9f0a;"></div></div>
+          </div>
+          <div class="sim-card">
+            <div class="sim-pair">D1 · D3</div>
+            <div class="sim-score" style="color:#30d158;">0.50</div>
+            <div class="sim-interp">Cukup mirip — berbagi kata "gojek"</div>
+            <div class="sim-bar"><div class="sim-bar-fill" style="width:50%;background:#30d158;"></div></div>
+          </div>
+          <div class="sim-card">
+            <div class="sim-pair">D2 · D3</div>
+            <div class="sim-score" style="color:#30d158;">0.50</div>
+            <div class="sim-interp">Cukup mirip — berbagi kata "tokopedia"</div>
+            <div class="sim-bar"><div class="sim-bar-fill" style="width:50%;background:#30d158;"></div></div>
+          </div>
+        </div>
+
+        <div class="code-block">
+<pre><code><span class="c-kw">from</span> sklearn.metrics.pairwise <span class="c-kw">import</span> cosine_similarity
+<span class="c-kw">import</span> numpy <span class="c-kw">as</span> np
+
+<span class="c-cmt"># X = document-term matrix dari CountVectorizer</span>
+sim_matrix <span class="c-op">=</span> <span class="c-fn">cosine_similarity</span>(X)
+
+<span class="c-cmt"># sim_matrix adalah array 3×3 — setiap sel = sim(Di, Dj)</span>
+<span class="c-cmt"># [[1.00, 0.25, 0.50],   ← D1 vs semua</span>
+<span class="c-cmt">#  [0.25, 1.00, 0.50],   ← D2 vs semua</span>
+<span class="c-cmt">#  [0.50, 0.50, 1.00]]   ← D3 vs semua</span>
+
+<span class="c-cmt"># Cari dokumen paling mirip dengan query</span>
+query   <span class="c-op">=</span> vec.<span class="c-fn">transform</span>([<span class="c-str">"startup ojek online"</span>])
+scores  <span class="c-op">=</span> <span class="c-fn">cosine_similarity</span>(query, X)[<span class="c-num">0</span>]
+ranking <span class="c-op">=</span> np.<span class="c-fn">argsort</span>(scores)[::<span class="c-op">-</span><span class="c-num">1</span>]  <span class="c-cmt"># descending</span></code></pre>
+        </div>
+
+      </section>
+
+      <!-- ══════════ SEC 4: BATAS & KELEBIHAN ══════════ -->
+      <section class="lesson-sec" id="sec-batas">
+        <div class="sec-header">
+          <span class="sec-num">04</span>
+          <div>
+            <h2 class="sec-title">Kelebihan &amp; Keterbatasan BoW</h2>
+            <p class="sec-sub">Kapan BoW masih relevan, dan kapan harus diganti representasi yang lebih canggih</p>
+          </div>
+        </div>
+
+        <div class="prose">
+          BoW terdengar kuno di era transformer — tapi ia masih hidup dan aktif dipakai di produksi. Memahami kapan BoW cukup dan kapan tidak akan membuatmu jadi engineer yang lebih bijaksana dalam memilih alat.
+        </div>
+
+        <div class="compare-2">
+          <div class="cmp-card">
+            <div class="cmp-head">✅ Kelebihan <span class="cmp-badge good">Masih Relevan</span></div>
+            <ul class="cmp-list">
+              <li class="good">Sangat cepat — fit &amp; transform dalam milidetik</li>
+              <li class="good">Mudah diinterpretasi — tahu persis kata mana yang berpengaruh</li>
+              <li class="good">Efektif untuk text classification sederhana (spam, sentimen)</li>
+              <li class="good">Tidak butuh GPU — berjalan di mesin apapun</li>
+              <li class="good">Baseline yang kuat — sebelum coba model kompleks</li>
+              <li class="good">Bekerja baik dengan data berlabel sedikit</li>
+            </ul>
+          </div>
+          <div class="cmp-card">
+            <div class="cmp-head">❌ Keterbatasan <span class="cmp-badge bad">Perlu Upgrade</span></div>
+            <ul class="cmp-list">
+              <li class="bad">Tidak menangkap urutan — "bukan bagus" = "bagus bukan"</li>
+              <li class="bad">Tidak paham sinonim — "mobil" ≠ "kendaraan" di BoW</li>
+              <li class="bad">Kata umum mendominasi tanpa pembobotan (→ TF-IDF)</li>
+              <li class="bad">Sparse &amp; high-dimensional — memori besar untuk korpus besar</li>
+              <li class="bad">Tidak bisa handle out-of-vocabulary</li>
+              <li class="bad">Gagal untuk NLI, QA, dan task yang butuh konteks</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="insight-callout">
+          <div class="ic-icon">🗓️</div>
+          <div class="ic-body">
+            <strong>BoW masih dipakai di dunia nyata untuk:</strong> filter spam email, kategori tiket support, moderasi konten level pertama, pencarian dokumen internal perusahaan, dan feature engineering dalam sistem rekomendasi. Selalu coba BoW + Naive Bayes atau Logistic Regression dulu sebelum loncat ke BERT — sering kali hasilnya sudah 85–90% dan 100× lebih cepat.
+          </div>
+        </div>
+
+        <!-- Evolution path -->
+        <div class="worked-box">
+          <div class="wb-badge">📈 Evolusi Representasi Teks</div>
+          <div class="wb-title">Dari BoW ke Transformer — Tiap Langkah Memperbaiki Kelemahan Sebelumnya</div>
+          <div class="calc-chain">
+            <div class="calc-step">
+              <div class="cs-num-circle" style="background:#30d158;">1</div>
+              <div class="cs-content">
+                <div class="cs-label" style="color:#30d158;">Bag-of-Words (lesson ini)</div>
+                <div class="math-line"><span class="math-comment">// Frekuensi kata, tanpa urutan, tanpa semantik</span></div>
+                <div class="math-line">
+                  <span class="math-term">Kelemahan: kata umum mendominasi, semua kata dianggap sama penting</span>
+                </div>
+              </div>
+            </div>
+            <div class="calc-step">
+              <div class="cs-num-circle" style="background:#2997ff;">2</div>
+              <div class="cs-content">
+                <div class="cs-label" style="color:#2997ff;">TF-IDF (lesson berikutnya)</div>
+                <div class="math-line"><span class="math-comment">// Beri bobot lebih pada kata langka yang diskriminatif</span></div>
+                <div class="math-line">
+                  <span class="math-term">Kelemahan: masih tidak paham sinonim atau konteks</span>
+                </div>
+              </div>
+            </div>
+            <div class="calc-step">
+              <div class="cs-num-circle" style="background:#bf5af2;">3</div>
+              <div class="cs-content">
+                <div class="cs-label" style="color:#bf5af2;">Word Vectors / Embeddings</div>
+                <div class="math-line"><span class="math-comment">// "mobil" dan "kendaraan" dekat secara geometris</span></div>
+                <div class="math-line">
+                  <span class="math-term">Kelemahan: satu vektor per kata, tidak peduli konteks kalimat</span>
+                </div>
+              </div>
+            </div>
+            <div class="calc-step">
+              <div class="cs-num-circle" style="background:#ff9f0a;">4</div>
+              <div class="cs-content">
+                <div class="cs-label" style="color:#ff9f0a;">Transformer (BERT, GPT)</div>
+                <div class="math-line"><span class="math-comment">// Representasi kontekstual — "bank" di kalimat berbeda = vektor berbeda</span></div>
+                <div class="math-line">
+                  <span class="math-term">Trade-off: butuh GPU, data banyak, lebih lambat</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ══════════ SEC 5: LAB INTERAKTIF ══════════ -->
+      <section class="lesson-sec" id="sec-lab">
+        <div class="sec-header">
+          <span class="sec-num">05</span>
+          <div>
+            <h2 class="sec-title">Lab Interaktif — BoW Explorer</h2>
+            <p class="sec-sub">Masukkan tiga dokumen sendiri dan lihat vocabulary, matrix, cosine similarity, dan document search secara real-time</p>
+          </div>
+        </div>
+
+        <div class="prose">
+          Semua perhitungan berjalan langsung di browser — tidak ada server. Edit tiga dokumen di bawah, lalu eksplorasi empat tampilan berbeda: vocabulary, document-term matrix, similarity heatmap, dan search.
+        </div>
+
+        <!-- PLAYGROUND -->
+        <div class="playground-box">
+          <div class="pgb-header">
+            <div class="pgb-badge">🧪 BoW Explorer — Real-time</div>
+            <div class="pgb-title">Bag-of-Words Interaktif</div>
+            <div class="pgb-sub">Edit dokumen, lihat semua berubah otomatis</div>
+          </div>
+
+          <!-- Document Inputs -->
+          <div class="doc-inputs">
+            <div class="doc-input-row">
+              <div class="doc-label">
+                <div class="doc-label-dot" style="background:#30d158;"></div>
+                <div class="doc-label-num">D1</div>
+              </div>
+              <textarea class="doc-textarea" id="doc1" placeholder="Dokumen pertama…">Ojek online seperti Gojek dan Grab sudah mengubah cara masyarakat Jakarta bepergian setiap hari.</textarea>
+            </div>
+            <div class="doc-input-row">
+              <div class="doc-label">
+                <div class="doc-label-dot" style="background:#2997ff;"></div>
+                <div class="doc-label-num">D2</div>
+              </div>
+              <textarea class="doc-textarea" id="doc2" placeholder="Dokumen kedua…">Tokopedia dan Shopee bersaing ketat di pasar belanja online Indonesia dengan jutaan transaksi setiap hari.</textarea>
+            </div>
+            <div class="doc-input-row">
+              <div class="doc-label">
+                <div class="doc-label-dot" style="background:#bf5af2;"></div>
+                <div class="doc-label-num">D3</div>
+              </div>
+              <textarea class="doc-textarea" id="doc3" placeholder="Dokumen ketiga…">Startup teknologi Indonesia seperti Gojek dan Tokopedia sudah berkembang menjadi perusahaan besar kelas dunia.</textarea>
+            </div>
+          </div>
+
+          <div class="pg-actions">
+            <button class="pg-run-btn" id="btnRun">▶ Jalankan BoW</button>
+            <button class="pg-reset-btn" id="btnReset">↺ Reset</button>
+            <span class="pg-word-count" id="wordCountInfo">—</span>
+          </div>
+
+          <!-- Result Tabs -->
+          <div class="pg-tabs">
+            <button class="pg-tab active" data-tab="vocab">📚 Vocabulary</button>
+            <button class="pg-tab" data-tab="matrix">📊 Matrix</button>
+            <button class="pg-tab" data-tab="heatmap">🌡️ Similarity</button>
+            <button class="pg-tab" data-tab="search">🔍 Cari Dokumen</button>
+          </div>
+
+          <!-- Tab: Vocabulary -->
+          <div class="pg-pane active" id="pane-vocab">
+            <div class="vocab-section">
+              <div class="vs-header">
+                <span class="vs-title">Vocabulary — semua kata unik (stop words dihapus)</span>
+                <span class="vs-count" id="vocabCount">0 kata</span>
+              </div>
+              <div class="vocab-chips" id="vocabChips">
+                <span style="font-family:var(--font-mono);font-size:11px;color:var(--text-3);">Klik "Jalankan BoW" untuk melihat vocabulary…</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab: Matrix -->
+          <div class="pg-pane" id="pane-matrix">
+            <div class="matrix-section">
+              <div class="vs-header">
+                <span class="vs-title">Document-Term Matrix</span>
+                <span class="vs-count" id="matrixInfo">—</span>
+              </div>
+              <div class="matrix-wrap">
+                <div id="matrixTable" style="font-family:var(--font-mono);font-size:11px;color:var(--text-3);padding:20px;">
+                  Klik "Jalankan BoW" untuk melihat matrix…
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab: Heatmap -->
+          <div class="pg-pane" id="pane-heatmap">
+            <div class="sim-section">
+              <div class="vs-header" style="margin-bottom:16px;">
+                <span class="vs-title">Cosine Similarity — 3 × 3 heatmap</span>
+                <span class="vs-count" id="heatmapInfo">—</span>
+              </div>
+              <div id="heatmapGrid" style="display:flex;flex-direction:column;gap:12px;align-items:flex-start;">
+                <span style="font-family:var(--font-mono);font-size:11px;color:var(--text-3);">Klik "Jalankan BoW" untuk melihat heatmap…</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab: Search -->
+          <div class="pg-pane" id="pane-search">
+            <div class="search-section">
+              <div class="vs-header" style="margin-bottom:12px;">
+                <span class="vs-title">Cari dokumen paling mirip dengan query</span>
+              </div>
+              <div class="search-row">
+                <input type="text" class="search-input" id="searchInput" placeholder="Ketik kata kunci… contoh: startup online">
+                <button class="search-btn" id="searchBtn">Cari</button>
+              </div>
+              <div class="search-results" id="searchResults">
+                <div class="sr-empty">Masukkan query dan klik Cari</div>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /playground-box -->
+
+        <div class="next-lesson-cta">
+          <span class="nlc-label">Lesson berikutnya</span>
+          <h3 class="nlc-title">TF-IDF &amp; Document Search →</h3>
+          <p class="nlc-desc">BoW punya kelemahan besar: kata umum seperti "dan", "ini", "yang" mendominasi vector padahal tidak bermakna. TF-IDF memperbaikinya dengan memberi bobot lebih pada kata yang langka tapi diskriminatif.</p>
+          <a href="/ai-lab/nlp/tfidf.html" class="nlc-btn">Lanjut ke TF-IDF</a>
+        </div>
+
+      </section>
+
+    </div><!-- /lesson-body -->
+  </main>
+</div><!-- /lesson-layout -->
+
+<div id="footer-placeholder"></div>
+<script src="/js/shared.js"></script>
+<script src="/js/lang.js"></script>
+<script src="/js/bow.js"></script>
+</body>
+</html>

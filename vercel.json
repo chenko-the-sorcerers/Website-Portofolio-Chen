@@ -1,0 +1,111 @@
+{
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "rewrites": [
+    {
+      "source": "/",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/projects",
+      "destination": "/pages/projects/index.html"
+    },
+    {
+      "source": "/projects/",
+      "destination": "/pages/projects/index.html"
+    },
+    {
+      "source": "/experience",
+      "destination": "/pages/experience/index.html"
+    },
+    {
+      "source": "/experience/",
+      "destination": "/pages/experience/index.html"
+    },
+    {
+      "source": "/education",
+      "destination": "/pages/education/index.html"
+    },
+    {
+      "source": "/education/",
+      "destination": "/pages/education/index.html"
+    },
+    {
+      "source": "/skills",
+      "destination": "/pages/skills/index.html"
+    },
+    {
+      "source": "/skills/",
+      "destination": "/pages/skills/index.html"
+    },
+    {
+      "source": "/achievements",
+      "destination": "/pages/achievements/index.html"
+    },
+    {
+      "source": "/achievements/",
+      "destination": "/pages/achievements/index.html"
+    },
+    {
+      "source": "/talks",
+      "destination": "/pages/talks/index.html"
+    },
+    {
+      "source": "/talks/",
+      "destination": "/pages/talks/index.html"
+    },
+    {
+      "source": "/volunteering",
+      "destination": "/pages/volunteering/index.html"
+    },
+    {
+      "source": "/volunteering/",
+      "destination": "/pages/volunteering/index.html"
+    },
+    {
+      "source": "/ai-lab",
+      "destination": "/pages/ai-lab/index.html"
+    },
+    {
+      "source": "/ai-lab/",
+      "destination": "/pages/ai-lab/index.html"
+    },
+    {
+      "source": "/contact",
+      "destination": "/pages/contact/index.html"
+    },
+    {
+      "source": "/contact/",
+      "destination": "/pages/contact/index.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/css/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/js/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/assets/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    }
+  ]
+}

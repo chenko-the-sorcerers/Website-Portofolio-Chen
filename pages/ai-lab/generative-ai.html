@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Generative AI — AI Lab | Marchel Andrian Shevchenko</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/shared.css">
+<link rel="stylesheet" href="/css/computer-vision.css">
+<link rel="stylesheet" href="/css/generative-ai.css">
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-follower" id="cursor-follower"></div>
+<div id="nav-placeholder"></div>
+
+<!-- ═══ HERO ═══ -->
+<header class="cv-hero gen-hero">
+  <div class="hero-scanlines"></div>
+  <div class="hero-grid-bg"></div>
+  <canvas class="gen-canvas" id="genCanvas"></canvas>
+  <div class="hero-inner">
+    <div class="hero-breadcrumb">
+      <a href="/pages/ai-lab/index.html">AI Lab</a>
+      <span class="sep">›</span>
+      <span>Generative AI</span>
+    </div>
+    <div class="hero-tag-row">
+      <span class="hero-tag">05 / 08</span>
+      <span class="hero-tag live">✨ Creative Intelligence</span>
+    </div>
+    <h1 class="hero-title">
+      <span class="title-line">Generative</span>
+      <span class="title-line accent">AI.</span>
+    </h1>
+    <p class="hero-sub">
+      Diffusion models, GANs, multimodal generation, prompt engineering, dan ilmu di balik menciptakan sesuatu dari noise.
+    </p>
+    <div class="hero-stats">
+      <div class="stat"><span class="stat-num">4</span><span class="stat-label">Modul</span></div>
+      <div class="stat-div"></div>
+      <div class="stat"><span class="stat-num">28+</span><span class="stat-label">Topik</span></div>
+      <div class="stat-div"></div>
+      <div class="stat"><span class="stat-num">3</span><span class="stat-label">Level</span></div>
+    </div>
+  </div>
+
+  <div class="hero-chip chip-1">noise → image</div>
+  <div class="hero-chip chip-2">p(x|z) = decoder</div>
+  <div class="hero-chip chip-3">FID: 2.84</div>
+  <div class="hero-chip chip-4">CFG scale: 7.5</div>
+</header>
+
+<div class="progress-strip">
+  <div class="progress-inner" id="readProgress"></div>
+</div>
+
+<!-- ═══ MAIN ═══ -->
+<main class="cv-main">
+
+  <!-- Sidebar TOC -->
+  <aside class="cv-toc" id="cvToc">
+    <p class="toc-label">Modul</p>
+    <ul class="toc-list">
+      <li><a href="#m1" class="toc-link active" data-module="m1"><span class="toc-num">01</span>Diffusion Models</a></li>
+      <li><a href="#m2" class="toc-link" data-module="m2"><span class="toc-num">02</span>GANs</a></li>
+      <li><a href="#m3" class="toc-link" data-module="m3"><span class="toc-num">03</span>Vision-Language Models</a></li>
+      <li><a href="#m4" class="toc-link" data-module="m4"><span class="toc-num">04</span>Prompt Engineering</a></li>
+    </ul>
+
+    <!-- Learning path -->
+    <div class="gen-path-guide">
+      <p class="toc-label" style="margin-top:24px;">Mulai dari mana?</p>
+      <div class="gpg-item">
+        <span class="gpg-badge pemula">Pemula</span>
+        <span class="gpg-text">Mulai dari Modul 01 → Intuisi Diffusion</span>
+      </div>
+      <div class="gpg-item">
+        <span class="gpg-badge inter">Intermediate</span>
+        <span class="gpg-text">Langsung ke Math DDPM & GAN Loss</span>
+      </div>
+      <div class="gpg-item">
+        <span class="gpg-badge adv">Advanced</span>
+        <span class="gpg-text">DDIM, Latent Diffusion, StyleGAN2</span>
+      </div>
+    </div>
+  </aside>
+
+  <div class="cv-content">
+
+    <!-- ══ MODULE 1: DIFFUSION ══ -->
+    <section class="module reveal" id="m1" data-color="#a855f7">
+      <div class="module-header">
+        <div class="module-num-badge" style="--mc:#a855f7">01</div>
+        <div class="module-meta">
+          <span class="module-tag" style="--mc:#a855f7">Diffusion</span>
+          <h2 class="module-title">Diffusion Models</h2>
+          <p class="module-sub">Dari noise murni menjadi gambar fotorealistik — proses denoising yang mengubah dunia generative AI.</p>
+        </div>
+      </div>
+
+      <!-- Diffusion process visual -->
+      <div class="gen-process-bar">
+        <div class="gpb-step noise-100">noise</div>
+        <div class="gpb-arrow">→</div>
+        <div class="gpb-step noise-75">t=750</div>
+        <div class="gpb-arrow">→</div>
+        <div class="gpb-step noise-50">t=500</div>
+        <div class="gpb-arrow">→</div>
+        <div class="gpb-step noise-25">t=250</div>
+        <div class="gpb-arrow">→</div>
+        <div class="gpb-step image">🖼️ image</div>
+      </div>
+
+      <div class="topic-list">
+
+        <div class="topic-item reveal-up">
+          <div class="topic-icon" style="--tc:#a855f7">🌫️</div>
+          <div class="topic-body">
+            <h3 class="topic-name">Intuisi Diffusion — Forward & Reverse Process</h3>
+            <div class="level-badges"><span class="lvl pemula">Pemula</span></div>
+            <p class="topic-desc">Apa itu noise? Bagaimana model belajar "menghilangkan" noise secara bertahap. Forward process menambah noise Gaussian step-by-step; reverse process adalah kebalikannya — inilah yang kita latih.</p>
+            <div class="topic-tags">
+              <span class="ttag">Forward Process</span><span class="ttag">Reverse Process</span><span class="ttag">Gaussian Noise</span><span class="ttag">Denoising</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="topic-item reveal-up delay-1">
+          <div class="topic-icon" style="--tc:#a855f7">📐</div>
+          <div class="topic-body">
+            <h3 class="topic-name">DDPM — Denoising Diffusion Probabilistic Models</h3>
+            <div class="level-badges"><span class="lvl inter">Intermediate</span></div>
+            <p class="topic-desc">Math di balik DDPM: forward process q(x_t|x_{t-1}), reparameterization trick, loss function (simplified L_simple vs L_vlb), dan noise schedule linear vs cosine. Kenapa kita predict noise bukan gambar langsung.</p>
+            <div class="topic-tags">
+              <span class="ttag">DDPM</span><span class="ttag">ELBO</span><span class="ttag">Noise Schedule</span><span class="ttag">U-Net</span><span class="ttag">Ho et al. 2020</span>
+            </div>
+          </div>
+          <div class="topic-code">
+<pre><code><span class="c-cmt"># Forward process — tambah noise ke gambar</span>
+<span class="c-kw">def</span> <span class="c-fn">q_sample</span>(x0, t, noise):
+    sqrt_alpha = <span class="c-fn">extract</span>(sqrt_alphas_cumprod, t)
+    sqrt_one_minus = <span class="c-fn">extract</span>(sqrt_one_minus_alphas, t)
+    <span class="c-kw">return</span> sqrt_alpha * x0 + sqrt_one_minus * noise</code></pre>
+          </div>
+        </div>
+
+        <div class="topic-item reveal-up delay-2">
+          <div class="topic-icon" style="--tc:#a855f7">⚡</div>
+          <div class="topic-body">
+            <h3 class="topic-name">DDIM & Faster Sampling</h3>
+            <div class="level-badges"><span class="lvl adv">Advanced</span></div>
+            <p class="topic-desc">DDPM butuh 1000 step sampling — terlalu lambat. DDIM (Denoising Diffusion Implicit Models) memungkinkan sampling deterministik dalam 50 step tanpa retrain. Analisis math: dari Markovian ke non-Markovian process.</p>
+            <div class="topic-tags">
+              <span class="ttag">DDIM</span><span class="ttag">Non-Markovian</span><span class="ttag">50-step Sampling</span><span class="ttag">Song et al. 2021</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="topic-item reveal-up delay-3">
+          <div class="topic-icon" style="--tc:#a855f7">🏗️</div>
+          <div class="topic-body">
+            <h3 class="topic-name">Latent Diffusion & Stable Diffusion</h3>
+            <div class="level-badges"><span class="lvl adv">Advanced</span></div>
+            <p class="topic-desc">Diffusion di pixel space mahal — LDM kompresi gambar ke latent space via VAE dulu, baru diffusion di sana. Arsitektur lengkap Stable Diffusion: VAE Encoder → U-Net + Cross-Attention (text conditioning) → VAE Decoder. Classifier-free guidance (CFG) untuk kontrol kualitas.</p>
+            <div class="topic-tags">
+              <span class="ttag">Latent Diffusion</span><span class="ttag">VAE</span><span class="ttag">Cross-Attention</span><span class="ttag">CFG</span><span class="ttag">CLIP</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="topic-item reveal-up delay-4">
+          <div class="topic-icon" style="--tc:#a855f7">🎨</div>
+          <div class="topic-body">
+            <h3 class="topic-name">Praktik: Generate Gambar dengan Stable Diffusion</h3>
+            <div class="level-badges"><span class="lvl pemula">Pemula</span><span class="lvl inter">Intermediate</span></div>
+            <p class="topic-desc">Setup pipeline dengan 🤗 diffusers, custom prompt engineering untuk gambar berkualitas tinggi, ControlNet untuk spatial conditioning (pose, depth, canny edge), dan img2img untuk style transfer.</p>
+            <div class="topic-tags">
+              <span class="ttag">🤗 diffusers</span><span class="ttag">ControlNet</span><span class="ttag">img2img</span><span class="ttag">LoRA</span>
+            </div>
+          </div>
+          <div class="topic-code">
+<pre><code><span class="c-kw">from</span> diffusers <span class="c-kw">import</span> StableDiffusionPipeline
+pipe = StableDiffusionPipeline.<span class="c-fn">from_pretrained</span>(
+    <span class="c-str">"runwayml/stable-diffusion-v1-5"</span>
+)
+image = <span class="c-fn">pipe</span>(<span class="c-str">"a cat in Yogyakarta, cinematic"</span>).images[<span class="c-num">0</span>]</code></pre>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ══ MODULE 2: GANs ══ -->
+    <section class="module reveal" id="m2" data-color="#ef4444">
+      <div class="module-header">
+        <div class="module-num-badge" style="--mc:#ef4444">02</div>
+        <div class="module-meta">
+          <span class="module-tag" style="--mc:#ef4444">GANs</span>
+          <h2 class="module-title">Generative Adversarial Networks</h2>
+          <p class="module-sub">Dua jaringan saling bersaing — satu menciptakan, satu menghakimi. Dinamika adversarial yang melahirkan gambar sintetis paling realistis.</p>
+        </div>
+      </div>
+
+      <!-- GAN dynamic visual -->
+      <div class="gan-dynamic">
+        <div class="gd-box generator">
+          <div class="gd-label">Generator G</div>
+          <div class="gd-desc">z ~ N(0,1) → fake image</div>
+        </div>
+        <div class="gd-arrows">
+          <div class="gd-arrow-top">fake images →</div>
+          <div class="gd-arrow-bot">← gradient</div>
+        </div>
+        <div class="gd-box discriminator">
+          <div class="gd-label">Discriminator D</div>
+          <div class="gd-desc">real or fake? → [0,1]</div>
+        </div>
+      </div>
+
+      <div class="topic-list">
+
+        <div class="topic-item reveal-up">
+          <div class="topic-icon" style="--tc:#ef4444">🐱</div>
+          <div class="topic-body">
+            <h3 class="topic-name">Intuisi GAN — Kucing dan Tikusan</h3>
+            <div class="level-badges"><span class="lvl pemula">Pemula</span></div>
+            <p class="topic-desc">Generator seperti pemalsu uang, Discriminator seperti polisi. Keduanya saling mengasah kemampuan sampai pemalsu tidak bisa dibedakan dari aslinya. Bagaimana equilibrium Nash tercapai dalam training.</p>
+            <div class="topic-tags">
+              <span class="ttag">Generator</span><span class="ttag">Discriminator</span><span class="ttag">Adversarial Training</span><span class="ttag">Nash Equilibrium</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="topic-item reveal-up delay-1">
+          <div class="topic-icon" style="--tc:#ef4444">📉</div>
+          <div class="topic-body">
+            <h3 class="topic-name">GAN Loss Function & Masalah Training</h3>
+            <div class="level-badges"><span class="lvl inter">Intermediate</span></div>
+            <p class="topic-desc">Minimax loss: min_G max_D [E log D(x) + E log(1-D(G(z)))]. Mode collapse — kenapa generator terjebak menghasilkan output sama terus. Vanishing gradient di discriminator kuat. Training instability dan cara diagnosis.</p>
+            <div class="topic-tags">
+              <span class="ttag">Minimax Loss</span><span class="ttag">Mode Collapse</span><span class="ttag">Vanishing Gradient</span><span class="ttag">Training Stability</span>
+            </div>
+          </div>
+          <div class="topic-code">
+<pre><code><span class="c-cmt"># GAN minimax loss</span>
+loss_D = -(<span class="c-fn">log</span>(D(real)) + <span class="c-fn">log</span>(<span class="c-num">1</span> - D(G(z))))
+loss_G = -<span class="c-fn">log</span>(D(G(z)))  <span class="c-cmt"># non-saturating</span>
+
+<span class="c-cmt"># WGAN-GP: lebih stabil</span>
+loss_D = D(fake) - D(real) + λ * gradient_penalty</code></pre>
+          </div>
+        </div>
+
+        <div class="topic-item reveal-up delay-2">
+          <div class="topic-icon" style="--tc:#ef4444">🎭</div>
+          <div class="topic-body">
+            <h3 class="topic-name">WGAN-GP & Training yang Stabil</h3>
+            <div class="level-badges"><span class="lvl inter">Intermediate</span></div>
+            <p class="topic-desc">Wasserstein GAN mengganti JS divergence dengan Earth Mover's distance — tidak vanish meski discriminator sempurna. Gradient penalty (GP) menggantikan weight clipping. Kenapa WGAN-GP menjadi standar praktis.</p>
+            <div class="topic-tags">
+              <span class="ttag">WGAN</span><span class="ttag">Wasserstein Distance</span><span class="ttag">Gradient Penalty</span><span class="ttag">Lipschitz Constraint</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="topic-item reveal-up delay-3">
+          <div class="topic-icon" style="--tc:#ef4444">💎</div>
+          <div class="topic-body">
+            <h3 class="topic-name">StyleGAN2 & Arsitektur Modern</h3>
+            <div class="level-badges"><span class="lvl adv">Advanced</span></div>
+            <p class="topic-desc">Mapping network (z → w space) untuk disentanglement. AdaIN (Adaptive Instance Normalization) untuk style injection per layer. Progressive growing — mulai dari 4×4 hingga 1024×1024. Mengapa StyleGAN2 masih relevan untuk high-fidelity face generation.</p>
+            <div class="topic-tags">
+              <span class="ttag">StyleGAN2</span><span class="ttag">W-space</span><span class="ttag">AdaIN</span><span class="ttag">Progressive Growing</span><span class="ttag">FID</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="topic-item reveal-up delay-4">
+          <div class="topic-icon" style="--tc:#ef4444">🧪</div>
+          <div class="topic-body">
+            <h3 class="topic-name">Praktik: Train GAN pada MNIST & Evaluasi FID</h3>
+            <div class="level-badges"><span class="lvl pemula">Pemula</span><span class="lvl inter">Intermediate</span></div>
+            <p class="topic-desc">Bangun DCGAN dari nol dengan PyTorch, visualisasi training progression (epoch 1 vs 50 vs 200), plot loss curves, dan hitung FID score untuk evaluasi kualitatif. Debugging mode collapse secara langsung.</p>
+            <div class="topic-tags">
+              <span class="ttag">DCGAN</span><span class="ttag">PyTorch</span><span class="ttag">FID Score</span><span class="ttag">MNIST</span><span class="ttag">Training Loop</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ══ MODULE 3: VLMs ══ -->
+    <section class="module reveal" id="m3" data-color="#2997ff">
+      <div class="module-header">
+        <div class="module-num-badge" style="--mc:#2997ff">03</div>
+        <div class="module-meta">
+          <span class="module-tag" style="--mc:#2997ff">Multimodal</span>
+          <h2 class="module-title">Vision-Language Models (VLMs)</h2>
+          <p class="module-sub">Ketika gambar dan teks bicara bahasa yang sama — model yang memahami dunia visual sekaligus linguistik.</p>
+        </div>
+      </div>
+
+      <!-- VLM architecture overview -->
+      <div class="vlm-arch-strip">
+        <div class="vas-block image">🖼️<br><small>Image</small></div>
+        <div class="vas-arrow">→</div>
+        <div class="vas-block encoder">Vision<br>Encoder</div>
+        <div class="vas-arrow">→</div>
+        <div class="vas-block align">Alignment<br>Layer</div>
+        <div class="vas-arrow">↔</div>
+        <div class="vas-block encoder">Text<br>Encoder</div>
+        <div class="vas-arrow">←</div>
+        <div class="vas-block text">📝<br><small>Text</small></div>
+      </div>
+
+      <div class="topic-list">
+
+        <div class="topic-item reveal-up">
+          <div class="topic-icon" style="--tc:#2997ff">🌐</div>
+          <div class="topic-body">
+            <h3 class="topic-name">Apa itu Multimodal? — CLIP, BLIP, GPT-4V</h3>
+            <div class="level-badges"><span class="lvl pemula">Pemula</span></div>
+            <p class="topic-desc">Model yang bisa "melihat" dan "membaca" sekaligus. CLIP (Contrastive Language-Image Pretraining) dari OpenAI sebagai landmark — 400 juta pasang gambar-teks, zero-shot classification. Landscape model: BLIP-2, LLaVA, Gemini, GPT-4V.</p>
+            <div class="topic-tags">
+              <span class="ttag">CLIP</span><span class="ttag">BLIP-2</span><span class="ttag">GPT-4V</span><span class="ttag">Zero-shot</span><span class="ttag">Multimodal</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="topic-item reveal-up delay-1">
+          <div class="topic-icon" style="--tc:#2997ff">🔗</div>
+          <div class="topic-body">
+            <h3 class="topic-name">Contrastive Learning — CLIP Loss</h3>
+            <div class="level-badges"><span class="lvl inter">Intermediate</span></div>
+            <p class="topic-desc">InfoNCE loss untuk menarik pasangan gambar-teks yang cocok dan mendorong yang tidak cocok. Bagaimana embedding space terbentuk — cosine similarity matrix N×N. Temperature scaling dan kenapa batch size besar penting untuk contrastive learning.</p>
+            <div class="topic-tags">
+              <span class="ttag">InfoNCE Loss</span><span class="ttag">Contrastive Learning</span><span class="ttag">Embedding Space</span><span class="ttag">Temperature Scaling</span>
+            </div>
+          </div>
+          <div class="topic-code">
+<pre><code><span class="c-cmt"># CLIP contrastive loss (simplified)</span>
+logits = image_emb @ text_emb.T / temperature
+labels = <span class="c-fn">torch.arange</span>(N)  <span class="c-cmt"># diagonal = correct pairs</span>
+loss = (F.<span class="c-fn">cross_entropy</span>(logits, labels) +
+        F.<span class="c-fn">cross_entropy</span>(logits.T, labels)) / <span class="c-num">2</span></code></pre>
+          </div>
+        </div>
+
+        <div class="topic-item reveal-up delay-2">
+          <div class="topic-icon" style="--tc:#2997ff">🧩</div>
+          <div class="topic-body">
+            <h3 class="topic-name">LLaVA & Arsitektur VLM Modern</h3>
+            <div class="level-badges"><span class="lvl adv">Advanced</span></div>
+            <p class="topic-desc">LLaVA: CLIP vision encoder + projection layer + LLM (Vicuna/Mistral). Bagaimana visual tokens diintegrasikan ke LLM input space. Flamingo's cross-attention gating. Grounding DINO untuk open-vocabulary detection. Perbandingan: adapter vs full fine-tuning vs prefix tuning.</p>
+            <div class="topic-tags">
+              <span class="ttag">LLaVA</span><span class="ttag">Flamingo</span><span class="ttag">Grounding DINO</span><span class="ttag">Visual Tokens</span><span class="ttag">Cross-Attention</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="topic-item reveal-up delay-3">
+          <div class="topic-icon" style="--tc:#2997ff">🔍</div>
+          <div class="topic-body">
+            <h3 class="topic-name">Praktik: Zero-shot Classification & Image Captioning</h3>
+            <div class="level-badges"><span class="lvl pemula">Pemula</span><span class="lvl inter">Intermediate</span></div>
+            <p class="topic-desc">Gunakan CLIP untuk zero-shot classify gambar tanpa training data — cukup deskripsi teks. BLIP-2 untuk image captioning otomatis. Visual question answering (VQA) dengan LLaVA lokal. Evaluasi dengan BLEU dan CIDEr score.</p>
+            <div class="topic-tags">
+              <span class="ttag">Zero-shot</span><span class="ttag">VQA</span><span class="ttag">Image Captioning</span><span class="ttag">BLEU</span><span class="ttag">🤗 transformers</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ══ MODULE 4: PROMPT ENGINEERING ══ -->
+    <section class="module reveal" id="m4" data-color="#f59e0b">
+      <div class="module-header">
+        <div class="module-num-badge" style="--mc:#f59e0b">04</div>
+        <div class="module-meta">
+          <span class="module-tag" style="--mc:#f59e0b">Prompt Eng.</span>
+          <h2 class="module-title">Prompt Engineering</h2>
+          <p class="module-sub">Seni dan sains berkomunikasi dengan model bahasa — dari zero-shot sederhana hingga agentic reasoning.</p>
+        </div>
+      </div>
+
+      <!-- Prompt anatomy visual -->
+      <div class="prompt-anatomy">
+        <div class="pa-block system">[System]<br><small>Role & context</small></div>
+        <div class="pa-plus">+</div>
+        <div class="pa-block examples">[Few-shot]<br><small>Examples</small></div>
+        <div class="pa-plus">+</div>
+        <div class="pa-block query">[Query]<br><small>Task + constraints</small></div>
+        <div class="pa-plus">→</div>
+        <div class="pa-block output">[Output]<br><small>Structured response</small></div>
+      </div>
+
+      <div class="topic-list">
+
+        <div class="topic-item reveal-up">
+          <div class="topic-icon" style="--tc:#f59e0b">✍️</div>
+          <div class="topic-body">
+            <h3 class="topic-name">Anatomi Prompt — Zero-shot, One-shot, Few-shot</h3>
+            <div class="level-badges"><span class="lvl pemula">Pemula</span></div>
+            <p class="topic-desc">Komponen prompt: system role, context, examples, query, output format. Zero-shot vs few-shot: kapan contoh diperlukan? Pengaruh jumlah example terhadap akurasi. Format output (JSON, markdown, step-by-step) dan kenapa penting.</p>
+            <div class="topic-tags">
+              <span class="ttag">Zero-shot</span><span class="ttag">Few-shot</span><span class="ttag">System Prompt</span><span class="ttag">Output Format</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="topic-item reveal-up delay-1">
+          <div class="topic-icon" style="--tc:#f59e0b">🧠</div>
+          <div class="topic-body">
+            <h3 class="topic-name">Chain-of-Thought, ReAct & Tree-of-Thought</h3>
+            <div class="level-badges"><span class="lvl inter">Intermediate</span></div>
+            <p class="topic-desc">CoT "Let's think step by step" meningkatkan akurasi reasoning 40%+ di GSM8K. ReAct (Reason + Act) untuk agen yang bisa menggunakan tools. Tree-of-Thought untuk eksplorasi solusi alternatif. Kapan masing-masing digunakan dan tradeoff-nya.</p>
+            <div class="topic-tags">
+              <span class="ttag">Chain-of-Thought</span><span class="ttag">ReAct</span><span class="ttag">Tree-of-Thought</span><span class="ttag">Reasoning</span><span class="ttag">Agents</span>
+            </div>
+          </div>
+          <div class="topic-code">
+<pre><code><span class="c-cmt"># Chain-of-Thought prompt</span>
+prompt = <span class="c-str">"""Soal: Berapa 17 × 24?
+
+Mari kita hitung langkah demi langkah:
+1. 17 × 20 = 340
+2. 17 × 4 = 68
+3. Total: 340 + 68 = 408
+
+Jawaban: 408"""</span></code></pre>
+          </div>
+        </div>
+
+        <div class="topic-item reveal-up delay-2">
+          <div class="topic-icon" style="--tc:#f59e0b">🛡️</div>
+          <div class="topic-body">
+            <h3 class="topic-name">Prompt Injection, Jailbreak & Red Teaming</h3>
+            <div class="level-badges"><span class="lvl adv">Advanced</span></div>
+            <p class="topic-desc">Bagaimana prompt injection bekerja — menyusupkan instruksi dalam konten user untuk override system prompt. Teknik jailbreak klasik (DAN, roleplay, token smuggling) dan mengapa model modern lebih tahan. Red teaming methodology: structured adversarial testing pada produksi LLM.</p>
+            <div class="topic-tags">
+              <span class="ttag">Prompt Injection</span><span class="ttag">Jailbreak</span><span class="ttag">Red Teaming</span><span class="ttag">AI Safety</span><span class="ttag">Adversarial</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="topic-item reveal-up delay-3">
+          <div class="topic-icon" style="--tc:#f59e0b">🔬</div>
+          <div class="topic-body">
+            <h3 class="topic-name">Praktik: Prompt Optimization Lab</h3>
+            <div class="level-badges"><span class="lvl pemula">Pemula</span><span class="lvl inter">Intermediate</span></div>
+            <p class="topic-desc">Pipeline evaluasi prompt secara sistematis: tulis prompt → jalankan → score dengan rubric → iterate. Automatic prompt optimization dengan DSPy. A/B testing prompt di production. Membangun prompt library yang maintainable untuk tim.</p>
+            <div class="topic-tags">
+              <span class="ttag">DSPy</span><span class="ttag">Prompt Evaluation</span><span class="ttag">A/B Testing</span><span class="ttag">Rubric Scoring</span><span class="ttag">Prompt Library</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </div><!-- /cv-content -->
+</main>
+
+<div id="footer-placeholder"></div>
+<script src="/js/shared.js"></script>
+<script src="/js/lang.js"></script>
+<script src="/js/generative-ai.js"></script>
+</body>
+</html>

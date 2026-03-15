@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Morphological Transforms — Computer Vision | AI Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/shared.css">
+<link rel="stylesheet" href="/css/image-processing-opencv.css">
+<link rel="stylesheet" href="/css/morphological-transforms.css">
+</head>
+<body>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-follower" id="cursor-follower"></div>
+<div id="nav-placeholder"></div>
+<div class="read-progress"><div id="readBar"></div></div>
+
+<div class="py-loading" id="pyLoading">
+  <div class="py-loading-inner">
+    <div class="py-spinner"></div>
+    <div class="py-loading-text">Loading Python runtime...</div>
+    <div class="py-loading-sub">Pyodide (Python 3.11 via WebAssembly)</div>
+  </div>
+</div>
+
+<div class="lesson-layout">
+  <aside class="lesson-sidebar" id="lessonSidebar">
+    <div class="sb-top">
+      <a href="/pages/ai-lab/computer-vision.html" class="sb-back">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 3L5 8l5 5"/></svg>
+        Computer Vision
+      </a>
+      <div class="sb-studying">
+        <div class="sb-studying-label">Sedang belajar</div>
+        <div class="sb-studying-path">
+          <span class="sbp-item">AI Lab</span><span class="sbp-sep">›</span>
+          <span class="sbp-item">Computer Vision</span><span class="sbp-sep">›</span>
+          <span class="sbp-item active">Digital Image Fundamentals</span>
+        </div>
+      </div>
+      <div class="sb-chapter">Module 1 · Digital Image Fundamentals</div>
+      <div class="sb-lesson-title">Morphological Transforms</div>
+      <div class="sb-tags">
+        <span class="sb-tag">Foundation</span>
+        <span class="sb-tag interactive">Interactive</span>
+        <span class="sb-tag coding">🐍 Python</span>
+      </div>
+    </div>
+    <nav class="lesson-nav">
+      <div class="nav-section-label">Dalam lesson ini</div>
+      <a href="#sec-intro"    class="lnav-item active" data-sec="sec-intro">   <span class="lnav-dot"></span><span class="lnav-text">Structuring Element</span><span class="lnav-num">01</span></a>
+      <a href="#sec-ero-dil"  class="lnav-item"        data-sec="sec-ero-dil"> <span class="lnav-dot"></span><span class="lnav-text">Erosion &amp; Dilation</span>   <span class="lnav-num">02</span></a>
+      <a href="#sec-open-clo" class="lnav-item"        data-sec="sec-open-clo"><span class="lnav-dot"></span><span class="lnav-text">Opening &amp; Closing</span>   <span class="lnav-num">03</span></a>
+      <a href="#sec-advanced" class="lnav-item"        data-sec="sec-advanced"><span class="lnav-dot"></span><span class="lnav-text">Advanced Ops</span>            <span class="lnav-num">04</span></a>
+      <a href="#sec-skeleton" class="lnav-item"        data-sec="sec-skeleton"><span class="lnav-dot"></span><span class="lnav-text">Skeleton &amp; Recon</span>    <span class="lnav-num">05</span></a>
+      <a href="#sec-sandbox"  class="lnav-item"        data-sec="sec-sandbox"> <span class="lnav-dot"></span><span class="lnav-text">Interactive Sandbox</span>   <span class="lnav-num">06</span></a>
+      <a href="#sec-playground" class="lnav-item"      data-sec="sec-playground"><span class="lnav-dot"></span><span class="lnav-text">Playground</span>           <span class="lnav-num">07</span></a>
+      <a href="#sec-quiz"     class="lnav-item"        data-sec="sec-quiz">    <span class="lnav-dot"></span><span class="lnav-text">Quiz + Coding</span>          <span class="lnav-num">08</span></a>
+    </nav>
+    <div class="sb-progress">
+      <div class="sb-prog-label"><span>Progress</span><span id="progPct">0%</span></div>
+      <div class="sb-prog-track"><div class="sb-prog-fill" id="progFill"></div></div>
+    </div>
+    <div class="sb-module-nav">
+      <div class="nav-section-label" style="padding:0 8px;margin-bottom:8px">Module 1 · semua topik</div>
+      <a href="pixel-anatomy.html"           class="smn-item done">   <span class="smn-dot done"></span><span>Pixel Anatomy</span></a>
+      <a href="image-processing-opencv.html" class="smn-item done">   <span class="smn-dot done"></span><span>Image Processing with OpenCV</span></a>
+      <a href="filtering-kernels.html"       class="smn-item done">   <span class="smn-dot done"></span><span>Filtering &amp; Kernels</span></a>
+      <a href="morphological-transforms.html" class="smn-item current"><span class="smn-dot"></span>    <span>Morphological Transforms</span></a>
+    </div>
+  </aside>
+
+  <main class="lesson-main">
+    <div class="lesson-topbar">
+      <div class="ltb-left">
+        <button class="ltb-menu" id="menuBtn" onclick="toggleSidebar()">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg>
+        </button>
+        <span class="ltb-crumb">Morphological Transforms</span>
+        <span class="py-status" id="pyStatus">⏳ Loading Python...</span>
+      </div>
+      <div class="ltb-right">
+        <a href="filtering-kernels.html" class="ltb-btn">← Filtering &amp; Kernels</a>
+        <a href="#sec-quiz" class="ltb-btn primary">Take Quiz</a>
+      </div>
+    </div>
+
+    <div class="lesson-body">
+
+      <!-- ═══ SEC 1: STRUCTURING ELEMENT ═══ -->
+      <section class="lesson-sec" id="sec-intro">
+        <div class="sec-header">
+          <span class="sec-num">01</span>
+          <div><h2 class="sec-title">Structuring Element</h2>
+          <p class="sec-sub">The "kernel" of morphological operations — shape defines behavior</p></div>
+        </div>
+        <div class="prose">Morphological operations work on <strong>binary images</strong> (black/white). The <em>structuring element</em> (SE) is a small shape — like a kernel in convolution — that defines which neighbors are examined. But instead of multiplying, morphology uses <strong>set logic</strong>: does the SE fit entirely inside the object? (erosion) Does it touch at all? (dilation).</div>
+
+        <div class="callout info"><span class="callout-icon">🧱</span><div><strong>Structuring element shapes:</strong> Rectangle, ellipse, and cross are the most common. Shape matters — a cross SE preserves diagonal detail better than a rectangle. A larger SE = stronger effect.</div></div>
+
+        <!-- SE designer -->
+        <div class="widget-card">
+          <div class="widget-label">Interactive · Draw your own structuring element — see how shape affects each operation</div>
+          <div class="se-designer">
+            <div class="se-left">
+              <div class="se-header-row">
+                <span class="se-label">Structuring Element</span>
+                <div class="se-preset-btns">
+                  <button class="se-preset active" data-preset="rect3">3×3 Rect</button>
+                  <button class="se-preset" data-preset="rect5">5×5 Rect</button>
+                  <button class="se-preset" data-preset="cross">Cross</button>
+                  <button class="se-preset" data-preset="ellipse">Ellipse</button>
+                  <button class="se-preset" data-preset="custom">Custom</button>
+                </div>
+              </div>
+              <div class="se-grid-wrap">
+                <div id="seGrid" class="se-grid"></div>
+              </div>
+              <div class="se-info" id="seInfo"></div>
+            </div>
+            <div class="se-right">
+              <div class="se-label">Effect on binary shape</div>
+              <div class="se-preview-row">
+                <div class="se-prev-item"><canvas id="seOrigCanvas" width="80" height="80"></canvas><span>Original</span></div>
+                <div class="se-prev-item"><canvas id="seEroCanvas"  width="80" height="80"></canvas><span>Eroded</span></div>
+                <div class="se-prev-item"><canvas id="seDilCanvas"  width="80" height="80"></canvas><span>Dilated</span></div>
+                <div class="se-prev-item"><canvas id="seOpenCanvas" width="80" height="80"></canvas><span>Opened</span></div>
+                <div class="se-prev-item"><canvas id="seCloseCanvas" width="80" height="80"></canvas><span>Closed</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="code-block">
+          <div class="cb-label">cv2 · getStructuringElement</div>
+<pre><code><span class="kw">import</span> cv2
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="cm"># Three built-in shapes:</span>
+se_rect    = cv2.<span class="fn">getStructuringElement</span>(cv2.MORPH_RECT,    (<span class="num">5</span>,<span class="num">5</span>))
+se_ellipse = cv2.<span class="fn">getStructuringElement</span>(cv2.MORPH_ELLIPSE, (<span class="num">5</span>,<span class="num">5</span>))
+se_cross   = cv2.<span class="fn">getStructuringElement</span>(cv2.MORPH_CROSS,   (<span class="num">5</span>,<span class="num">5</span>))
+
+<span class="cm"># Custom SE (any binary numpy array):</span>
+se_custom = np.array([[<span class="num">0</span>,<span class="num">1</span>,<span class="num">0</span>],
+                       [<span class="num">1</span>,<span class="num">1</span>,<span class="num">1</span>],
+                       [<span class="num">0</span>,<span class="num">1</span>,<span class="num">0</span>]], dtype=np.uint8)  <span class="cm"># cross</span>
+
+<span class="cm"># Anchor is center by default: (size//2, size//2)</span></code></pre>
+        </div>
+      </section>
+
+      <!-- ═══ SEC 2: EROSION & DILATION ═══ -->
+      <section class="lesson-sec" id="sec-ero-dil">
+        <div class="sec-header">
+          <span class="sec-num">02</span>
+          <div><h2 class="sec-title">Erosion &amp; Dilation</h2>
+          <p class="sec-sub">The two fundamental building blocks — shrink or grow</p></div>
+        </div>
+        <div class="prose"><strong>Erosion</strong> moves the SE over every pixel. Output = 1 only if the SE fits <em>entirely</em> within the white region. Result: objects shrink, thin protrusions disappear, touching objects separate. <strong>Dilation</strong> is the opposite: output = 1 if the SE touches the white region at all. Result: objects grow, holes fill, broken parts reconnect.</div>
+
+        <!-- Erosion/Dilation live demo -->
+        <div class="widget-card">
+          <div class="widget-label">Interactive · Draw on canvas → see erosion and dilation in real time</div>
+          <div class="morph-demo" id="eroDilDemo">
+            <div class="md-canvas-col">
+              <div class="md-col-label">Draw here ✏️</div>
+              <canvas id="drawCanvas" width="180" height="180" class="draw-canvas"></canvas>
+              <div class="md-draw-tools">
+                <button class="md-tool active" data-tool="draw" onclick="setDrawTool(this,'draw')">✏️ Draw</button>
+                <button class="md-tool" data-tool="erase" onclick="setDrawTool(this,'erase')">⬜ Erase</button>
+                <button class="md-tool clear" onclick="clearDraw()">🗑 Clear</button>
+                <button class="md-tool" onclick="loadPresetShape('blob')">🔵 Blob</button>
+                <button class="md-tool" onclick="loadPresetShape('text')">🅰 Text</button>
+                <button class="md-tool" onclick="loadPresetShape('noise')">📺 Noise</button>
+              </div>
+            </div>
+            <div class="md-canvas-col">
+              <div class="md-col-label">Erosion</div>
+              <canvas id="erosionCanvas" width="180" height="180"></canvas>
+              <div class="md-op-desc">SE must fit entirely inside white region. Shrinks objects, removes small noise, separates touching objects.</div>
+            </div>
+            <div class="md-canvas-col">
+              <div class="md-col-label">Dilation</div>
+              <canvas id="dilationCanvas" width="180" height="180"></canvas>
+              <div class="md-op-desc">SE touches white region at any point. Grows objects, fills small holes, reconnects broken parts.</div>
+            </div>
+            <div class="md-sidebar">
+              <div class="md-se-ctrl">
+                <label class="se-label">SE shape</label>
+                <div class="md-se-btns">
+                  <button class="md-se-btn active" data-shape="rect"    onclick="setDemoSE(this,'rect')">Rect</button>
+                  <button class="md-se-btn"         data-shape="ellipse" onclick="setDemoSE(this,'ellipse')">Ellipse</button>
+                  <button class="md-se-btn"         data-shape="cross"   onclick="setDemoSE(this,'cross')">Cross</button>
+                </div>
+              </div>
+              <div class="md-se-ctrl">
+                <label class="se-label">SE size: <span id="demoSeSize">3</span>×<span id="demoSeSizeB">3</span></label>
+                <input type="range" min="1" max="9" step="2" value="3" id="demoSeSizeSlider" oninput="updateDemoSESize(this.value)">
+              </div>
+              <div class="md-se-ctrl">
+                <label class="se-label">Iterations: <span id="demoIter">1</span></label>
+                <input type="range" min="1" max="5" step="1" value="1" id="demoIterSlider" oninput="updateDemoIter(this.value)">
+              </div>
+              <canvas id="demoSePreview" width="60" height="60" class="se-preview-mini"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <div class="two-col">
+          <div class="code-block"><div class="cb-label">cv2.erode / cv2.dilate</div>
+<pre><code>gray   = cv2.<span class="fn">imread</span>(<span class="str">'mask.png'</span>, <span class="num">0</span>)
+<span class="cm"># Threshold to binary first</span>
+_, binary = cv2.<span class="fn">threshold</span>(gray, <span class="num">127</span>, <span class="num">255</span>,
+                           cv2.THRESH_BINARY)
+
+se = cv2.<span class="fn">getStructuringElement</span>(
+    cv2.MORPH_RECT, (<span class="num">5</span>, <span class="num">5</span>))
+
+eroded  = cv2.<span class="fn">erode</span>(binary, se,
+                    iterations=<span class="num">1</span>)
+dilated = cv2.<span class="fn">dilate</span>(binary, se,
+                     iterations=<span class="num">2</span>)</code></pre></div>
+          <div class="info-card">
+            <div class="ic-title">📐 Erosion rule</div>
+            <p>Output pixel = 1 if <em>every</em> pixel covered by SE = 1.<br>
+            Output pixel = 0 if <em>any</em> pixel covered by SE = 0.<br><br>
+            <strong>Dilation rule:</strong><br>
+            Output pixel = 1 if <em>any</em> pixel covered by SE = 1.</p>
+            <p style="margin-top:8px"><strong>Dual relationship:</strong> Erosion of A by SE = complement of (dilation of complement(A) by SE).</p>
+          </div>
+        </div>
+
+        <div class="challenge-card" id="ch-1">
+          <div class="challenge-header"><span class="challenge-badge">🐍 Mini Challenge</span><span class="challenge-title">Implement erosion from scratch with NumPy</span></div>
+          <div class="challenge-desc">Apply 3×3 rectangular erosion manually: a pixel stays white only if all 9 pixels in its neighborhood are white. Verify it removes isolated single pixels.</div>
+          <div class="challenge-editor">
+            <div class="editor-tabs"><span class="editor-tab active">solution.py</span></div>
+            <div class="code-editor-wrap"><textarea class="code-editor" id="ce-1" spellcheck="false">import numpy as np
+
+# Binary image: white rectangle with a single noise pixel
+img = np.zeros((10, 10), dtype=np.uint8)
+img[2:8, 2:8] = 255        # white rectangle
+img[1, 1]     = 255        # isolated noise pixel
+
+print("Before erosion (row sums):", img.sum(axis=1).tolist())
+
+def erode_3x3(binary):
+    """3×3 rectangle erosion: keep 255 only if all 9 neighbors are 255."""
+    out    = np.zeros_like(binary)
+    padded = np.pad(binary, 1, mode='constant', constant_values=___)  # pad with 0
+    for y in range(binary.shape[0]):
+        for x in range(binary.shape[1]):
+            neighborhood = padded[y:y+___, x:x+___]  # 3×3 window
+            if neighborhood.___()==___:               # all pixels must be 255
+                out[y, x] = 255
+    return out
+
+eroded = erode_3x3(img)
+print("After  erosion (row sums):", eroded.sum(axis=1).tolist())
+
+# Verify: noise pixel at (1,1) should be gone
+print("Noise removed:", eroded[1, 1] == 0)
+# Verify: rectangle shrunk by 1 pixel on each side
+print("Rectangle still present:", eroded[3, 3] == 255)</textarea></div>
+            <div class="editor-actions">
+              <button class="run-btn" onclick="runChallenge('ce-1','out-1','check-1')">▶ Run</button>
+              <button class="hint-btn" onclick="toggleHint('hint-1')">💡 Hint</button>
+              <button class="reset-btn" onclick="resetChallenge('ce-1',1)">↺ Reset</button>
+            </div>
+          </div>
+          <div class="hint-box" id="hint-1" style="display:none"><strong>Hints:</strong><br>• Pad with 0 (constant_values=0) so border pixels erode to 0<br>• Window: <code>padded[y:y+3, x:x+3]</code><br>• All must be 255: <code>neighborhood.min() == 255</code></div>
+          <div class="output-wrap" id="out-1" style="display:none"><div class="output-label">Output</div><pre class="output-pre" id="out-1-pre"></pre></div>
+          <div class="check-result" id="check-1" style="display:none"></div>
+          <div class="expected-box"><span class="expected-label">Expected:</span><code>Noise removed: True<br>Rectangle still present: True</code></div>
+        </div>
+      </section>
+
+      <!-- ═══ SEC 3: OPENING & CLOSING ═══ -->
+      <section class="lesson-sec" id="sec-open-clo">
+        <div class="sec-header">
+          <span class="sec-num">03</span>
+          <div><h2 class="sec-title">Opening &amp; Closing</h2>
+          <p class="sec-sub">Combining erosion + dilation for noise removal and hole filling</p></div>
+        </div>
+        <div class="prose"><strong>Opening</strong> = Erode → Dilate. The erosion removes small white noise and thin protrusions; the dilation restores the main object size. Net effect: noise is gone, objects unchanged. <strong>Closing</strong> = Dilate → Erode. The dilation bridges small gaps and fills holes; the erosion restores size. Net effect: holes are filled, objects unchanged.</div>
+
+        <div class="callout info"><span class="callout-icon">💡</span><div><strong>Memory trick:</strong> Opening <em>opens up</em> gaps between objects and removes small white blobs. Closing <em>closes</em> holes inside objects and small black gaps.</div></div>
+
+        <!-- Opening/Closing step visualizer -->
+        <div class="widget-card">
+          <div class="widget-label">Interactive · Step through Opening and Closing operations</div>
+          <div class="open-close-demo">
+            <div class="ocd-tabs">
+              <button class="ocd-tab active" onclick="setOCMode(this,'opening')">Opening (Erode→Dilate)</button>
+              <button class="ocd-tab" onclick="setOCMode(this,'closing')">Closing (Dilate→Erode)</button>
+            </div>
+            <div class="ocd-scene-btns">
+              <button class="ocd-scene active" onclick="setOCScene(this,'noise')">📺 White noise</button>
+              <button class="ocd-scene" onclick="setOCScene(this,'holes')">🕳 Black holes</button>
+              <button class="ocd-scene" onclick="setOCScene(this,'both')">Both</button>
+            </div>
+            <div class="ocd-steps">
+              <div class="ocd-step">
+                <canvas id="ocOrigCanvas"  width="140" height="140"></canvas>
+                <div class="ocd-step-label">Original</div>
+              </div>
+              <div class="ocd-arrow" id="ocArrow1">→</div>
+              <div class="ocd-step">
+                <canvas id="ocStep1Canvas" width="140" height="140"></canvas>
+                <div class="ocd-step-label" id="ocStep1Label">Step 1</div>
+              </div>
+              <div class="ocd-arrow">→</div>
+              <div class="ocd-step">
+                <canvas id="ocStep2Canvas" width="140" height="140"></canvas>
+                <div class="ocd-step-label" id="ocStep2Label">Step 2</div>
+              </div>
+            </div>
+            <div class="ocd-se-ctrl">
+              <label>SE size: <span id="ocSeSize">3</span>×<span id="ocSeSizeB">3</span></label>
+              <input type="range" min="1" max="9" step="2" value="3" id="ocSeSizeSlider" oninput="updateOCSize(this.value)">
+            </div>
+          </div>
+        </div>
+
+        <div class="code-block">
+          <div class="cb-label">cv2.morphologyEx — all-in-one</div>
+<pre><code><span class="cm"># Opening: erode → dilate (removes white noise)</span>
+opened = cv2.<span class="fn">morphologyEx</span>(binary, cv2.MORPH_OPEN,  se)
+
+<span class="cm"># Closing: dilate → erode (fills black holes)</span>
+closed = cv2.<span class="fn">morphologyEx</span>(binary, cv2.MORPH_CLOSE, se)
+
+<span class="cm"># Equivalent manual versions:</span>
+opened_manual = cv2.<span class="fn">dilate</span>(cv2.<span class="fn">erode</span>(binary, se), se)
+closed_manual = cv2.<span class="fn">erode</span>(cv2.<span class="fn">dilate</span>(binary, se), se)
+
+<span class="cm"># Rule of thumb for SE size:</span>
+<span class="cm"># SE must be LARGER than noise to remove it</span>
+<span class="cm"># SE must be SMALLER than objects to preserve them</span></code></pre>
+        </div>
+
+        <div class="challenge-card" id="ch-2">
+          <div class="challenge-header"><span class="challenge-badge">🐍 Mini Challenge</span><span class="challenge-title">Opening removes noise, Closing fills holes</span></div>
+          <div class="challenge-desc">Apply opening to remove small white noise pixels, then closing to fill small black holes. Verify the main object survives both operations.</div>
+          <div class="challenge-editor">
+            <div class="editor-tabs"><span class="editor-tab active">solution.py</span></div>
+            <div class="code-editor-wrap"><textarea class="code-editor" id="ce-2" spellcheck="false">import numpy as np
+
+def erode(img, se):
+    h, w = img.shape; ks = se.shape[0]; pad = ks//2
+    p   = np.pad(img, pad, mode='constant', constant_values=0)
+    out = np.zeros_like(img)
+    for y in range(h):
+        for x in range(w):
+            region = p[y:y+ks, x:x+ks]
+            if (region * se).min() >= 255 * se.max(): out[y,x] = 255
+    return out
+
+def dilate(img, se):
+    h, w = img.shape; ks = se.shape[0]; pad = ks//2
+    p   = np.pad(img, pad, mode='constant', constant_values=0)
+    out = np.zeros_like(img)
+    for y in range(h):
+        for x in range(w):
+            region = p[y:y+ks, x:x+ks]
+            if (region & (se*255)).max() > 0: out[y,x] = 255
+    return out
+
+se3 = np.ones((3,3), dtype=np.uint8)
+
+# Image with a big rectangle + small noise + internal hole
+img = np.zeros((12,12), dtype=np.uint8)
+img[2:10, 2:10] = 255   # main rectangle
+img[0, 0]  = 255        # noise pixel (outside)
+img[1, 9]  = 255        # noise pixel (outside)
+img[5, 5]  = 0          # hole inside rectangle
+
+print("Noise pixels outside rect:", img[0,0], img[1,9])
+print("Hole inside rect:", img[5,5])
+
+# Opening: remove noise pixels
+opened = dilate(___(img, se3), se3)   # fill in: erode first, then dilate
+print("After opening - noise at (0,0):", opened[0,0])
+print("After opening - main rect at (5,3):", opened[5,3])
+
+# Closing: fill hole
+closed = ___(___(img, se3), se3)      # fill in: dilate first, then erode
+print("After closing - hole filled at (5,5):", closed[5,5])
+print("After closing - main rect intact:", closed[3,3])</textarea></div>
+            <div class="editor-actions">
+              <button class="run-btn" onclick="runChallenge('ce-2','out-2','check-2')">▶ Run</button>
+              <button class="hint-btn" onclick="toggleHint('hint-2')">💡 Hint</button>
+              <button class="reset-btn" onclick="resetChallenge('ce-2',2)">↺ Reset</button>
+            </div>
+          </div>
+          <div class="hint-box" id="hint-2" style="display:none"><strong>Hints:</strong><br>• Opening = dilate(erode(img, se), se) → first argument is erode(img, se3)<br>• Closing = erode(dilate(img, se), se) → dilate first, then erode<br>• Opening removes the 2 isolated noise pixels (they don't survive erosion)<br>• Closing fills the single hole at (5,5)</div>
+          <div class="output-wrap" id="out-2" style="display:none"><div class="output-label">Output</div><pre class="output-pre" id="out-2-pre"></pre></div>
+          <div class="check-result" id="check-2" style="display:none"></div>
+          <div class="expected-box"><span class="expected-label">Expected:</span><code>After opening - noise at (0,0): 0<br>After opening - main rect at (5,3): 255<br>After closing - hole filled at (5,5): 255<br>After closing - main rect intact: 255</code></div>
+        </div>
+      </section>
+
+      <!-- ═══ SEC 4: ADVANCED OPS ═══ -->
+      <section class="lesson-sec" id="sec-advanced">
+        <div class="sec-header">
+          <span class="sec-num">04</span>
+          <div><h2 class="sec-title">Advanced Operations</h2>
+          <p class="sec-sub">Gradient · Top-Hat · Black-Hat · Hit-or-Miss</p></div>
+        </div>
+        <div class="prose">Four derived operations built from erosion and dilation combinations. Each extracts different structural information from binary or grayscale images.</div>
+
+        <!-- 4-panel advanced ops demo -->
+        <div class="widget-card">
+          <div class="widget-label">Interactive · See all four advanced operations — paint on canvas</div>
+          <div class="adv-ops-demo">
+            <div class="adv-draw-col">
+              <div class="md-col-label">Input (paint here)</div>
+              <canvas id="advDrawCanvas" width="140" height="140" class="draw-canvas"></canvas>
+              <div class="adv-draw-tools">
+                <button class="md-tool active" onclick="setAdvTool(this,'draw')">✏️</button>
+                <button class="md-tool" onclick="setAdvTool(this,'erase')">⬜</button>
+                <button class="md-tool clear" onclick="clearAdvDraw()">🗑</button>
+              </div>
+              <select id="advScene" class="adv-scene-sel" onchange="loadAdvScene(this.value)">
+                <option value="shapes">Shapes</option>
+                <option value="text">Text</option>
+                <option value="lines">Lines</option>
+                <option value="cells">Cells</option>
+              </select>
+            </div>
+            <div class="adv-results-grid">
+              <div class="adv-result">
+                <canvas id="advGradCanvas"   width="100" height="100"></canvas>
+                <div class="adv-result-name">Morphological Gradient</div>
+                <div class="adv-result-eq">Dilation − Erosion</div>
+                <div class="adv-result-use">Object edges / contours</div>
+              </div>
+              <div class="adv-result">
+                <canvas id="advTopHatCanvas" width="100" height="100"></canvas>
+                <div class="adv-result-name">Top-Hat</div>
+                <div class="adv-result-eq">Original − Opening</div>
+                <div class="adv-result-use">Bright details on dark bg</div>
+              </div>
+              <div class="adv-result">
+                <canvas id="advBlkHatCanvas" width="100" height="100"></canvas>
+                <div class="adv-result-name">Black-Hat</div>
+                <div class="adv-result-eq">Closing − Original</div>
+                <div class="adv-result-use">Dark details on bright bg</div>
+              </div>
+              <div class="adv-result">
+                <canvas id="advHitCanvas"    width="100" height="100"></canvas>
+                <div class="adv-result-name">Hit-or-Miss</div>
+                <div class="adv-result-eq">Erosion(A,SE1) ∩ Erosion(Aᶜ,SE2)</div>
+                <div class="adv-result-use">Find specific pattern</div>
+              </div>
+            </div>
+            <div class="adv-se-ctrl">
+              <label>SE: <span id="advSeSize">5</span>×<span id="advSeSizeB">5</span></label>
+              <input type="range" min="3" max="11" step="2" value="5" id="advSeSizeSlider" oninput="updateAdvSE(this.value)">
+            </div>
+          </div>
+        </div>
+
+        <div class="ops-table">
+          <div class="ot-row ot-header"><div>Operation</div><div>Formula</div><div>Primary use case</div><div>cv2 constant</div></div>
+          <div class="ot-row"><div class="ot-name grad">Gradient</div><div class="ot-formula">D(A,SE) − E(A,SE)</div><div>Edge detection without Canny</div><div class="ot-const">MORPH_GRADIENT</div></div>
+          <div class="ot-row"><div class="ot-name tophat">Top-Hat</div><div class="ot-formula">A − Open(A,SE)</div><div>Bright spots on dark background; illumination correction</div><div class="ot-const">MORPH_TOPHAT</div></div>
+          <div class="ot-row"><div class="ot-name blackhat">Black-Hat</div><div class="ot-formula">Close(A,SE) − A</div><div>Dark spots on bright background; find dark defects</div><div class="ot-const">MORPH_BLACKHAT</div></div>
+          <div class="ot-row"><div class="ot-name hitmiss">Hit-or-Miss</div><div class="ot-formula">E(A,SE₁) ∩ E(Aᶜ,SE₂)</div><div>Template matching; corner/endpoint detection</div><div class="ot-const">MORPH_HITMISS</div></div>
+        </div>
+
+        <div class="code-block">
+          <div class="cb-label">cv2.morphologyEx — advanced ops</div>
+<pre><code><span class="cm"># All use cv2.morphologyEx with different flags:</span>
+gradient = cv2.<span class="fn">morphologyEx</span>(img, cv2.MORPH_GRADIENT, se)
+top_hat  = cv2.<span class="fn">morphologyEx</span>(img, cv2.MORPH_TOPHAT,   se)
+black_hat= cv2.<span class="fn">morphologyEx</span>(img, cv2.MORPH_BLACKHAT, se)
+
+<span class="cm"># Hit-or-Miss: find isolated foreground pixels</span>
+<span class="cm"># SE1=foreground pattern, SE2=background pattern</span>
+se_hit  = np.array([[<span class="num">0</span>,<span class="num">1</span>,<span class="num">0</span>],[<span class="num">1</span>,<span class="num">1</span>,<span class="num">1</span>],[<span class="num">0</span>,<span class="num">1</span>,<span class="num">0</span>]], dtype=np.int32)
+se_miss = np.array([[<span class="num">1</span>,<span class="num">0</span>,<span class="num">1</span>],[<span class="num">0</span>,<span class="num">0</span>,<span class="num">0</span>],[<span class="num">1</span>,<span class="num">0</span>,<span class="num">1</span>]], dtype=np.int32)
+pattern = np.where(se_hit><span class="num">0</span>, <span class="num">1</span>, np.where(se_miss><span class="num">0</span>, -<span class="num">1</span>, <span class="num">0</span>)).astype(np.int32)
+result  = cv2.<span class="fn">morphologyEx</span>(binary, cv2.MORPH_HITMISS, pattern)</code></pre>
+        </div>
+
+        <div class="challenge-card" id="ch-3">
+          <div class="challenge-header"><span class="challenge-badge">🐍 Mini Challenge</span><span class="challenge-title">Extract edges with Morphological Gradient</span></div>
+          <div class="challenge-desc">Compute the morphological gradient manually: dilate − erode. Compare with Laplacian. The gradient gives thick binary edges proportional to SE size.</div>
+          <div class="challenge-editor">
+            <div class="editor-tabs"><span class="editor-tab active">solution.py</span></div>
+            <div class="code-editor-wrap"><textarea class="code-editor" id="ce-3" spellcheck="false">import numpy as np
+
+def erode_simple(img, ks=3):
+    pad = ks//2
+    p = np.pad(img.astype(float), pad, mode='constant')
+    out = np.zeros_like(img, dtype=float)
+    for y in range(img.shape[0]):
+        for x in range(img.shape[1]):
+            out[y,x] = p[y:y+ks, x:x+ks].min()
+    return out.astype(np.uint8)
+
+def dilate_simple(img, ks=3):
+    pad = ks//2
+    p = np.pad(img.astype(float), pad, mode='constant')
+    out = np.zeros_like(img, dtype=float)
+    for y in range(img.shape[0]):
+        for x in range(img.shape[1]):
+            out[y,x] = p[y:y+ks, x:x+ks].max()
+    return out.astype(np.uint8)
+
+# Binary image: white rectangle
+img = np.zeros((12,12), dtype=np.uint8)
+img[2:10, 2:10] = 255
+
+eroded  = erode_simple(img,  ks=3)
+dilated = dilate_simple(img, ks=3)
+
+# Morphological gradient = dilation - erosion
+gradient = ___                     # fill in: dilated - eroded (use np.clip)
+gradient = np.clip(gradient.astype(int), 0, 255).astype(np.uint8)
+
+print("Gradient non-zero pixels:", int((gradient > 0).sum()))
+
+# Interior pixels should be 0 (not on edge)
+print("Interior pixel (5,5):", gradient[5,5])
+# Border of rectangle should be 255 (on edge)
+print("Edge pixel (2,5):", gradient[2,5])
+print("Edge pixel (5,2):", gradient[5,2])</textarea></div>
+            <div class="editor-actions">
+              <button class="run-btn" onclick="runChallenge('ce-3','out-3','check-3')">▶ Run</button>
+              <button class="hint-btn" onclick="toggleHint('hint-3')">💡 Hint</button>
+              <button class="reset-btn" onclick="resetChallenge('ce-3',3)">↺ Reset</button>
+            </div>
+          </div>
+          <div class="hint-box" id="hint-3" style="display:none"><strong>Hints:</strong><br>• gradient = dilated - eroded (element-wise subtraction)<br>• Use np.clip to prevent negative values<br>• Interior of rectangle: dilate and erode both = 255, so 255-255 = 0 ✓<br>• Edge pixels: dilate=255, erode=0, so 255-0 = 255 ✓</div>
+          <div class="output-wrap" id="out-3" style="display:none"><div class="output-label">Output</div><pre class="output-pre" id="out-3-pre"></pre></div>
+          <div class="check-result" id="check-3" style="display:none"></div>
+          <div class="expected-box"><span class="expected-label">Expected:</span><code>Interior pixel (5,5): 0<br>Edge pixel (2,5): 255<br>Edge pixel (5,2): 255</code></div>
+        </div>
+      </section>
+
+      <!-- ═══ SEC 5: SKELETON & RECONSTRUCTION ═══ -->
+      <section class="lesson-sec" id="sec-skeleton">
+        <div class="sec-header">
+          <span class="sec-num">05</span>
+          <div><h2 class="sec-title">Skeletonization &amp; Morphological Reconstruction</h2>
+          <p class="sec-sub">Reduce to 1-pixel backbone · Precision object extraction</p></div>
+        </div>
+        <div class="prose"><strong>Skeletonization</strong> repeatedly erodes an object until only a 1-pixel-wide skeleton remains — the topological center line. Useful for shape analysis, OCR, measuring vessel widths. <strong>Morphological Reconstruction</strong> uses a marker + mask to selectively restore or remove objects — perfect for removing objects touching a border or extracting only connected components of specific size.</div>
+
+        <!-- Skeleton live demo -->
+        <div class="widget-card">
+          <div class="widget-label">Interactive · Watch skeletonization progress iteration by iteration</div>
+          <div class="skeleton-demo">
+            <div class="sk-left">
+              <div class="md-col-label">Input shape</div>
+              <canvas id="skInputCanvas" width="140" height="140" class="draw-canvas"></canvas>
+              <div class="sk-shape-btns">
+                <button class="md-tool" onclick="loadSkShape('letter')">🅰 Letter</button>
+                <button class="md-tool" onclick="loadSkShape('branch')">🌿 Branch</button>
+                <button class="md-tool" onclick="loadSkShape('circle')">⭕ Ring</button>
+                <button class="md-tool" onclick="loadSkShape('rect')">▬ Rect</button>
+              </div>
+            </div>
+            <div class="sk-right">
+              <div class="md-col-label">Skeleton (step <span id="skStep">0</span>)</div>
+              <canvas id="skResultCanvas" width="140" height="140"></canvas>
+              <div class="sk-controls">
+                <button class="ctrl-btn" onclick="skStepBack()">← Back</button>
+                <div class="sk-prog-wrap"><div class="sk-prog-fill" id="skProgFill"></div></div>
+                <button class="ctrl-btn play" onclick="skStepFwd()">Next →</button>
+                <button class="ctrl-btn" id="skAutoBtn" onclick="skToggleAuto()">▶ Auto</button>
+              </div>
+              <div class="sk-info" id="skInfo"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Reconstruction demo -->
+        <div class="widget-card" style="margin-top:16px">
+          <div class="widget-label">Interactive · Morphological Reconstruction — remove border-touching objects</div>
+          <div class="recon-demo">
+            <div class="recon-item"><canvas id="reconOrigCanvas"   width="120" height="120"></canvas><div class="ocd-step-label">Original</div></div>
+            <div class="recon-arrow">→</div>
+            <div class="recon-item"><canvas id="reconMarkerCanvas" width="120" height="120"></canvas><div class="ocd-step-label">Marker (border=0)</div></div>
+            <div class="recon-arrow">→</div>
+            <div class="recon-item"><canvas id="reconResultCanvas" width="120" height="120"></canvas><div class="ocd-step-label">Result (border objects removed)</div></div>
+          </div>
+          <div class="recon-scene-btns" style="margin-top:10px">
+            <button class="ocd-scene active" onclick="setReconScene(this,'mixed')">Mixed objects</button>
+            <button class="ocd-scene" onclick="setReconScene(this,'cells')">Cells</button>
+            <button class="ocd-scene" onclick="setReconScene(this,'lines')">Lines</button>
+          </div>
+        </div>
+
+        <div class="two-col">
+          <div class="code-block"><div class="cb-label">Skeletonization</div>
+<pre><code><span class="kw">from</span> skimage.morphology <span class="kw">import</span> skeletonize
+
+<span class="cm"># skimage expects bool array</span>
+binary = img > <span class="num">127</span>
+skel   = skeletonize(binary)
+result = skel.astype(np.uint8) * <span class="num">255</span>
+
+<span class="cm"># Manual thinning via Zhang-Suen:</span>
+<span class="cm"># Repeatedly apply hit-or-miss to find</span>
+<span class="cm"># pixels to remove until no change</span>
+thinned = cv2.<span class="fn">ximgproc</span>.<span class="fn">thinning</span>(binary)</code></pre></div>
+          <div class="code-block"><div class="cb-label">Morphological Reconstruction</div>
+<pre><code><span class="kw">from</span> skimage.morphology <span class="kw">import</span> (
+    reconstruction)
+
+<span class="cm"># Remove border-touching objects:</span>
+marker = img.copy()
+marker[<span class="num">1</span>:-<span class="num">1</span>, <span class="num">1</span>:-<span class="num">1</span>] = <span class="num">0</span>  <span class="cm"># only border</span>
+recon  = reconstruction(marker, img)
+result = img - recon.astype(np.uint8)
+
+<span class="cm"># Fill holes (invert, reconstruct, invert):</span>
+seed = np.<span class="fn">copy</span>(img)
+seed[<span class="num">1</span>:-<span class="num">1</span>, <span class="num">1</span>:-<span class="num">1</span>] = <span class="num">255</span>
+filled = reconstruction(
+    <span class="num">255</span>-seed, <span class="num">255</span>-img, method=<span class="str">'erosion'</span>)
+result = <span class="num">255</span> - filled.astype(np.uint8)</code></pre></div>
+        </div>
+      </section>
+
+      <!-- ═══ SEC 6: INTERACTIVE SANDBOX ═══ -->
+      <section class="lesson-sec" id="sec-sandbox">
+        <div class="sec-header">
+          <span class="sec-num">06</span>
+          <div><h2 class="sec-title">Interactive Sandbox</h2>
+          <p class="sec-sub">All 10 operations, live on your drawing — compare side by side</p></div>
+        </div>
+        <div class="prose">Gambar bebas di canvas, pilih operasi, dan lihat hasilnya langsung. Ganti SE, iterations, dan scene untuk eksperimen.</div>
+
+        <div class="sandbox-card">
+          <div class="sb-toolbar">
+            <div class="sb-tools">
+              <button class="sb-tool-btn active" data-tool="draw"  onclick="setSbTool(this,'draw')">✏️ Draw</button>
+              <button class="sb-tool-btn"         data-tool="erase" onclick="setSbTool(this,'erase')">⬜ Erase</button>
+              <button class="sb-tool-btn clear"   onclick="clearSb()">🗑 Clear</button>
+            </div>
+            <div class="sb-scenes">
+              <button class="sb-scene-btn" onclick="loadSbScene('defects')">Defects</button>
+              <button class="sb-scene-btn" onclick="loadSbScene('text')">Text</button>
+              <button class="sb-scene-btn" onclick="loadSbScene('cells')">Cells</button>
+              <button class="sb-scene-btn" onclick="loadSbScene('circuit')">Circuit</button>
+            </div>
+            <div class="sb-se-ctrl">
+              <select id="sbSeShape" class="ic-select" onchange="updateSandbox()">
+                <option value="rect">Rect SE</option>
+                <option value="ellipse">Ellipse SE</option>
+                <option value="cross">Cross SE</option>
+              </select>
+              <input type="range" min="1" max="9" step="2" value="3" id="sbSeSize" oninput="updateSandbox(); document.getElementById('sbSeSizeLbl').textContent=this.value+'×'+this.value">
+              <span id="sbSeSizeLbl" class="sb-size-lbl">3×3</span>
+            </div>
+          </div>
+
+          <div class="sb-main">
+            <div class="sb-input-col">
+              <div class="sb-col-label">Input</div>
+              <canvas id="sbInputCanvas" width="200" height="200" class="draw-canvas sb-canvas"></canvas>
+            </div>
+            <div class="sb-ops-grid">
+              <div class="sb-op" data-op="erode">
+                <canvas id="sbErode"   width="110" height="110"></canvas>
+                <div class="sb-op-name">Erosion</div>
+              </div>
+              <div class="sb-op" data-op="dilate">
+                <canvas id="sbDilate"  width="110" height="110"></canvas>
+                <div class="sb-op-name">Dilation</div>
+              </div>
+              <div class="sb-op" data-op="open">
+                <canvas id="sbOpen"    width="110" height="110"></canvas>
+                <div class="sb-op-name">Opening</div>
+              </div>
+              <div class="sb-op" data-op="close">
+                <canvas id="sbClose"   width="110" height="110"></canvas>
+                <div class="sb-op-name">Closing</div>
+              </div>
+              <div class="sb-op" data-op="gradient">
+                <canvas id="sbGrad"    width="110" height="110"></canvas>
+                <div class="sb-op-name">Gradient</div>
+              </div>
+              <div class="sb-op" data-op="tophat">
+                <canvas id="sbTopHat"  width="110" height="110"></canvas>
+                <div class="sb-op-name">Top-Hat</div>
+              </div>
+              <div class="sb-op" data-op="blackhat">
+                <canvas id="sbBlkHat"  width="110" height="110"></canvas>
+                <div class="sb-op-name">Black-Hat</div>
+              </div>
+              <div class="sb-op" data-op="skeleton">
+                <canvas id="sbSkel"    width="110" height="110"></canvas>
+                <div class="sb-op-name">Skeleton</div>
+              </div>
+              <div class="sb-op" data-op="hitmiss">
+                <canvas id="sbHitMiss" width="110" height="110"></canvas>
+                <div class="sb-op-name">Hit-or-Miss</div>
+              </div>
+              <div class="sb-op" data-op="recon">
+                <canvas id="sbRecon"   width="110" height="110"></canvas>
+                <div class="sb-op-name">Recon</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══ SEC 7: PLAYGROUND ═══ -->
+      <section class="lesson-sec" id="sec-playground">
+        <div class="sec-header">
+          <span class="sec-num">07</span>
+          <div><h2 class="sec-title">Python Playground</h2>
+          <p class="sec-sub">Eksperimen bebas dengan NumPy — semua operasi morfologi</p></div>
+        </div>
+        <div class="playground-card">
+          <div class="playground-toolbar">
+            <div class="pg-toolbar-left">
+              <span class="pg-title">🐍 Python 3.11 · NumPy ready</span>
+              <span class="py-ready-dot" id="pgReadyDot"></span>
+            </div>
+            <div class="pg-toolbar-right">
+              <button class="pg-snippet-btn" onclick="loadSnippet('erode')">erode</button>
+              <button class="pg-snippet-btn" onclick="loadSnippet('dilate')">dilate</button>
+              <button class="pg-snippet-btn" onclick="loadSnippet('openclose')">open/close</button>
+              <button class="pg-snippet-btn" onclick="loadSnippet('gradient')">gradient</button>
+              <button class="pg-snippet-btn" onclick="loadSnippet('tophat')">top-hat</button>
+              <button class="pg-snippet-btn" onclick="loadSnippet('pipeline')">pipeline</button>
+            </div>
+          </div>
+          <div class="code-editor-wrap">
+            <textarea class="code-editor playground-editor" id="playground-editor" spellcheck="false">import numpy as np
+
+# ── Morphology helper functions ────────────────────────────────
+def make_se(shape='rect', size=3):
+    se = np.zeros((size,size), dtype=np.uint8)
+    c  = size // 2
+    if shape == 'rect':
+        se[:] = 1
+    elif shape == 'cross':
+        se[c, :] = 1; se[:, c] = 1
+    elif shape == 'ellipse':
+        for y in range(size):
+            for x in range(size):
+                if ((y-c)/(c+0.5))**2 + ((x-c)/(c+0.5))**2 <= 1:
+                    se[y,x] = 1
+    return se
+
+def erode(img, se):
+    ks=se.shape[0]; pad=ks//2
+    p = np.pad(img.astype(float), pad, mode='constant')
+    return np.array([[p[y:y+ks,x:x+ks].min()
+                      for x in range(img.shape[1])]
+                     for y in range(img.shape[0])]).astype(np.uint8)
+
+def dilate(img, se):
+    ks=se.shape[0]; pad=ks//2
+    p = np.pad(img.astype(float), pad, mode='constant')
+    return np.array([[p[y:y+ks,x:x+ks].max()
+                      for x in range(img.shape[1])]
+                     for y in range(img.shape[0])]).astype(np.uint8)
+
+se3 = make_se('rect', 3)
+se5 = make_se('cross', 5)
+
+# ── Binary image: rectangle + noise + holes ────────────────────
+img = np.zeros((16,16), dtype=np.uint8)
+img[3:13, 3:13] = 255
+img[0,0] = img[1,14] = img[14,0] = 255  # noise
+img[6,6] = img[7,7] = img[8,8] = 0     # holes
+
+print("Original white pixels:", int((img==255).sum()))
+
+# Operations
+eroded   = erode(img, se3)
+dilated  = dilate(img, se3)
+opened   = dilate(erode(img, se3), se3)
+closed   = erode(dilate(img, se3), se3)
+gradient = np.clip(dilated.astype(int)-eroded.astype(int), 0,255).astype(np.uint8)
+top_hat  = np.clip(img.astype(int)-opened.astype(int), 0,255).astype(np.uint8)
+black_hat= np.clip(closed.astype(int)-img.astype(int), 0,255).astype(np.uint8)
+
+print(f"Eroded   white pixels: {int((eroded==255).sum())}")
+print(f"Dilated  white pixels: {int((dilated==255).sum())}")
+print(f"Opened   white pixels: {int((opened==255).sum())}  (noise removed: {int((img==255).sum()) - int((opened==255).sum())} extra white)")
+print(f"Closed   white pixels: {int((closed==255).sum())}  (holes filled)")
+print(f"Gradient non-zero:     {int((gradient>0).sum())}  (edge pixels)")
+print(f"Top-Hat  non-zero:     {int((top_hat>0).sum())}   (bright details = noise)")
+print(f"Black-Hat non-zero:    {int((black_hat>0).sum())}  (dark details = holes)")
+</textarea>
+          </div>
+          <div class="playground-actions">
+            <button class="run-btn large" onclick="runPlayground()">▶ Run Code</button>
+            <button class="reset-btn" onclick="resetPlayground()">↺ Reset</button>
+            <span class="pg-note">Ctrl+Enter to run</span>
+          </div>
+          <div class="output-wrap" id="pg-output" style="display:none"><div class="output-label">Output</div><pre class="output-pre" id="pg-output-pre"></pre></div>
+        </div>
+      </section>
+
+      <!-- ═══ SEC 8: QUIZ ═══ -->
+      <section class="lesson-sec" id="sec-quiz">
+        <div class="sec-header">
+          <span class="sec-num">08</span>
+          <div><h2 class="sec-title">Quiz + Coding Challenge</h2>
+          <p class="sec-sub">Teori + praktik — selesaikan keduanya untuk lulus</p></div>
+        </div>
+        <div class="quiz-block-title">Part A · Multiple Choice</div>
+        <div id="quizContainer"></div>
+
+        <div class="quiz-block-title" style="margin-top:40px">Part B · Coding Challenge</div>
+
+        <div class="challenge-card" id="cq-1">
+          <div class="challenge-header"><span class="challenge-badge quiz-badge">📝 Coding Quiz 1 · Fix the bug</span><span class="challenge-title">Opening sequence is reversed — fix it</span></div>
+          <div class="challenge-desc">Kode ini menjalankan Closing alih-alih Opening karena urutan erode/dilate terbalik. Fix supaya fungsi <code>opening()</code> benar-benar menghapus noise putih kecil.</div>
+          <div class="challenge-editor">
+            <div class="editor-tabs"><span class="editor-tab active">buggy.py</span></div>
+            <div class="code-editor-wrap"><textarea class="code-editor" id="cq-1-editor" spellcheck="false">import numpy as np
+
+def erode(img, ks=3):
+    pad=ks//2; p=np.pad(img.astype(float),pad,mode='constant')
+    return np.array([[p[y:y+ks,x:x+ks].min()
+        for x in range(img.shape[1])] for y in range(img.shape[0])]).astype(np.uint8)
+
+def dilate(img, ks=3):
+    pad=ks//2; p=np.pad(img.astype(float),pad,mode='constant')
+    return np.array([[p[y:y+ks,x:x+ks].max()
+        for x in range(img.shape[1])] for y in range(img.shape[0])]).astype(np.uint8)
+
+# BUG: this is Closing (dilate→erode), not Opening (erode→dilate)
+def opening(img, ks=3):
+    return erode(dilate(img, ks), ks)   # FIX THIS LINE
+
+# Test
+img = np.zeros((10,10), dtype=np.uint8)
+img[2:8, 2:8] = 255   # main rectangle
+img[0,0] = 255        # noise pixel
+
+result = opening(img)
+print("Noise pixel after opening:", result[0,0])   # must be 0
+print("Main rect after opening:", result[4,4])     # must be 255
+print("Opening correct:", result[0,0]==0 and result[4,4]==255)</textarea></div>
+            <div class="editor-actions">
+              <button class="run-btn" onclick="runChallenge('cq-1-editor','cq-1-out','cq-1-check')">▶ Run &amp; Check</button>
+              <button class="reset-btn" onclick="resetCodingQuiz(1)">↺ Reset</button>
+            </div>
+          </div>
+          <div class="output-wrap" id="cq-1-out" style="display:none"><div class="output-label">Output</div><pre class="output-pre" id="cq-1-out-pre"></pre></div>
+          <div class="check-result" id="cq-1-check" style="display:none"></div>
+          <div class="expected-box"><span class="expected-label">Expected:</span><code>Noise pixel after opening: 0 &nbsp; Main rect after opening: 255 &nbsp; Opening correct: True</code></div>
+        </div>
+
+        <div class="challenge-card" id="cq-2">
+          <div class="challenge-header"><span class="challenge-badge quiz-badge">📝 Coding Quiz 2 · Fill in the blank</span><span class="challenge-title">Top-Hat to find bright spots on uneven background</span></div>
+          <div class="challenge-desc">Compute Top-Hat transform to extract small bright spots that are brighter than their local neighborhood (size defined by SE). Verify spots are found.</div>
+          <div class="challenge-editor">
+            <div class="editor-tabs"><span class="editor-tab active">solution.py</span></div>
+            <div class="code-editor-wrap"><textarea class="code-editor" id="cq-2-editor" spellcheck="false">import numpy as np
+
+def erode(img, ks=3):
+    pad=ks//2; p=np.pad(img.astype(float),pad,mode='constant')
+    return np.array([[p[y:y+ks,x:x+ks].min()
+        for x in range(img.shape[1])] for y in range(img.shape[0])]).astype(np.uint8)
+
+def dilate(img, ks=3):
+    pad=ks//2; p=np.pad(img.astype(float),pad,mode='constant')
+    return np.array([[p[y:y+ks,x:x+ks].max()
+        for x in range(img.shape[1])] for y in range(img.shape[0])]).astype(np.uint8)
+
+# Grayscale image: ramp background + 3 bright spots
+np.random.seed(0)
+img = np.zeros((16,16), dtype=np.uint8)
+# Uneven background gradient
+for y in range(16):
+    for x in range(16):
+        img[y,x] = int(y * 10)   # dark at top, bright at bottom
+
+# Add 3 small bright spots
+img[2,2]  = min(255, img[2,2]  + 120)
+img[2,13] = min(255, img[2,13] + 120)
+img[7,7]  = min(255, img[7,7]  + 120)
+
+# Opening = erode then dilate (removes bright peaks, keeps background)
+opened = ___(___(img, 5), 5)      # fill in: dilate(erode(...))
+
+# Top-Hat = original - opening
+top_hat = np.clip(img.astype(int) - ___.astype(int), 0, 255).astype(np.uint8)
+
+# Spots should have high top-hat value
+print("Top-hat at spot (2,2):", top_hat[2,2])
+print("Top-hat at spot (2,13):", top_hat[2,13])
+print("Top-hat at spot (7,7):", top_hat[7,7])
+# Background should have low top-hat value
+print("Top-hat at background (8,2):", top_hat[8,2])
+print("Spots found (>50):", (top_hat > 50).sum())</textarea></div>
+            <div class="editor-actions">
+              <button class="run-btn" onclick="runChallenge('cq-2-editor','cq-2-out','cq-2-check')">▶ Run &amp; Check</button>
+              <button class="reset-btn" onclick="resetCodingQuiz(2)">↺ Reset</button>
+            </div>
+          </div>
+          <div class="output-wrap" id="cq-2-out" style="display:none"><div class="output-label">Output</div><pre class="output-pre" id="cq-2-out-pre"></pre></div>
+          <div class="check-result" id="cq-2-check" style="display:none"></div>
+          <div class="expected-box"><span class="expected-label">Expected:</span><code>Top-hat at spots: &gt;50 each &nbsp; Background: ~0 &nbsp; Spots found: 3</code></div>
+        </div>
+
+        <div class="challenge-card" id="cq-3">
+          <div class="challenge-header"><span class="challenge-badge quiz-badge">📝 Coding Quiz 3 · Full pipeline</span><span class="challenge-title">Defect detection pipeline using morphological ops</span></div>
+          <div class="challenge-desc">Build a complete defect detection pipeline: opening to remove noise, closing to fill gaps, gradient to extract edges. Count objects that survive cleaning.</div>
+          <div class="challenge-editor">
+            <div class="editor-tabs"><span class="editor-tab active">solution.py</span></div>
+            <div class="code-editor-wrap"><textarea class="code-editor" id="cq-3-editor" spellcheck="false">import numpy as np
+
+def erode(img, ks=3):
+    pad=ks//2; p=np.pad(img.astype(float),pad,mode='constant')
+    return np.array([[p[y:y+ks,x:x+ks].min()
+        for x in range(img.shape[1])] for y in range(img.shape[0])]).astype(np.uint8)
+
+def dilate(img, ks=3):
+    pad=ks//2; p=np.pad(img.astype(float),pad,mode='constant')
+    return np.array([[p[y:y+ks,x:x+ks].max()
+        for x in range(img.shape[1])] for y in range(img.shape[0])]).astype(np.uint8)
+
+np.random.seed(42)
+# Inspection image: 2 real objects + noise
+img = np.zeros((20,20), dtype=np.uint8)
+img[2:7,  2:7]  = 255  # object 1 (5×5)
+img[13:18, 13:18] = 255  # object 2 (5×5)
+img[0, 0] = img[1,18] = img[18,1] = 255  # 3 noise pixels
+img[4,4] = img[14,14] = 0  # holes in objects
+
+print(f"White pixels before: {int((img==255).sum())}")
+
+# Step 1: Opening (remove noise) — SE size 3
+cleaned = ___(___( img, 3), 3)   # erode then dilate
+print(f"White pixels after opening: {int((cleaned==255).sum())}")
+print(f"Noise at (0,0) removed: {cleaned[0,0]==0}")
+
+# Step 2: Closing (fill holes) — SE size 3
+filled = ___(___(cleaned, 3), 3)  # dilate then erode
+print(f"Hole at (4,4) filled: {filled[4,4]==255}")
+print(f"Hole at (14,14) filled: {filled[14,14]==255}")
+
+# Step 3: Morphological gradient (get edges)
+eroded  = erode(filled, 3)
+dilated = dilate(filled, 3)
+gradient = np.clip(dilated.astype(int) - ___.astype(int), 0, 255).astype(np.uint8)
+print(f"Edge pixels: {int((gradient>0).sum())}")
+
+# Interior pixels should not be edges
+print(f"Interior pixel (4,4) is edge: {gradient[4,4]>0}")  # False</textarea></div>
+            <div class="editor-actions">
+              <button class="run-btn" onclick="runChallenge('cq-3-editor','cq-3-out','cq-3-check')">▶ Run &amp; Check</button>
+              <button class="reset-btn" onclick="resetCodingQuiz(3)">↺ Reset</button>
+            </div>
+          </div>
+          <div class="output-wrap" id="cq-3-out" style="display:none"><div class="output-label">Output</div><pre class="output-pre" id="cq-3-out-pre"></pre></div>
+          <div class="check-result" id="cq-3-check" style="display:none"></div>
+          <div class="expected-box"><span class="expected-label">Expected:</span><code>Noise removed: True &nbsp; Holes filled: True &nbsp; Interior pixel is edge: False</code></div>
+        </div>
+
+        <div class="final-score-card" id="finalScore" style="display:none">
+          <div class="fs-title">Lesson Complete! 🎉</div>
+          <div class="fs-scores" id="fsScores"></div>
+          <div class="fs-msg" id="fsMsg"></div>
+        </div>
+        <div class="next-lesson-cta" id="nextLesson" style="display:none">
+          <div class="nlc-inner">
+            <span class="nlc-label">Module 1 Complete!</span>
+            <h3 class="nlc-title">Module 2: Feature Detection →</h3>
+            <p class="nlc-desc">Edges, corners, keypoints, descriptors — Harris, SIFT, ORB.</p>
+            <a href="/pages/ai-lab/computer-vision.html" class="nlc-btn">← Back to Computer Vision</a>
+          </div>
+        </div>
+      </section>
+
+      <div class="lesson-pagination">
+        <a href="filtering-kernels.html" class="lpag-btn prev">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 8H3M7 4L3 8l4 4"/></svg>
+          Filtering &amp; Kernels
+        </a>
+        <span class="lpag-label">Module 1 · 4 of 4</span>
+        <a href="/pages/ai-lab/computer-vision.html" class="lpag-btn next">
+          Computer Vision Hub
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+        </a>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div id="footer-placeholder"></div>
+<script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
+<script src="/js/shared.js"></script>
+<script src="/js/lang.js"></script>
+<script src="/js/morphological-transforms.js"></script>
+</body>
+</html>

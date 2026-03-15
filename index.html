@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Marchel Andrian Shevchenko — AI Builder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/shared.css">
+<link rel="stylesheet" href="/css/index.css">
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-follower" id="cursor-follower"></div>
+<canvas id="particle-canvas"></canvas>
+
+<!-- ═══════════════ NAV ═══════════════ -->
+<div id="nav-placeholder"></div>
+
+<!-- ═══════════════ HERO ═══════════════ -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-chip"><span class="chip-dot"></span>Available for Collaboration</div>
+  <h1 class="hero-name">
+    <span class="hero-name-line1">Marchel</span>
+    <span class="hero-name-line2">Shevchenko</span>
+  </h1>
+  <p class="hero-role">AI Builder · <em>Multimodal Systems</em> · Foundation Models · Cultural AI</p>
+  <p class="hero-desc">Developing multimodal AI for Indonesian local languages — from <strong style="color:#fff;">ARUNA 7B</strong> and <strong style="color:#fff;">DIALEKTA 2B</strong> to <strong style="color:#fff;">IndoLLNet</strong> and the <strong style="color:#fff;">Arutala</strong> ecosystem. Bridging 700+ languages, ancient scripts, and modern intelligence.</p>
+  <div class="hero-btns">
+    <a href="/projects/" class="btn-blue">Explore Projects →</a>
+    <a href="/contact/" class="btn-ghost">Get in Touch</a>
+    <a href="/ai-lab/" class="btn-ai">Learn AI Now ✦</a>
+  </div>
+  <div class="scroll-hint"><div class="scroll-line"></div>Scroll</div>
+</section>
+
+<!-- ═══════════════ STATS ═══════════════ -->
+<div class="stats-section">
+  <div class="stats-track" id="statsTrack">
+    <div class="stat-block"><div class="stat-num">20+</div><div class="stat-lbl">AI Projects Built</div></div>
+    <div class="stat-block"><div class="stat-num">600K+</div><div class="stat-lbl">Arutala Aksara Users</div></div>
+    <div class="stat-block"><div class="stat-num">50+</div><div class="stat-lbl">Talks & Seminars</div></div>
+    <div class="stat-block"><div class="stat-num">$362K+</div><div class="stat-lbl">NVIDIA Grants</div></div>
+    <div class="stat-block"><div class="stat-num">10</div><div class="stat-lbl">AI Divisions</div></div>
+    <div class="stat-block"><div class="stat-num">7B</div><div class="stat-lbl">ARUNA Parameters</div></div>
+    <div class="stat-block"><div class="stat-num">MIT</div><div class="stat-lbl">Pre-PhD Research</div></div>
+    <div class="stat-block"><div class="stat-num">3</div><div class="stat-lbl">Degrees Earned</div></div>
+    <div class="stat-block"><div class="stat-num">21</div><div class="stat-lbl">Dialekta Personas</div></div>
+    <div class="stat-block"><div class="stat-num">700+</div><div class="stat-lbl">Local Languages</div></div>
+    <div class="stat-block"><div class="stat-num">20+</div><div class="stat-lbl">AI Projects Built</div></div>
+    <div class="stat-block"><div class="stat-num">600K+</div><div class="stat-lbl">Arutala Aksara Users</div></div>
+    <div class="stat-block"><div class="stat-num">50+</div><div class="stat-lbl">Talks & Seminars</div></div>
+    <div class="stat-block"><div class="stat-num">$362K+</div><div class="stat-lbl">NVIDIA Grants</div></div>
+    <div class="stat-block"><div class="stat-num">10</div><div class="stat-lbl">AI Divisions</div></div>
+    <div class="stat-block"><div class="stat-num">7B</div><div class="stat-lbl">ARUNA Parameters</div></div>
+    <div class="stat-block"><div class="stat-num">MIT</div><div class="stat-lbl">Pre-PhD Research</div></div>
+    <div class="stat-block"><div class="stat-num">3</div><div class="stat-lbl">Degrees Earned</div></div>
+    <div class="stat-block"><div class="stat-num">21</div><div class="stat-lbl">Dialekta Personas</div></div>
+    <div class="stat-block"><div class="stat-num">700+</div><div class="stat-lbl">Local Languages</div></div>
+  </div>
+</div>
+
+<!-- ═══════════════ ABOUT BENTO ═══════════════ -->
+<section class="section">
+  <div class="section-max">
+    <p class="s-label reveal">About</p>
+    <h2 class="s-title reveal">AI at the intersection of<br><span class="grad-text">culture & intelligence</span></h2>
+    <p class="s-sub reveal">Building the AI infrastructure for 700+ Indonesian local languages — one model at a time.</p>
+    <div class="bento">
+      <div class="bc c8 r2 glass-card glass-blue reveal">
+        <span class="bc-tag">Mission</span>
+        <div class="bc-icon">🧠</div>
+        <div class="bc-title">Building AI for Low-Resource Languages</div>
+        <div class="bc-desc" style="font-size:15px;line-height:1.8;max-width:480px;">
+          Chen focuses on foundation models and multimodal AI systems tailored for Indonesian local languages — including the Nusantara script family. Projects span from optical character recognition of ancient scripts to large language models fluent in regional dialects. Every line of code pushes toward preserving cultural intelligence in the age of AI.
+        </div>
+        <div style="margin-top:28px;display:flex;gap:8px;flex-wrap:wrap;">
+          <span style="font-size:12px;color:var(--text2);background:rgba(255,255,255,.05);border:1px solid var(--card-border);padding:6px 14px;border-radius:980px;">NLP</span>
+          <span style="font-size:12px;color:var(--text2);background:rgba(255,255,255,.05);border:1px solid var(--card-border);padding:6px 14px;border-radius:980px;">Computer Vision</span>
+          <span style="font-size:12px;color:var(--text2);background:rgba(255,255,255,.05);border:1px solid var(--card-border);padding:6px 14px;border-radius:980px;">Multimodal AI</span>
+          <span style="font-size:12px;color:var(--text2);background:rgba(255,255,255,.05);border:1px solid var(--card-border);padding:6px 14px;border-radius:980px;">Foundation Models</span>
+          <span style="font-size:12px;color:var(--text2);background:rgba(255,255,255,.05);border:1px solid var(--card-border);padding:6px 14px;border-radius:980px;">Cultural AI</span>
+        </div>
+      </div>
+      <div class="bc c4 glass-card reveal reveal-delay-1">
+        <span class="bc-tag">Location</span>
+        <div class="bc-icon">🇮🇩</div>
+        <div class="bc-title">Yogyakarta, Indonesia</div>
+        <div class="bc-desc">Based in the cultural capital of Java. Building AI for the archipelago and the world.</div>
+      </div>
+      <div class="bc c4 glass-card reveal reveal-delay-2">
+        <span class="bc-tag">Academic</span>
+        <div class="bc-icon">🎓</div>
+        <div class="bc-title">MIT Pre-PhD</div>
+        <div class="bc-desc">Computational Science & Engineering. Research: Computer Vision & Computational Optimization.</div>
+      </div>
+      <div class="bc c3 glass-card reveal">
+        <span class="bc-tag">Company</span>
+        <div class="bc-num">DS</div>
+        <div class="bc-title">Data Sorcerers</div>
+        <div class="bc-desc">Founder & CEO. 10 AI divisions. 20+ projects.</div>
+      </div>
+      <div class="bc c3 glass-card reveal reveal-delay-1">
+        <span class="bc-tag">Grant</span>
+        <div class="bc-num" style="font-size:42px;">$250K</div>
+        <div class="bc-title">NVIDIA Inception</div>
+        <div class="bc-desc">AI Development Grant 2025.</div>
+      </div>
+      <div class="bc c3 glass-card reveal reveal-delay-2">
+        <span class="bc-tag">Community</span>
+        <div class="bc-icon">🌐</div>
+        <div class="bc-title">AI Community Lead</div>
+        <div class="bc-desc">Coding Collective, Singapore. Empowering AI practitioners across Indonesia.</div>
+      </div>
+      <div class="bc c3 glass-card reveal reveal-delay-3">
+        <span class="bc-tag">Research</span>
+        <div class="bc-icon">⚗️</div>
+        <div class="bc-title">SABDA Algorithm</div>
+        <div class="bc-desc">Core technology for Nusantara script intelligence systems.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ EXPERIENCE PREVIEW ═══════════════ -->
+<section class="section" style="padding-top:0;">
+  <div class="section-max">
+    <p class="s-label reveal">Experience</p>
+    <h2 class="s-title reveal">Where I've <span class="grad-text">built & led</span></h2>
+    <p class="s-sub reveal">From NVIDIA-funded research to leading AI at X Corp and building my own company.</p>
+    <div class="exp-grid">
+      <!-- MIT -->
+      <div class="exp-card glass-card reveal">
+        <div class="exp-logo" style="background:rgba(163,31,52,0.15);border:1px solid rgba(163,31,52,0.3);">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/MIT_logo.svg/800px-MIT_logo.svg.png" alt="MIT" style="width:70%;object-fit:contain;filter:brightness(1.2);">
+        </div>
+        <div class="exp-period">2025 — Present</div>
+        <div class="exp-role">Pre-PhD Researcher</div>
+        <div class="exp-company">Massachusetts Institute of Technology · Boston, USA</div>
+        <ul class="exp-points">
+          <li>Computational Science & Engineering</li>
+          <li>Research: Computer Vision & Optimization</li>
+          <li>4th Place MIT REAP 2025</li>
+        </ul>
+      </div>
+      <!-- Kalbe -->
+      <div class="exp-card glass-card reveal reveal-delay-1">
+        <div class="exp-logo" style="background:rgba(0,100,200,0.12);border:1px solid rgba(0,100,200,0.25);">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Kalbe_Farma_logo.svg/1200px-Kalbe_Farma_logo.svg.png" alt="Kalbe" style="width:80%;object-fit:contain;" onerror="this.parentElement.innerHTML='💊'">
+        </div>
+        <div class="exp-period">Jun 2024 — Jun 2025</div>
+        <div class="exp-role">AI Engineer — Manufacturing</div>
+        <div class="exp-company">PT. Kalbe Farma, Tbk. · Jakarta, Indonesia</div>
+        <ul class="exp-points">
+          <li>Automated defect detection in aluminium packaging with CV</li>
+          <li>LightFM health recommendation system (National DS Tournament)</li>
+          <li>CFD + ML energy optimization for spray dryer machines</li>
+        </ul>
+      </div>
+      <!-- X Corp -->
+      <div class="exp-card glass-card reveal reveal-delay-2">
+        <div class="exp-logo" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/5/5a/X_icon_2.svg" alt="X" style="width:50%;object-fit:contain;filter:invert(1);">
+        </div>
+        <div class="exp-period">Jul 2023 — Dec 2024</div>
+        <div class="exp-role">Machine Learning Engineer</div>
+        <div class="exp-company">X Corp (Twitter) · San Francisco, USA</div>
+        <ul class="exp-points">
+          <li>Collaborated with 10+ third-party institutions</li>
+          <li>Integrated innovative ML solutions across the platform</li>
+          <li>Expanded X's AI innovation ecosystem</li>
+        </ul>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:32px;" class="reveal">
+      <a href="/experience/" class="btn-ghost">View Full Experience →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ PROJECTS PREVIEW ═══════════════ -->
+<section class="section" style="padding-top:0;">
+  <div class="section-max">
+    <p class="s-label reveal">Projects</p>
+    <h2 class="s-title reveal">Selected <span class="grad-text">work</span></h2>
+    <p class="s-sub reveal">Foundation models, multimodal systems, and cultural AI applications built for real-world impact.</p>
+    <div class="proj-grid">
+      <!-- Arutala -->
+      <div class="proj-card glass-card reveal">
+        <div class="proj-img">
+          <div class="proj-img-bg"></div>
+          <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=600&q=80" alt="AI" style="width:100%;height:100%;object-fit:cover;opacity:0.35;position:absolute;inset:0;">
+          <div class="proj-img-inner" style="position:relative;z-index:1;">🌐</div>
+        </div>
+        <div class="proj-body">
+          <div class="proj-tags"><span class="proj-tag">LLM</span><span class="proj-tag">VLM</span><span class="proj-tag">NLP</span></div>
+          <div class="proj-title">Arutala v2.2</div>
+          <div class="proj-desc">Indonesian Local Language Learning Environment — an LLM and VLM multimodal AI ecosystem for 700+ Nusantara languages with 21 dialect personas.</div>
+        </div>
+      </div>
+      <!-- IndoLLNet -->
+      <div class="proj-card glass-card reveal reveal-delay-1">
+        <div class="proj-img">
+          <div class="proj-img-bg"></div>
+          <img src="https://images.unsplash.com/photo-1655720828018-edd2daec9349?w=600&q=80" alt="OCR" style="width:100%;height:100%;object-fit:cover;opacity:0.3;position:absolute;inset:0;">
+          <div class="proj-img-inner" style="position:relative;z-index:1;">📜</div>
+        </div>
+        <div class="proj-body">
+          <div class="proj-tags"><span class="proj-tag">CNN</span><span class="proj-tag">OCR</span><span class="proj-tag">CV</span></div>
+          <div class="proj-title">IndoLLNet v2.1</div>
+          <div class="proj-desc">Novel CNN for Indonesian indigenous Nusantara script recognition. Handwritten character recognition for ancient scripts — 600K+ users via Arutala Aksara.</div>
+        </div>
+      </div>
+      <!-- ARUNA -->
+      <div class="proj-card glass-card reveal reveal-delay-2">
+        <div class="proj-img">
+          <div class="proj-img-bg"></div>
+          <img src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=600&q=80" alt="Foundation Model" style="width:100%;height:100%;object-fit:cover;opacity:0.3;position:absolute;inset:0;">
+          <div class="proj-img-inner" style="position:relative;z-index:1;">🤖</div>
+        </div>
+        <div class="proj-body">
+          <div class="proj-tags"><span class="proj-tag">Foundation Model</span><span class="proj-tag">7B</span></div>
+          <div class="proj-title">ARUNA 7B & DIALEKTA 2B</div>
+          <div class="proj-desc">Foundation language models for Indonesian local languages and dialects. ARUNA at 7B parameters, DIALEKTA at 2B — purpose-built for low-resource languages.</div>
+        </div>
+      </div>
+      <!-- MANDALA -->
+      <div class="proj-card glass-card reveal">
+        <div class="proj-img" style="background:linear-gradient(135deg,#0a1a0a 0%,#003a10 100%);">
+          <div class="proj-img-bg" style="background:radial-gradient(circle at 50% 60%,rgba(0,200,80,.2) 0%,transparent 70%);"></div>
+          <img src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=600&q=80" alt="Railway" style="width:100%;height:100%;object-fit:cover;opacity:0.25;position:absolute;inset:0;">
+          <div class="proj-img-inner" style="position:relative;z-index:1;">🚆</div>
+        </div>
+        <div class="proj-body">
+          <div class="proj-tags"><span class="proj-tag">IoT</span><span class="proj-tag">Safety</span><span class="proj-tag">CV</span></div>
+          <div class="proj-title">MANDALA</div>
+          <div class="proj-desc">Monitoring Safety and Railway Navigation system. Presented to PT. KAI (Indonesian Railway Company) 2025 for national infrastructure safety.</div>
+        </div>
+      </div>
+      <!-- SABDARANA -->
+      <div class="proj-card glass-card reveal reveal-delay-1">
+        <div class="proj-img" style="background:linear-gradient(135deg,#0a0a1a 0%,#1a003a 100%);">
+          <div class="proj-img-bg" style="background:radial-gradient(circle at 50% 60%,rgba(120,0,255,.2) 0%,transparent 70%);"></div>
+          <div class="proj-img-inner" style="position:relative;z-index:1;">⛓️</div>
+        </div>
+        <div class="proj-body">
+          <div class="proj-tags"><span class="proj-tag">Web3</span><span class="proj-tag">NFT</span><span class="proj-tag">Blockchain</span></div>
+          <div class="proj-title">SABDARANA</div>
+          <div class="proj-desc">Web3 & NFT-based Cultural Learn-to-Earn application. Preserving Nusantara heritage through blockchain incentives. Presented at Garuda Hacks 2025.</div>
+        </div>
+      </div>
+      <!-- KERTI KAWISTA -->
+      <div class="proj-card glass-card reveal reveal-delay-2">
+        <div class="proj-img" style="background:linear-gradient(135deg,#1a0a00 0%,#3a1400 100%);">
+          <div class="proj-img-bg" style="background:radial-gradient(circle at 50% 60%,rgba(255,140,0,.2) 0%,transparent 70%);"></div>
+          <img src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=600&q=80" alt="Construction" style="width:100%;height:100%;object-fit:cover;opacity:0.25;position:absolute;inset:0;">
+          <div class="proj-img-inner" style="position:relative;z-index:1;">🏗️</div>
+        </div>
+        <div class="proj-body">
+          <div class="proj-tags"><span class="proj-tag">Face Recognition</span><span class="proj-tag">Safety</span></div>
+          <div class="proj-title">KERTI KAWISTA</div>
+          <div class="proj-desc">Construction site presence app with facial recognition attendance, safety gear validation, and real-time CCTV monitoring. Presented at Garuda Hacks 2023.</div>
+        </div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:32px;" class="reveal">
+      <a href="/projects/" class="btn-blue">View All Projects →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ SKILLS PREVIEW ═══════════════ -->
+<section class="section" style="padding-top:0;">
+  <div class="section-max">
+    <p class="s-label reveal">Skills</p>
+    <h2 class="s-title reveal">Tools of <span class="grad-text">intelligence</span></h2>
+    <p class="s-sub reveal">A deep stack spanning AI research, engineering, and deployment.</p>
+    <div class="skills-preview-grid">
+      <div class="skill-pill glass-card reveal"><div class="skill-icon">🐍</div><div><div class="skill-name">Python</div><div class="skill-sub">Primary Language</div></div></div>
+      <div class="skill-pill glass-card reveal reveal-delay-1"><div class="skill-icon">🔥</div><div><div class="skill-name">PyTorch</div><div class="skill-sub">Deep Learning</div></div></div>
+      <div class="skill-pill glass-card reveal reveal-delay-2"><div class="skill-icon">🧠</div><div><div class="skill-name">Computer Vision</div><div class="skill-sub">CNN, OCR, Detection</div></div></div>
+      <div class="skill-pill glass-card reveal reveal-delay-3"><div class="skill-icon">💬</div><div><div class="skill-name">NLP / LLM</div><div class="skill-sub">Transformers, RAG</div></div></div>
+      <div class="skill-pill glass-card reveal"><div class="skill-icon">🌊</div><div><div class="skill-name">CFD / OpenFOAM</div><div class="skill-sub">Fluid Dynamics</div></div></div>
+      <div class="skill-pill glass-card reveal reveal-delay-1"><div class="skill-icon">☁️</div><div><div class="skill-name">GCP / Docker</div><div class="skill-sub">MLOps & Cloud</div></div></div>
+      <div class="skill-pill glass-card reveal reveal-delay-2"><div class="skill-icon">🧬</div><div><div class="skill-name">Bioinformatics</div><div class="skill-sub">Nextflow, Seqera</div></div></div>
+      <div class="skill-pill glass-card reveal reveal-delay-3"><div class="skill-icon">🔐</div><div><div class="skill-name">Cybersecurity</div><div class="skill-sub">DDoS, Malware Analysis</div></div></div>
+    </div>
+    <div style="text-align:center;margin-top:32px;" class="reveal">
+      <a href="/skills/" class="btn-ghost">View Full Skills →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ EDUCATION PREVIEW ═══════════════ -->
+<section class="section" style="padding-top:0;">
+  <div class="section-max">
+    <p class="s-label reveal">Education</p>
+    <h2 class="s-title reveal">Academic <span class="grad-text">journey</span></h2>
+    <p class="s-sub reveal">Three degrees across three countries — Computer Science, Economics, and AI research.</p>
+    <div class="edu-grid">
+      <div class="edu-card glass-card reveal">
+        <div class="edu-logo-row">
+          <div class="edu-logo">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/MIT_logo.svg/800px-MIT_logo.svg.png" alt="MIT" style="filter:brightness(1.3);">
+          </div>
+          <div>
+            <div class="edu-school">Massachusetts Institute of Technology</div>
+            <div class="edu-location">Boston, United States of America</div>
+          </div>
+        </div>
+        <div class="edu-year">2025 — Present</div>
+        <div class="edu-degree">Pre-Doctor of Philosophy — Computational Science & Engineering</div>
+        <div class="edu-detail">Research Area: Computer Vision, Computational Optimization. Part of the MIT Regional Entrepreneurship Acceleration Programme (4th Place 2025).</div>
+      </div>
+      <div class="edu-card glass-card reveal reveal-delay-1">
+        <div class="edu-logo-row">
+          <div class="edu-logo" style="background:#003b7a;">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/UTY_Logo.png/1200px-UTY_Logo.png" alt="UTY" onerror="this.parentElement.innerHTML='🏛️'" style="width:80%;object-fit:contain;">
+          </div>
+          <div>
+            <div class="edu-school">University of Technology Yogyakarta</div>
+            <div class="edu-location">Yogyakarta, Indonesia</div>
+          </div>
+        </div>
+        <div class="edu-year">Graduated January 2025</div>
+        <div class="edu-degree">Bachelor of Computer Science (S.Kom)</div>
+        <div class="edu-detail">Major: Informatics. Minor: Artificial Intelligence & Smart Systems. Also served as Teaching Assistant for ML, Big Data, and Database courses.</div>
+      </div>
+      <div class="edu-card glass-card reveal">
+        <div class="edu-logo-row">
+          <div class="edu-logo" style="background:#003478;">
+            <img src="https://upload.wikimedia.org/wikipedia/en/thumb/0/06/UniKL-logo.jpg/800px-UniKL-logo.jpg" alt="UniKL" onerror="this.parentElement.innerHTML='🎓'" style="width:80%;object-fit:contain;">
+          </div>
+          <div>
+            <div class="edu-school">University of Kuala Lumpur</div>
+            <div class="edu-location">Kuala Lumpur, Malaysia</div>
+          </div>
+        </div>
+        <div class="edu-year">Graduated October 2023</div>
+        <div class="edu-degree">Bachelor of Science (Hons) — Analytical Economics</div>
+        <div class="edu-detail">Electives: Public Finance. Bridging AI and economic analysis for policy formulation.</div>
+      </div>
+      <div class="edu-card glass-card reveal reveal-delay-1">
+        <div class="edu-logo-row">
+          <div class="edu-logo" style="background:#003DA5;">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/University_of_Zagreb_logo.svg/1200px-University_of_Zagreb_logo.svg.png" alt="Zagreb" onerror="this.parentElement.innerHTML='🇭🇷'" style="width:80%;object-fit:contain;filter:brightness(1.5);">
+          </div>
+          <div>
+            <div class="edu-school">University of Zagreb</div>
+            <div class="edu-location">Zagreb, Croatia</div>
+          </div>
+        </div>
+        <div class="edu-year">July 2022</div>
+        <div class="edu-degree">ERASMUS+ ICM KA 107 Exchange</div>
+        <div class="edu-detail">Major: Computer Science. Minor: Artificial Intelligence. Acceptance rate 1:250 (0.4%). Finalist at AI Battleground Croatia 2022 during tenure.</div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:32px;" class="reveal">
+      <a href="/education/" class="btn-ghost">View Full Education →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ ACHIEVEMENTS PREVIEW ═══════════════ -->
+<section class="section" style="padding-top:0;">
+  <div class="section-max">
+    <p class="s-label reveal">Achievements</p>
+    <h2 class="s-title reveal">Recognition & <span class="grad-text">awards</span></h2>
+    <p class="s-sub reveal">A decade of winning, building, and being recognized across Asia and beyond.</p>
+    <div class="ach-list">
+      <div class="ach-item glass-card reveal"><div class="ach-year">2025</div><div class="ach-icon">🏅</div><div class="ach-text">Nominee of The Rising Changemaker Awards by DPP PKB (National Awakening Party)</div><div class="ach-badge">National</div></div>
+      <div class="ach-item glass-card reveal reveal-delay-1"><div class="ach-year">2025</div><div class="ach-icon">🚀</div><div class="ach-text">Finalist — Bandung Startup Pitching Day 2025 by Startup Bandung & School of Business Management ITB</div><div class="ach-badge">Startup</div></div>
+      <div class="ach-item glass-card reveal reveal-delay-2"><div class="ach-year">2025</div><div class="ach-icon">🌏</div><div class="ach-text">Top 10 — Startup Pitching Day Singapore 2025 by Circle 8</div><div class="ach-badge">International</div></div>
+      <div class="ach-item glass-card reveal"><div class="ach-year">2025</div><div class="ach-icon">🎓</div><div class="ach-text">4th Place — MIT Regional Entrepreneurship Acceleration Programme (REAP) 2025</div><div class="ach-badge">MIT</div></div>
+      <div class="ach-item glass-card reveal reveal-delay-1"><div class="ach-year">2025</div><div class="ach-icon">💚</div><div class="ach-text">NVIDIA Deep Learning Grant USD $112K+ (IDR 1.8B) for Certifications Program 2025–2027</div><div class="ach-badge">NVIDIA</div></div>
+      <div class="ach-item glass-card reveal reveal-delay-2"><div class="ach-year">2025</div><div class="ach-icon">💰</div><div class="ach-text">Awardee NVIDIA Inception Program with USD $250K+ Grant for AI Development 2025</div><div class="ach-badge">NVIDIA</div></div>
+      <div class="ach-item glass-card reveal"><div class="ach-year">2023</div><div class="ach-icon">🏆</div><div class="ach-text">Winner — 3M Presentation at 8th International Conference on Pharmacy & Advanced Pharmaceutical Sciences</div><div class="ach-badge">International</div></div>
+      <div class="ach-item glass-card reveal reveal-delay-1"><div class="ach-year">2023</div><div class="ach-icon">🥈</div><div class="ach-text">2nd Place — Upstream: Pharmaceutical & Biotechnology, Biofarma × MIT Hacking Medicine 2023</div><div class="ach-badge">MIT</div></div>
+    </div>
+    <div style="text-align:center;margin-top:32px;" class="reveal">
+      <a href="/achievements/" class="btn-ghost">View All Achievements →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ TALKS MARQUEE PREVIEW ═══════════════ -->
+<section class="section" style="padding-top:0;">
+  <div class="section-max" style="padding-bottom:0;">
+    <p class="s-label reveal">Talks & Seminars</p>
+    <h2 class="s-title reveal">Invited to <span class="grad-text">speak</span></h2>
+    <p class="s-sub reveal">50+ talks spanning AI, cybersecurity, Web3, bioinformatics, and cultural technology across Indonesia and beyond.</p>
+  </div>
+  <div class="talks-marquee-wrap reveal" style="margin-top:0;">
+    <div class="talks-track" id="talksTrack">
+      <div class="talk-chip glass-card"><div class="talk-chip-title">Behind The Scene of Multimodal Large Language Model (MLLM)</div><div class="talk-chip-org">University of Darma Persada · Jakarta</div></div>
+      <div class="talk-chip glass-card"><div class="talk-chip-title">AI Security: Weaponized Intelligence for Red & Blue Team Engineering</div><div class="talk-chip-org">Ministry of Communication · Cyberkarta</div></div>
+      <div class="talk-chip glass-card"><div class="talk-chip-title">The Rise of AI Gladiators: Deep Dive into AI Battleground</div><div class="talk-chip-org">SEMNASTI 2025 · UDINUS Semarang</div></div>
+      <div class="talk-chip glass-card"><div class="talk-chip-title">Post-Human Code: When Machines Learning to Become God</div><div class="talk-chip-org">Jogja Developer Community · JogjaDevday.id</div></div>
+      <div class="talk-chip glass-card"><div class="talk-chip-title">Web4: When AI meets Blockchain</div><div class="talk-chip-org">AMIKOM Yogyakarta</div></div>
+      <div class="talk-chip glass-card"><div class="talk-chip-title">Young Leadership and Advocacy with AI</div><div class="talk-chip-org">UNDP Indonesia</div></div>
+      <div class="talk-chip glass-card"><div class="talk-chip-title">BioBlock — Blockchain for Secure Medical Data & AI Diagnostics</div><div class="talk-chip-org">Universitas Gadjah Mada · NETCOMP 3.0</div></div>
+      <div class="talk-chip glass-card"><div class="talk-chip-title">AI-Preneurship Blueprint: Building a Profitable Business in the AI Era</div><div class="talk-chip-org">AMIKOM Entrepreneurship Community</div></div>
+      <div class="talk-chip glass-card"><div class="talk-chip-title">Integrating Intelligence: AI Robotics and The Future</div><div class="talk-chip-org">VORTEX 2025 · State University of Yogyakarta</div></div>
+      <div class="talk-chip glass-card"><div class="talk-chip-title">Running an RNA-Seq pipeline with nf-core and Seqera</div><div class="talk-chip-org">Bioinformatics & Biodiversity Conference 2024 · Kalbe</div></div>
+      <div class="talk-chip glass-card"><div class="talk-chip-title">Behind The Scene of Multimodal Large Language Model (MLLM)</div><div class="talk-chip-org">University of Darma Persada · Jakarta</div></div>
+      <div class="talk-chip glass-card"><div class="talk-chip-title">AI Security: Weaponized Intelligence for Red & Blue Team Engineering</div><div class="talk-chip-org">Ministry of Communication · Cyberkarta</div></div>
+      <div class="talk-chip glass-card"><div class="talk-chip-title">The Rise of AI Gladiators: Deep Dive into AI Battleground</div><div class="talk-chip-org">SEMNASTI 2025 · UDINUS Semarang</div></div>
+      <div class="talk-chip glass-card"><div class="talk-chip-title">Post-Human Code: When Machines Learning to Become God</div><div class="talk-chip-org">Jogja Developer Community · JogjaDevday.id</div></div>
+      <div class="talk-chip glass-card"><div class="talk-chip-title">Web4: When AI meets Blockchain</div><div class="talk-chip-org">AMIKOM Yogyakarta</div></div>
+    </div>
+  </div>
+  <div style="text-align:center;margin-top:32px;position:relative;z-index:1;" class="reveal">
+    <a href="/talks/" class="btn-ghost">View All Talks →</a>
+  </div>
+</section>
+
+<!-- ═══════════════ CTA ═══════════════ -->
+<div class="cta-section reveal">
+  <div class="cta-glass">
+    <p class="s-label" style="text-align:center;">Let's Build Together</p>
+    <h2 style="font-family:var(--display);font-size:clamp(36px,5vw,60px);font-weight:800;letter-spacing:-2.5px;margin-bottom:20px;">Ready to collaborate?</h2>
+    <p style="color:var(--text2);font-size:17px;line-height:1.7;margin-bottom:40px;max-width:500px;margin-left:auto;margin-right:auto;">Whether it's AI research, product collaboration, or an invitation to speak — I'd love to connect.</p>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+      <a href="/contact/" class="btn-blue">Get in Touch →</a>
+      <a href="/projects/" class="btn-ghost">Browse Projects</a>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ FOOTER ═══════════════ -->
+<div id="footer-placeholder"></div>
+
+<!-- ═══════════════ MINI CHATBOT ═══════════════ -->
+<button class="chatbot-trigger" id="chatbotTrigger" title="Ask me anything about Chen">💬</button>
+<div class="chatbot-panel" id="chatbotPanel">
+  <div class="chatbot-header">
+    <div class="chatbot-avatar">🤖</div>
+    <div>
+      <div class="chatbot-title">Ask about Chen</div>
+      <div class="chatbot-subtitle">AI-powered · Answers instantly</div>
+    </div>
+  </div>
+  <div class="chatbot-msgs" id="chatbotMsgs">
+    <div class="msg bot">Hi! I'm Chen's AI assistant. Ask me anything about his work, projects, experience, or how to collaborate 👋</div>
+  </div>
+  <div class="chatbot-quick" id="chatbotQuick">
+    <button class="quick-btn" onclick="sendQuick('What is Arutala?')">What is Arutala?</button>
+    <button class="quick-btn" onclick="sendQuick('Tell me about ARUNA 7B')">ARUNA 7B</button>
+    <button class="quick-btn" onclick="sendQuick('How to collaborate?')">Collaborate?</button>
+    <button class="quick-btn" onclick="sendQuick('What is Chen\'s background?')">Background</button>
+  </div>
+  <div class="chatbot-input-row">
+    <input class="chatbot-input" id="chatbotInput" placeholder="Ask anything about Chen…" type="text">
+    <button class="chatbot-send" id="chatbotSend">→</button>
+  </div>
+</div>
+
+<script src="/js/shared.js"></script>
+<script src="/js/index.js"></script>
+<script src="/js/lang.js"></script>
+</body>
+</html>

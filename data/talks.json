@@ -1,0 +1,136 @@
+[
+  {
+    "title": "Behind The Scene of Multimodal Large Language Model (MLLM)",
+    "org": "University of Darma Persada · Jakarta",
+    "year": "2025",
+    "tags": [
+      "AI",
+      "LLM"
+    ]
+  },
+  {
+    "title": "AI Security: Weaponized Intelligence for Red & Blue Team Engineering",
+    "org": "Ministry of Communication · Cyberkarta",
+    "year": "2025",
+    "tags": [
+      "Cybersecurity",
+      "AI"
+    ]
+  },
+  {
+    "title": "The Rise of AI Gladiators: Deep Dive into AI Battleground",
+    "org": "SEMNASTI 2025 · UDINUS Semarang",
+    "year": "2025",
+    "tags": [
+      "AI",
+      "Competition"
+    ]
+  },
+  {
+    "title": "Post-Human Code: When Machines Learning to Become God",
+    "org": "Jogja Developer Community · JogjaDevday.id",
+    "year": "2025",
+    "tags": [
+      "AI",
+      "Philosophy"
+    ]
+  },
+  {
+    "title": "Web4: When AI meets Blockchain",
+    "org": "AMIKOM Yogyakarta",
+    "year": "2025",
+    "tags": [
+      "Web3",
+      "AI"
+    ]
+  },
+  {
+    "title": "Young Leadership and Advocacy with AI",
+    "org": "UNDP Indonesia",
+    "year": "2025",
+    "tags": [
+      "Leadership",
+      "AI"
+    ]
+  },
+  {
+    "title": "BioBlock — Blockchain for Secure Medical Data & AI Diagnostics",
+    "org": "Universitas Gadjah Mada · NETCOMP 3.0",
+    "year": "2025",
+    "tags": [
+      "Blockchain",
+      "Healthcare"
+    ]
+  },
+  {
+    "title": "AI-Preneurship Blueprint: Building a Profitable Business in the AI Era",
+    "org": "AMIKOM Entrepreneurship Community",
+    "year": "2025",
+    "tags": [
+      "Entrepreneurship",
+      "AI"
+    ]
+  },
+  {
+    "title": "Integrating Intelligence: AI Robotics and The Future",
+    "org": "VORTEX 2025 · State University of Yogyakarta",
+    "year": "2025",
+    "tags": [
+      "Robotics",
+      "AI"
+    ]
+  },
+  {
+    "title": "Running an RNA-Seq pipeline with nf-core and Seqera",
+    "org": "Bioinformatics & Biodiversity Conference 2024 · Kalbe",
+    "year": "2024",
+    "tags": [
+      "Bioinformatics",
+      "Research"
+    ]
+  },
+  {
+    "title": "SABDA Algorithm: Cracking the Code of Nusantara Scripts",
+    "org": "ICOICT 2024 · International Conference",
+    "year": "2024",
+    "tags": [
+      "Research",
+      "NLP"
+    ]
+  },
+  {
+    "title": "Generative AI for Creative Industries",
+    "org": "Creative Economy Agency (Bekraf) Indonesia",
+    "year": "2024",
+    "tags": [
+      "GenAI",
+      "Creative"
+    ]
+  },
+  {
+    "title": "DDoS Attack Simulation and Mitigation Strategies",
+    "org": "Cybersecurity Summit · Yogyakarta",
+    "year": "2024",
+    "tags": [
+      "Cybersecurity"
+    ]
+  },
+  {
+    "title": "Foundation Models for Low-Resource Languages",
+    "org": "Southeast Asia NLP Workshop 2024",
+    "year": "2024",
+    "tags": [
+      "NLP",
+      "Research"
+    ]
+  },
+  {
+    "title": "Malware Analysis with ML: From Detection to Attribution",
+    "org": "BSSN (National Cyber Agency) Workshop",
+    "year": "2023",
+    "tags": [
+      "Cybersecurity",
+      "ML"
+    ]
+  }
+]

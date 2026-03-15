@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aktivasi ReLU — Deep Learning for Vision | AI Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/shared.css">
+<link rel="stylesheet" href="/css/cnn-intro.css">
+<link rel="stylesheet" href="/css/cnn-why.css">
+<link rel="stylesheet" href="/css/cnn-relu.css">
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-follower" id="cursor-follower"></div>
+<div id="nav-placeholder"></div>
+<div class="read-progress"><div id="readBar"></div></div>
+
+<div class="lesson-layout">
+
+  <!-- ═══ SIDEBAR ═══ -->
+  <aside class="lesson-sidebar" id="lessonSidebar">
+    <div class="sb-top">
+      <a href="/pages/ai-lab/computer-vision.html" class="sb-back">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 3L5 8l5 5"/></svg>
+        Computer Vision
+      </a>
+      <div class="sb-studying">
+        <div class="sb-studying-label">Sedang belajar</div>
+        <div class="sb-studying-path">
+          <span class="sbp-item">AI Lab</span>
+          <span class="sbp-sep">›</span>
+          <span class="sbp-item">Computer Vision</span>
+          <span class="sbp-sep">›</span>
+          <span class="sbp-item active">Deep Learning for Vision</span>
+        </div>
+      </div>
+      <div class="sb-chapter">Module 3 · Deep Learning for Vision</div>
+      <div class="sb-lesson-title">Aktivasi ReLU</div>
+      <div class="sb-tags">
+        <span class="sb-tag">Fungsi Aktivasi</span>
+        <span class="sb-tag interactive">🧮 Math</span>
+      </div>
+    </div>
+
+    <nav class="lesson-nav">
+      <div class="nav-section-label">Dalam lesson ini</div>
+      <a href="#sec-apa" class="lnav-item active" data-sec="sec-apa">
+        <span class="lnav-dot"></span><span class="lnav-text">Apa itu ReLU?</span><span class="lnav-num">01</span>
+      </a>
+      <a href="#sec-kenapa" class="lnav-item" data-sec="sec-kenapa">
+        <span class="lnav-dot"></span><span class="lnav-text">Mengapa Bukan Sigmoid?</span><span class="lnav-num">02</span>
+      </a>
+      <a href="#sec-vanishing" class="lnav-item" data-sec="sec-vanishing">
+        <span class="lnav-dot"></span><span class="lnav-text">Vanishing Gradient</span><span class="lnav-num">03</span>
+      </a>
+      <a href="#sec-varian" class="lnav-item" data-sec="sec-varian">
+        <span class="lnav-dot"></span><span class="lnav-text">Varian ReLU</span><span class="lnav-num">04</span>
+      </a>
+      <a href="#sec-praktis" class="lnav-item" data-sec="sec-praktis">
+        <span class="lnav-dot"></span><span class="lnav-text">Kapan Pakai Apa?</span><span class="lnav-num">05</span>
+      </a>
+    </nav>
+
+    <div class="sb-progress">
+      <div class="sb-prog-label"><span>Progress</span><span id="progPct">0%</span></div>
+      <div class="sb-prog-track"><div class="sb-prog-fill" id="progFill"></div></div>
+    </div>
+
+    <div class="sb-module-nav">
+      <div class="nav-section-label" style="padding:0 8px;margin-bottom:8px">Module 3 · Deep Learning for Vision</div>
+      <a href="/pages/ai-lab/cnn-why.html" class="smn-item done"><span class="smn-dot done"></span><span>Mengapa CNN?</span></a>
+      <a href="/pages/ai-lab/cnn-intro.html" class="smn-item done"><span class="smn-dot done"></span><span>Introduction to CNNs</span></a>
+      <a href="/pages/ai-lab/cnn-relu.html" class="smn-item current"><span class="smn-dot done"></span><span>Aktivasi ReLU</span></a>
+      <a href="/pages/ai-lab/cnn-fc.html" class="smn-item locked"><span class="smn-dot"></span><span>FC Layer &amp; Softmax</span><span class="smn-lock">🔒</span></a>
+      <a href="/pages/ai-lab/cnn-hands.html" class="smn-item locked"><span class="smn-dot"></span><span>Hands-on: CNN Pertama</span><span class="smn-lock">🔒</span></a>
+    </div>
+  </aside>
+
+  <!-- ═══ MAIN ═══ -->
+  <main class="lesson-main">
+    <div class="lesson-topbar">
+      <div class="ltb-left">
+        <button class="ltb-menu" id="menuBtn" onclick="toggleSidebar()">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg>
+        </button>
+        <span class="ltb-crumb">Aktivasi ReLU</span>
+      </div>
+      <div class="ltb-right">
+        <a href="/pages/ai-lab/cnn-intro.html" class="ltb-btn">← CNN Intro</a>
+        <a href="/pages/ai-lab/cnn-fc.html"    class="ltb-btn primary">Next: FC Layer →</a>
+      </div>
+    </div>
+
+    <div class="lesson-body">
+
+      <!-- ═══ SEC 1: APA ITU RELU ═══ -->
+      <section class="lesson-sec" id="sec-apa">
+        <div class="sec-header">
+          <span class="sec-num">01</span>
+          <div>
+            <h2 class="sec-title">Apa itu ReLU?</h2>
+            <p class="sec-sub">Fungsi aktivasi paling populer di deep learning — sederhana tapi powerful</p>
+          </div>
+        </div>
+
+        <div class="prose">
+          Setelah operasi konvolusi menghasilkan feature map, nilainya bisa negatif maupun positif.
+          <strong>Fungsi aktivasi</strong> menentukan apakah suatu neuron "aktif" atau tidak.
+          ReLU (<em>Rectified Linear Unit</em>) adalah pilihan default hampir semua arsitektur CNN modern.
+        </div>
+
+        <!-- Formula box -->
+        <div class="formula-box">
+          <div class="fb-title">Definisi ReLU</div>
+          <div class="fb-eq" style="font-size:22px;">
+            ReLU(<span class="feq-var blue">x</span>)
+            <span class="feq-op">=</span>
+            max(0,&nbsp;<span class="feq-var blue">x</span>)
+          </div>
+          <div class="fb-legend">
+            <div class="fb-leg-item"><span class="fb-sym blue">x &lt; 0</span><span class="fb-desc">→ output = 0 (neuron "mati")</span></div>
+            <div class="fb-leg-item"><span class="fb-sym green">x ≥ 0</span><span class="fb-desc">→ output = x (pass-through linear)</span></div>
+          </div>
+          <div class="fb-note">Sesederhana itu. Potong semua nilai negatif jadi nol.</div>
+        </div>
+
+        <!-- Interactive ReLU visualizer -->
+        <div class="worked-box" id="reluViz">
+          <div class="wb-badge">🎛️ Interactive · Geser slider untuk lihat output ReLU</div>
+          <div class="wb-title">ReLU Real-time Visualizer</div>
+
+          <div class="relu-demo">
+            <div class="relu-input-row">
+              <label class="pe-slider-label">Input <em>x</em></label>
+              <div class="pe-slider-track">
+                <input type="range" id="slX" min="-5" max="5" step="0.1" value="-2">
+              </div>
+              <div class="pe-slider-val"><span id="valX">-2.0</span></div>
+            </div>
+
+            <div class="relu-output-row">
+              <div class="relu-io-box">
+                <div class="rio-label">Input <em>x</em></div>
+                <div class="rio-val" id="rioInput">−2.0</div>
+              </div>
+              <div class="relu-arrow-box">
+                <div class="relu-fn">ReLU</div>
+                <div class="relu-arrow">→</div>
+              </div>
+              <div class="relu-io-box output">
+                <div class="rio-label">Output</div>
+                <div class="rio-val" id="rioOutput">0</div>
+              </div>
+            </div>
+
+            <div class="relu-graph" id="reluGraph">
+              <!-- drawn by JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Step-by-step calc -->
+        <div class="worked-box">
+          <div class="wb-badge">📐 Contoh Kalkulasi</div>
+          <div class="wb-title">ReLU pada Feature Map 3×3</div>
+          <div class="calc-chain">
+            <div class="calc-step">
+              <div class="cs-num-circle">1</div>
+              <div class="cs-content">
+                <div class="cs-label">Input feature map setelah konvolusi</div>
+                <div class="math-line">
+                  <span class="math-comment">// Nilai bisa positif atau negatif</span>
+                </div>
+                <div class="math-line">
+                  <span class="math-term blue">[[2.1, -0.5, 1.3],</span>
+                </div>
+                <div class="math-line">
+                  <span class="math-term blue">&nbsp;[-1.2, 0.8, -2.4],</span>
+                </div>
+                <div class="math-line">
+                  <span class="math-term blue">&nbsp;[0.3, -0.1, 1.9]]</span>
+                </div>
+              </div>
+            </div>
+            <div class="calc-step">
+              <div class="cs-num-circle">2</div>
+              <div class="cs-content">
+                <div class="cs-label">Terapkan ReLU: max(0, x) per elemen</div>
+                <div class="math-line">
+                  <span class="math-comment">// Negatif → 0, positif → tetap</span>
+                </div>
+                <div class="math-line">
+                  max(0, <span class="math-term blue">2.1</span>) = <span class="math-result">2.1</span>
+                  &nbsp;·&nbsp;
+                  max(0, <span class="math-term red">-0.5</span>) = <span class="math-result">0</span>
+                  &nbsp;·&nbsp;
+                  max(0, <span class="math-term blue">1.3</span>) = <span class="math-result">1.3</span>
+                </div>
+              </div>
+            </div>
+            <div class="calc-step">
+              <div class="cs-num-circle">3</div>
+              <div class="cs-content">
+                <div class="cs-label">Output feature map setelah ReLU</div>
+                <div class="math-line">
+                  <span class="math-term green">[[2.1, 0, 1.3],</span>
+                </div>
+                <div class="math-line">
+                  <span class="math-term green">&nbsp;[0, 0.8, 0],</span>
+                </div>
+                <div class="math-line">
+                  <span class="math-term green">&nbsp;[0.3, 0, 1.9]]</span>
+                </div>
+                <div class="math-line">
+                  <span class="math-comment">// Sparsity: 4/9 ≈ 44% nilai menjadi nol</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══ SEC 2: MENGAPA BUKAN SIGMOID ═══ -->
+      <section class="lesson-sec" id="sec-kenapa">
+        <div class="sec-header">
+          <span class="sec-num">02</span>
+          <div>
+            <h2 class="sec-title">Mengapa Bukan Sigmoid?</h2>
+            <p class="sec-sub">Perbandingan matematis ReLU vs sigmoid — dan kenapa sigmoid kalah di deep network</p>
+          </div>
+        </div>
+
+        <div class="prose">
+          Sebelum ReLU populer (sekitar 2012), <strong>sigmoid</strong> dan <strong>tanh</strong> adalah fungsi aktivasi standar.
+          Keduanya punya masalah serius yang membuat training jaringan dalam menjadi sangat lambat atau gagal total.
+        </div>
+
+        <div class="comparison-table-wrap">
+          <table class="comparison-table">
+            <thead>
+              <tr>
+                <th>Properti</th>
+                <th>Sigmoid</th>
+                <th>tanh</th>
+                <th>ReLU</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Formula</td>
+                <td>1 / (1+e<sup>−x</sup>)</td>
+                <td>(e<sup>x</sup>−e<sup>−x</sup>) / (e<sup>x</sup>+e<sup>−x</sup>)</td>
+                <td class="green-num">max(0, x)</td>
+              </tr>
+              <tr>
+                <td>Output range</td>
+                <td>(0, 1)</td>
+                <td>(−1, 1)</td>
+                <td class="green-num">[0, ∞)</td>
+              </tr>
+              <tr>
+                <td>Komputasi</td>
+                <td class="red-num">Berat (exp)</td>
+                <td class="red-num">Berat (exp)</td>
+                <td class="green-num">Sangat ringan</td>
+              </tr>
+              <tr>
+                <td>Vanishing gradient</td>
+                <td class="red-num">Parah</td>
+                <td class="red-num">Parah</td>
+                <td class="green-num">Tidak (x&gt;0)</td>
+              </tr>
+              <tr>
+                <td>Sparsity</td>
+                <td class="red-num">Tidak</td>
+                <td class="red-num">Tidak</td>
+                <td class="green-num">Ya (efisien)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="insight-callout">
+          <div class="ic-icon">⚡</div>
+          <div class="ic-body">
+            <strong>Kecepatan komputasi.</strong>
+            ReLU hanya butuh satu perbandingan (x &gt; 0?). Sigmoid butuh operasi eksponen
+            yang jauh lebih mahal. Dalam jaringan dengan jutaan aktivasi per forward pass,
+            perbedaan ini sangat signifikan.
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══ SEC 3: VANISHING GRADIENT ═══ -->
+      <section class="lesson-sec" id="sec-vanishing">
+        <div class="sec-header">
+          <span class="sec-num">03</span>
+          <div>
+            <h2 class="sec-title">Vanishing Gradient Problem</h2>
+            <p class="sec-sub">Kenapa sigmoid "membunuh" gradient saat backpropagation</p>
+          </div>
+        </div>
+
+        <div class="prose">
+          Saat training, gradient mengalir <em>mundur</em> dari output ke input melalui backpropagation.
+          Di setiap layer, gradient dikalikan turunan fungsi aktivasi. Inilah masalahnya:
+        </div>
+
+        <div class="worked-box danger-box">
+          <div class="wb-badge red">⚠️ Masalah Sigmoid</div>
+          <div class="wb-title">Gradient "mati" saat melewati sigmoid</div>
+
+          <div class="calc-chain">
+            <div class="calc-step">
+              <div class="cs-num-circle">1</div>
+              <div class="cs-content">
+                <div class="cs-label">Turunan sigmoid: σ'(x) = σ(x)(1 − σ(x))</div>
+                <div class="math-line">
+                  <span class="math-comment">// Nilai maksimum turunan sigmoid</span>
+                </div>
+                <div class="math-line">
+                  σ'(0) = 0.5 × 0.5 = <span class="math-result red">0.25</span>
+                  <span class="math-comment"> ← maksimum!</span>
+                </div>
+                <div class="math-line">
+                  σ'(2) = 0.88 × 0.12 = <span class="math-result red">0.105</span>
+                </div>
+                <div class="math-line">
+                  σ'(5) ≈ <span class="math-result red">0.007</span>
+                  <span class="math-comment"> ← hampir nol</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="calc-step">
+              <div class="cs-num-circle">2</div>
+              <div class="cs-content">
+                <div class="cs-label">Gradient di layer ke-L dirantai (chain rule)</div>
+                <div class="math-line">
+                  ∂L/∂w<span class="math-sub">1</span>
+                  <span class="math-op">=</span>
+                  ∂L/∂w<span class="math-sub">L</span>
+                  <span class="math-op">×</span>
+                  <span class="math-term blue">σ'<span class="math-sub">L</span></span>
+                  <span class="math-op">×</span>
+                  <span class="math-term blue">σ'<span class="math-sub">L−1</span></span>
+                  <span class="math-op">× ··· ×</span>
+                  <span class="math-term blue">σ'<span class="math-sub">1</span></span>
+                </div>
+              </div>
+            </div>
+
+            <div class="calc-step">
+              <div class="cs-num-circle">3</div>
+              <div class="cs-content">
+                <div class="cs-label">Dengan 10 layer sigmoid, gradient menyusut:</div>
+                <div class="math-line">
+                  0.25<sup>10</sup>
+                  <span class="math-op">=</span>
+                  <span class="math-result red">0.0000009537</span>
+                  <span class="math-comment"> ← hampir nol, layer awal tidak belajar</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="calc-step">
+              <div class="cs-num-circle">4</div>
+              <div class="cs-content">
+                <div class="cs-label">ReLU: turunan = 1 jika x &gt; 0</div>
+                <div class="math-line">
+                  ReLU'(<span class="math-term blue">x</span>)
+                  <span class="math-op">=</span>
+                  <span class="math-result green">1</span> jika x &gt; 0,
+                  <span class="math-result">0</span> jika x ≤ 0
+                </div>
+                <div class="math-line">
+                  <span class="math-comment">// Gradient tidak mengecil melewati neuron aktif!</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="insight-callout">
+          <div class="ic-icon">🔑</div>
+          <div class="ic-body">
+            <strong>Inilah alasan utama</strong> mengapa CNN dalam (VGG, ResNet) bisa ditraining dengan
+            ReLU tapi gagal total dengan sigmoid. Gradient bisa mengalir dengan baik ke layer-layer
+            awal, memungkinkan seluruh jaringan belajar.
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══ SEC 4: VARIAN RELU ═══ -->
+      <section class="lesson-sec" id="sec-varian">
+        <div class="sec-header">
+          <span class="sec-num">04</span>
+          <div>
+            <h2 class="sec-title">Varian ReLU</h2>
+            <p class="sec-sub">ReLU punya satu kelemahan — dan beberapa varian untuk mengatasinya</p>
+          </div>
+        </div>
+
+        <div class="prose">
+          ReLU punya masalah yang disebut <strong>"dying ReLU"</strong> — neuron yang sekali outputnya nol
+          (karena semua input negatif), tidak bisa recover karena gradiennya juga nol.
+          Beberapa varian hadir untuk mengatasi ini.
+        </div>
+
+        <div class="three-props">
+          <div class="prop-card">
+            <div class="prop-num">1</div>
+            <div class="prop-title">Leaky ReLU</div>
+            <div class="prop-body">
+              <div class="prop-desc">Slope kecil (0.01) untuk nilai negatif, sehingga gradient tidak pernah benar-benar nol.</div>
+              <div class="prop-math">
+                <div class="pm-eq">f(x) = x jika x &gt; 0, <span class="math-term blue">0.01x</span> jika x ≤ 0</div>
+              </div>
+              <div class="prop-effect green">✓ Tidak ada dying neuron</div>
+            </div>
+          </div>
+
+          <div class="prop-card">
+            <div class="prop-num">2</div>
+            <div class="prop-title">Parametric ReLU</div>
+            <div class="prop-body">
+              <div class="prop-desc">Slope negatif <em>α</em> dipelajari saat training — bukan hyperparameter tetap.</div>
+              <div class="prop-math">
+                <div class="pm-eq">f(x) = x jika x &gt; 0, <span class="math-term purple">αx</span> jika x ≤ 0</div>
+                <div class="pm-note">α dioptimasi bersama weight lain</div>
+              </div>
+              <div class="prop-effect green">✓ Adaptif per layer/channel</div>
+            </div>
+          </div>
+
+          <div class="prop-card">
+            <div class="prop-num">3</div>
+            <div class="prop-title">GELU</div>
+            <div class="prop-body">
+              <div class="prop-desc">Dipakai di Transformer (BERT, GPT). Versi smooth ReLU berbasis distribusi Gaussian.</div>
+              <div class="prop-math">
+                <div class="pm-eq">f(x) = x · Φ(x)</div>
+                <div class="pm-note">Φ = CDF distribusi normal standar</div>
+              </div>
+              <div class="prop-effect green">✓ Default di model bahasa modern</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Interactive comparison -->
+        <div class="worked-box">
+          <div class="wb-badge">🎛️ Interactive · Geser untuk bandingkan semua varian</div>
+          <div class="wb-title">Perbandingan Output Semua Varian</div>
+
+          <div class="relu-input-row" style="margin-bottom:16px;">
+            <label class="pe-slider-label">Input <em>x</em></label>
+            <div class="pe-slider-track">
+              <input type="range" id="slXComp" min="-4" max="4" step="0.1" value="-1.5">
+            </div>
+            <div class="pe-slider-val"><span id="valXComp">-1.5</span></div>
+          </div>
+
+          <div class="variant-compare" id="variantCompare">
+            <!-- filled by JS -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══ SEC 5: KAPAN PAKAI APA ═══ -->
+      <section class="lesson-sec" id="sec-praktis">
+        <div class="sec-header">
+          <span class="sec-num">05</span>
+          <div>
+            <h2 class="sec-title">Kapan Pakai Fungsi Aktivasi Apa?</h2>
+            <p class="sec-sub">Panduan praktis untuk memilih fungsi aktivasi</p>
+          </div>
+        </div>
+
+        <div class="prose">
+          Pemilihan fungsi aktivasi tergantung pada tipe layer dan task. Ini panduan praktis berdasarkan
+          penggunaan di arsitektur populer:
+        </div>
+
+        <div class="comparison-table-wrap">
+          <table class="comparison-table">
+            <thead>
+              <tr>
+                <th>Posisi / Task</th>
+                <th>Rekomendasi</th>
+                <th>Alasan</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Hidden layer CNN</td>
+                <td class="green-num">ReLU</td>
+                <td>Cepat, tidak vanishing, sparse</td>
+              </tr>
+              <tr>
+                <td>Hidden layer dalam (ResNet, dll)</td>
+                <td class="green-num">ReLU / Leaky ReLU</td>
+                <td>Cegah dying neuron di jaringan sangat dalam</td>
+              </tr>
+              <tr>
+                <td>Output klasifikasi biner</td>
+                <td class="green-num">Sigmoid</td>
+                <td>Output harus di rentang (0,1) untuk probabilitas</td>
+              </tr>
+              <tr>
+                <td>Output klasifikasi multi-kelas</td>
+                <td class="green-num">Softmax</td>
+                <td>Distribusi probabilitas yang menjumlah ke 1</td>
+              </tr>
+              <tr>
+                <td>Transformer / NLP</td>
+                <td class="green-num">GELU</td>
+                <td>Dipakai di BERT, GPT — smooth gradient</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="insight-callout">
+          <div class="ic-icon">💡</div>
+          <div class="ic-body">
+            <strong>Default yang aman:</strong> Untuk sebagian besar CNN, mulai dengan <strong>ReLU</strong>.
+            Jika kamu menemukan banyak "dead neurons" (aktivasi selalu nol), coba ganti ke
+            <strong>Leaky ReLU</strong>. Jangan pakai sigmoid atau tanh di hidden layer kecuali ada alasan spesifik.
+          </div>
+        </div>
+
+        <!-- Next lesson CTA -->
+        <div class="next-lesson-cta">
+          <div class="nlc-inner">
+            <span class="nlc-label">Lesson berikutnya</span>
+            <h3 class="nlc-title">FC Layer &amp; Softmax →</h3>
+            <p class="nlc-desc">Setelah fitur diekstrak oleh Conv + ReLU, Fully Connected layer menggabungkan semuanya untuk membuat keputusan klasifikasi akhir.</p>
+            <a href="/pages/ai-lab/cnn-fc.html" class="nlc-btn">Lanjut ke FC Layer</a>
+          </div>
+        </div>
+      </section>
+
+    </div><!-- /lesson-body -->
+  </main>
+</div><!-- /lesson-layout -->
+
+<div id="footer-placeholder"></div>
+<script src="/js/shared.js"></script>
+<script src="/js/lang.js"></script>
+<script src="/js/cnn-relu.js"></script>
+</body>
+</html>

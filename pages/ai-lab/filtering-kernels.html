@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Filtering &amp; Kernels — Computer Vision | AI Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/shared.css">
+<link rel="stylesheet" href="/css/image-processing-opencv.css">
+<link rel="stylesheet" href="/css/filtering-kernels.css">
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-follower" id="cursor-follower"></div>
+<div id="nav-placeholder"></div>
+<div class="read-progress"><div id="readBar"></div></div>
+
+<div class="py-loading" id="pyLoading">
+  <div class="py-loading-inner">
+    <div class="py-spinner"></div>
+    <div class="py-loading-text">Loading Python runtime...</div>
+    <div class="py-loading-sub">Pyodide (Python 3.11 via WebAssembly)</div>
+  </div>
+</div>
+
+<div class="lesson-layout">
+  <aside class="lesson-sidebar" id="lessonSidebar">
+    <div class="sb-top">
+      <a href="/pages/ai-lab/computer-vision.html" class="sb-back">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 3L5 8l5 5"/></svg>
+        Computer Vision
+      </a>
+      <div class="sb-studying">
+        <div class="sb-studying-label">Sedang belajar</div>
+        <div class="sb-studying-path">
+          <span class="sbp-item">AI Lab</span><span class="sbp-sep">›</span>
+          <span class="sbp-item">Computer Vision</span><span class="sbp-sep">›</span>
+          <span class="sbp-item active">Digital Image Fundamentals</span>
+        </div>
+      </div>
+      <div class="sb-chapter">Module 1 · Digital Image Fundamentals</div>
+      <div class="sb-lesson-title">Filtering &amp; Kernels</div>
+      <div class="sb-tags">
+        <span class="sb-tag">Foundation</span>
+        <span class="sb-tag interactive">Interactive</span>
+        <span class="sb-tag coding">🐍 Python</span>
+      </div>
+    </div>
+    <nav class="lesson-nav">
+      <div class="nav-section-label">Dalam lesson ini</div>
+      <a href="#sec-conv"       class="lnav-item active" data-sec="sec-conv">      <span class="lnav-dot"></span><span class="lnav-text">Spatial Convolution</span>   <span class="lnav-num">01</span></a>
+      <a href="#sec-gaussian"   class="lnav-item"        data-sec="sec-gaussian">  <span class="lnav-dot"></span><span class="lnav-text">Gaussian Blur</span>          <span class="lnav-num">02</span></a>
+      <a href="#sec-median"     class="lnav-item"        data-sec="sec-median">    <span class="lnav-dot"></span><span class="lnav-text">Median Filter</span>           <span class="lnav-num">03</span></a>
+      <a href="#sec-sharpen"    class="lnav-item"        data-sec="sec-sharpen">   <span class="lnav-dot"></span><span class="lnav-text">Unsharp Masking</span>         <span class="lnav-num">04</span></a>
+      <a href="#sec-otsu"       class="lnav-item"        data-sec="sec-otsu">      <span class="lnav-dot"></span><span class="lnav-text">Otsu's Binarization</span>    <span class="lnav-num">05</span></a>
+      <a href="#sec-playground" class="lnav-item"        data-sec="sec-playground"><span class="lnav-dot"></span><span class="lnav-text">Full Playground</span>        <span class="lnav-num">06</span></a>
+      <a href="#sec-quiz"       class="lnav-item"        data-sec="sec-quiz">      <span class="lnav-dot"></span><span class="lnav-text">Quiz + Coding</span>           <span class="lnav-num">07</span></a>
+    </nav>
+    <div class="sb-progress">
+      <div class="sb-prog-label"><span>Progress</span><span id="progPct">0%</span></div>
+      <div class="sb-prog-track"><div class="sb-prog-fill" id="progFill"></div></div>
+    </div>
+    <div class="sb-module-nav">
+      <div class="nav-section-label" style="padding:0 8px;margin-bottom:8px">Module 1 · semua topik</div>
+      <a href="pixel-anatomy.html"           class="smn-item done">   <span class="smn-dot done"></span><span>Pixel Anatomy</span></a>
+      <a href="image-processing-opencv.html" class="smn-item done">   <span class="smn-dot done"></span><span>Image Processing with OpenCV</span></a>
+      <a href="filtering-kernels.html"       class="smn-item current"><span class="smn-dot"></span>     <span>Filtering &amp; Kernels</span></a>
+      <a href="#"                            class="smn-item locked"> <span class="smn-dot"></span>     <span>Morphological Transforms</span><span class="smn-lock">🔒</span></a>
+    </div>
+  </aside>
+
+  <main class="lesson-main">
+    <div class="lesson-topbar">
+      <div class="ltb-left">
+        <button class="ltb-menu" id="menuBtn" onclick="toggleSidebar()">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg>
+        </button>
+        <span class="ltb-crumb">Filtering &amp; Kernels</span>
+        <span class="py-status" id="pyStatus">⏳ Loading Python...</span>
+      </div>
+      <div class="ltb-right">
+        <a href="image-processing-opencv.html" class="ltb-btn">← OpenCV Basics</a>
+        <a href="#sec-quiz" class="ltb-btn primary">Take Quiz</a>
+      </div>
+    </div>
+
+    <div class="lesson-body">
+
+      <!-- ─── SEC 1: SPATIAL CONVOLUTION ─── -->
+      <section class="lesson-sec" id="sec-conv">
+        <div class="sec-header">
+          <span class="sec-num">01</span>
+          <div><h2 class="sec-title">Spatial Convolution</h2><p class="sec-sub">What actually happens when you apply a filter — pixel by pixel math</p></div>
+        </div>
+        <div class="prose">Every image filter — blur, sharpen, edge detect — boils down to <strong>spatial convolution</strong>: slide a small weight matrix (the <em>kernel</em>) over every pixel, multiply element-wise with the local neighborhood, sum to get one output value. The kernel defines what the filter does.</div>
+
+        <div class="callout info"><span class="callout-icon">📐</span><div><strong>Kernel = filter = mask</strong> — all three terms mean the same thing. A 3×3 kernel examines 9 pixels at once. Kernel weights summing to 1 = neutral brightness; &gt;1 brightens; &lt;1 darkens.</div></div>
+
+        <div class="widget-card">
+          <div class="widget-label">Interactive · Step through convolution — watch one output pixel being computed</div>
+          <div class="conv-stepper">
+            <div class="cs-panel">
+              <div class="cs-panel-label">Input patch (5×5)</div>
+              <div class="cs-grid" id="convInputGrid"></div>
+            </div>
+            <div class="cs-panel cs-mid">
+              <div class="cs-panel-label">Kernel (3×3)</div>
+              <div class="cs-kernel-btns" id="kernelBtns">
+                <button class="ks-btn active" data-k="blur">Avg</button>
+                <button class="ks-btn" data-k="sharpen">Sharp</button>
+                <button class="ks-btn" data-k="edge">Edge</button>
+                <button class="ks-btn" data-k="sobelx">Sobel X</button>
+                <button class="ks-btn" data-k="emboss">Emboss</button>
+              </div>
+              <div class="cs-grid cs-kernel-grid" id="convKernelGrid"></div>
+              <div class="cs-math" id="convMath"></div>
+            </div>
+            <div class="cs-panel cs-out">
+              <div class="cs-panel-label">Output value</div>
+              <div class="cs-output-val" id="convOutputVal">—</div>
+              <div class="cs-output-sub">center pixel result</div>
+              <div class="cs-pos" id="convPosInfo">position (0, 0)</div>
+            </div>
+          </div>
+          <div class="cs-controls">
+            <button class="ctrl-btn" onclick="convStep(-1)">← Prev</button>
+            <div class="cs-prog-wrap"><div class="cs-prog-fill" id="convProgFill"></div></div>
+            <button class="ctrl-btn play" onclick="convStep(1)">Next →</button>
+            <button class="ctrl-btn" id="convAutoBtn" onclick="convToggleAuto()">▶ Auto</button>
+          </div>
+        </div>
+
+        <div class="kernel-gallery">
+          <div class="kg-title">Common kernels</div>
+          <div class="kg-grid">
+            <div class="kg-card"><div class="kg-name">Box Blur</div><div class="kg-matrix">1/9 &nbsp;1/9 &nbsp;1/9<br>1/9 &nbsp;1/9 &nbsp;1/9<br>1/9 &nbsp;1/9 &nbsp;1/9</div><div class="kg-desc">Equal weight, sum=1. Fast but unnatural-looking blur.</div></div>
+            <div class="kg-card"><div class="kg-name">Sharpen</div><div class="kg-matrix">0 &nbsp;−1 &nbsp; 0<br>−1 &nbsp; 5 &nbsp;−1<br>0 &nbsp;−1 &nbsp; 0</div><div class="kg-desc">Center×5 minus neighbors. Sum=1, no brightness change.</div></div>
+            <div class="kg-card"><div class="kg-name">Laplacian</div><div class="kg-matrix">0 &nbsp; 1 &nbsp; 0<br>1 &nbsp;−4 &nbsp; 1<br>0 &nbsp; 1 &nbsp; 0</div><div class="kg-desc">Second derivative — detects edges in all 4 directions.</div></div>
+            <div class="kg-card"><div class="kg-name">Sobel X</div><div class="kg-matrix">−1 &nbsp; 0 &nbsp; 1<br>−2 &nbsp; 0 &nbsp; 2<br>−1 &nbsp; 0 &nbsp; 1</div><div class="kg-desc">Gradient in X direction. Detects vertical edges.</div></div>
+          </div>
+        </div>
+
+        <div class="code-block">
+          <div class="cb-label">cv2 · filter2D — apply any kernel</div>
+<pre><code><span class="kw">import</span> cv2
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="cm"># Box blur: 3×3 averaging</span>
+k_box = np.<span class="fn">ones</span>((<span class="num">3</span>,<span class="num">3</span>), dtype=np.float32) / <span class="num">9</span>
+blurred = cv2.<span class="fn">filter2D</span>(img, -<span class="num">1</span>, k_box)
+
+<span class="cm"># Sharpen</span>
+k_sharp = np.array([[ <span class="num">0</span>,-<span class="num">1</span>, <span class="num">0</span>],
+                    [-<span class="num">1</span>, <span class="num">5</span>,-<span class="num">1</span>],
+                    [ <span class="num">0</span>,-<span class="num">1</span>, <span class="num">0</span>]], dtype=np.float32)
+sharp = cv2.<span class="fn">filter2D</span>(img, -<span class="num">1</span>, k_sharp)
+
+<span class="cm"># Sobel X (vertical edges)</span>
+k_sx = np.array([[-<span class="num">1</span>,<span class="num">0</span>,<span class="num">1</span>],[-<span class="num">2</span>,<span class="num">0</span>,<span class="num">2</span>],[-<span class="num">1</span>,<span class="num">0</span>,<span class="num">1</span>]], dtype=np.float32)
+edges_x = cv2.<span class="fn">filter2D</span>(img, -<span class="num">1</span>, k_sx)</code></pre>
+        </div>
+
+        <div class="challenge-card" id="ch-1">
+          <div class="challenge-header"><span class="challenge-badge">🐍 Mini Challenge</span><span class="challenge-title">Apply a 3×3 box blur kernel manually</span></div>
+          <div class="challenge-desc">Compute the convolution output for the center pixel of a 5×5 patch using a 3×3 box blur kernel. Verify it equals the mean of the 9 center neighbors.</div>
+          <div class="challenge-editor">
+            <div class="editor-tabs"><span class="editor-tab active">solution.py</span></div>
+            <div class="code-editor-wrap"><textarea class="code-editor" id="ce-1" spellcheck="false">import numpy as np
+
+patch = np.array([
+    [ 10,  20,  30,  40,  50],
+    [ 60,  70,  80,  90, 100],
+    [110, 120, 130, 140, 150],
+    [160, 170, 180, 190, 200],
+    [210, 220, 230, 240, 250],
+], dtype=np.float32)
+
+# 3×3 box blur kernel: equal weights, sum = 1
+kernel = np.ones((___, ___), dtype=np.float32) / ___
+
+# Extract 3×3 neighborhood centered at (2,2)
+neighborhood = patch[___:___, ___:___]
+
+# Convolution = element-wise multiply + sum
+result = np.sum(neighborhood * kernel)
+print("Convolution output:", round(result, 2))
+
+expected = np.mean(patch[1:4, 1:4])
+print("Mean of 3×3 center:", round(expected, 2))
+print("Match:", abs(result - expected) < 0.001)</textarea></div>
+            <div class="editor-actions">
+              <button class="run-btn" onclick="runChallenge('ce-1','out-1','check-1')">▶ Run</button>
+              <button class="hint-btn" onclick="toggleHint('hint-1')">💡 Hint</button>
+              <button class="reset-btn" onclick="resetChallenge('ce-1',1)">↺ Reset</button>
+            </div>
+          </div>
+          <div class="hint-box" id="hint-1" style="display:none"><strong>Hints:</strong><br>• <code>np.ones((3,3)) / 9</code> — nine values of 1/9<br>• Center of 5×5 at index (2,2): neighborhood is <code>patch[1:4, 1:4]</code><br>• Result = mean of 70,80,90,120,130,140,170,180,190 = 130.0</div>
+          <div class="output-wrap" id="out-1" style="display:none"><div class="output-label">Output</div><pre class="output-pre" id="out-1-pre"></pre></div>
+          <div class="check-result" id="check-1" style="display:none"></div>
+          <div class="expected-box"><span class="expected-label">Expected:</span><code>Convolution output: 130.0<br>Mean of 3×3 center: 130.0<br>Match: True</code></div>
+        </div>
+      </section>
+
+      <!-- ─── SEC 2: GAUSSIAN BLUR ─── -->
+      <section class="lesson-sec" id="sec-gaussian">
+        <div class="sec-header">
+          <span class="sec-num">02</span>
+          <div><h2 class="sec-title">Gaussian Blur</h2><p class="sec-sub">Noise removal with weighted averaging — nearby pixels matter more</p></div>
+        </div>
+        <div class="prose">Box blur weights all neighbors equally — unnatural, because a pixel 2 hops away shouldn't matter as much as an adjacent one. <strong>Gaussian blur</strong> uses the 2D Gaussian function: the center pixel gets the highest weight, dropping smoothly with distance. The result looks natural, no box-shaped artifacts.</div>
+
+        <div class="callout warn"><span class="callout-icon">⚠️</span><div><strong>Kernel size must be odd</strong> — OpenCV requires (3,3), (5,5), (7,7)... Pass <code>(0,0)</code> to let OpenCV auto-compute size from sigma. Rule of thumb: ksize ≈ 6σ + 1.</div></div>
+
+        <div class="widget-card">
+          <div class="widget-label">Interactive · Tune sigma and kernel size — see kernel weights and effect</div>
+          <div class="gaussian-demo">
+            <div class="gd-left">
+              <div class="gd-ctrl-row">
+                <label>Kernel size</label>
+                <div class="gd-size-btns">
+                  <button class="gd-btn active" onclick="setGaussSize(this,3)">3×3</button>
+                  <button class="gd-btn" onclick="setGaussSize(this,5)">5×5</button>
+                  <button class="gd-btn" onclick="setGaussSize(this,7)">7×7</button>
+                </div>
+              </div>
+              <div class="gd-ctrl-row" style="margin-top:12px">
+                <label>σ = <span id="sigmaVal">1.0</span></label>
+                <input type="range" min="1" max="50" value="10" id="sigmaSlider" oninput="updateGaussian()">
+              </div>
+              <div class="gd-klabel" style="margin-top:16px">Kernel weights</div>
+              <div id="gaussKernelGrid" class="gauss-grid"></div>
+            </div>
+            <div class="gd-right">
+              <div class="gd-klabel">1D cross-section through center row</div>
+              <canvas id="gaussCurveCanvas" width="260" height="120"></canvas>
+              <div id="gaussStats" class="gauss-stats"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="two-col">
+          <div class="code-block"><div class="cb-label">cv2.GaussianBlur</div>
+<pre><code><span class="cm"># ksize must be (odd, odd)</span>
+blur = cv2.<span class="fn">GaussianBlur</span>(img,
+    (<span class="num">5</span>, <span class="num">5</span>),    <span class="cm"># kernel size (odd!)</span>
+    sigmaX=<span class="num">1.5</span>
+)
+
+<span class="cm"># Auto-compute ksize from sigma</span>
+blur = cv2.<span class="fn">GaussianBlur</span>(img, (<span class="num">0</span>,<span class="num">0</span>),
+    sigmaX=<span class="num">2.0</span>)
+
+<span class="cm"># Anisotropic: blur more in X than Y</span>
+blur = cv2.<span class="fn">GaussianBlur</span>(img, (<span class="num">0</span>,<span class="num">0</span>),
+    sigmaX=<span class="num">5.0</span>, sigmaY=<span class="num">0.5</span>)</code></pre></div>
+          <div class="info-card">
+            <div class="ic-title">📊 Sigma rules of thumb</div>
+            <table class="mini-table">
+              <thead><tr><th>σ</th><th>Effect</th><th>Use</th></tr></thead>
+              <tbody>
+                <tr><td>0.5–1</td><td>Barely visible</td><td>Pre-sharpen</td></tr>
+                <tr><td>1–2</td><td>Light smoothing</td><td>JPEG noise</td></tr>
+                <tr><td>3–5</td><td>Visible blur</td><td>DOF effect</td></tr>
+                <tr><td>10+</td><td>Heavy blur</td><td>Glow / haze</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="challenge-card" id="ch-2">
+          <div class="challenge-header"><span class="challenge-badge">🐍 Mini Challenge</span><span class="challenge-title">Build a Gaussian kernel from scratch</span></div>
+          <div class="challenge-desc">Implement the 1D Gaussian and build a 5×5 2D kernel via outer product. Verify it sums to 1.0 and the center has the highest weight.</div>
+          <div class="challenge-editor">
+            <div class="editor-tabs"><span class="editor-tab active">solution.py</span></div>
+            <div class="code-editor-wrap"><textarea class="code-editor" id="ce-2" spellcheck="false">import numpy as np
+
+def gaussian_1d(size, sigma):
+    """1D Gaussian array normalized to sum = 1."""
+    center = size // 2
+    x = np.arange(size) - center   # e.g. [-2,-1,0,1,2] for size=5
+    g = np.exp(-x**2 / (2 * sigma**2))
+    return g / g.sum()
+
+sigma = 1.0
+g1 = gaussian_1d(___, sigma)           # size = 5
+print("1D kernel:", np.round(g1, 4).tolist())
+print("1D sum:",    round(g1.sum(), 6))  # must be 1.0
+
+# 2D kernel = outer product of 1D with itself
+g2 = np.outer(___, ___)                # g1 ⊗ g1
+print("2D shape:", g2.shape)           # (5, 5)
+print("2D sum:",   round(g2.sum(), 6)) # must be 1.0
+print("Center weight:", round(g2[2,2], 4))  # highest
+print("Corner weight:", round(g2[0,0], 4))  # lowest</textarea></div>
+            <div class="editor-actions">
+              <button class="run-btn" onclick="runChallenge('ce-2','out-2','check-2')">▶ Run</button>
+              <button class="hint-btn" onclick="toggleHint('hint-2')">💡 Hint</button>
+              <button class="reset-btn" onclick="resetChallenge('ce-2',2)">↺ Reset</button>
+            </div>
+          </div>
+          <div class="hint-box" id="hint-2" style="display:none"><strong>Hints:</strong><br>• Size 5: <code>gaussian_1d(5, sigma)</code><br>• 2D = <code>np.outer(g1, g1)</code> — produces (5,5) matrix<br>• Center [2,2] ≈ 0.1409, corner [0,0] ≈ 0.0030 for σ=1</div>
+          <div class="output-wrap" id="out-2" style="display:none"><div class="output-label">Output</div><pre class="output-pre" id="out-2-pre"></pre></div>
+          <div class="check-result" id="check-2" style="display:none"></div>
+          <div class="expected-box"><span class="expected-label">Expected:</span><code>1D sum: 1.0 &nbsp;&nbsp;2D sum: 1.0<br>2D shape: (5, 5)<br>Center weight &gt; Corner weight</code></div>
+        </div>
+      </section>
+
+      <!-- ─── SEC 3: MEDIAN FILTER ─── -->
+      <section class="lesson-sec" id="sec-median">
+        <div class="sec-header">
+          <span class="sec-num">03</span>
+          <div><h2 class="sec-title">Median Filter</h2><p class="sec-sub">Salt-and-pepper noise removal — sort the neighborhood, pick the middle</p></div>
+        </div>
+        <div class="prose">Gaussian blur averages its neighborhood — a salt spike at 255 bleeds into surrounding pixels. The <strong>median filter</strong> is non-linear: it sorts all neighborhood values and returns the middle one. An outlier of 255 ends up last in a sorted list of ~80s and never reaches the output.</div>
+
+        <div class="callout info"><span class="callout-icon">🧂</span><div><strong>Salt-and-pepper noise</strong>: random pixels set to 0 (pepper) or 255 (salt). Common from cheap sensors, transmission errors, old scans. Gaussian spreads the outlier; median eliminates it entirely.</div></div>
+
+        <div class="widget-card">
+          <div class="widget-label">Interactive · Compare Gaussian vs Median on salt-and-pepper noise</div>
+          <div class="median-demo">
+            <div class="md-controls">
+              <div class="md-ctrl-row"><label>Noise level: <span id="noiseVal">10</span>%</label><input type="range" min="1" max="40" value="10" id="noiseSlider" oninput="updateMedianDemo()"></div>
+              <div class="md-ctrl-row">
+                <label>Kernel size</label>
+                <div class="gd-size-btns">
+                  <button class="gd-btn active" onclick="setMedianSize(this,3)">3×3</button>
+                  <button class="gd-btn" onclick="setMedianSize(this,5)">5×5</button>
+                  <button class="gd-btn" onclick="setMedianSize(this,7)">7×7</button>
+                </div>
+              </div>
+            </div>
+            <div class="md-canvases">
+              <div class="md-item"><canvas id="mdOriginal" width="148" height="111"></canvas><span class="md-lbl">Original</span></div>
+              <div class="md-item"><canvas id="mdNoisy"    width="148" height="111"></canvas><span class="md-lbl">+ Salt &amp; Pepper</span></div>
+              <div class="md-item"><canvas id="mdGaussian" width="148" height="111"></canvas><span class="md-lbl">Gaussian blur</span></div>
+              <div class="md-item"><canvas id="mdMedian"   width="148" height="111"></canvas><span class="md-lbl">Median filter ✓</span></div>
+            </div>
+            <div id="mdStatsRow" class="md-stats"></div>
+          </div>
+        </div>
+
+        <div class="step-walkthrough">
+          <div class="sw-title">How median filter works — step by step</div>
+          <div class="sw-steps">
+            <div class="sw-step"><div class="sw-num">1</div><div class="sw-body"><div class="sw-label">3×3 neighborhood with a salt spike (255) at center</div><div class="sw-patch">82 &nbsp;90 &nbsp;88 &nbsp;/ &nbsp;85 &nbsp;<strong class="sw-spike">255</strong> &nbsp;91 &nbsp;/ &nbsp;79 &nbsp;87 &nbsp;83</div></div></div>
+            <div class="sw-step"><div class="sw-num">2</div><div class="sw-body"><div class="sw-label">Sort all 9 values ascending</div><div class="sw-sorted">79 · 82 · 83 · 85 · <strong class="sw-median">87</strong> · 88 · 90 · 91 · <span class="sw-spike">255</span></div></div></div>
+            <div class="sw-step"><div class="sw-num">3</div><div class="sw-body"><div class="sw-label">Pick the middle value (index 4 of 9) — spike is gone</div><div class="sw-result">Output = <strong>87</strong> &nbsp;<span class="sw-note">noise eliminated without blurring neighbors</span></div></div></div>
+          </div>
+        </div>
+
+        <div class="two-col">
+          <div class="code-block"><div class="cb-label">cv2.medianBlur</div>
+<pre><code><span class="cm"># ksize must be odd ≥ 1</span>
+clean = cv2.<span class="fn">medianBlur</span>(noisy, <span class="num">3</span>)
+clean = cv2.<span class="fn">medianBlur</span>(noisy, <span class="num">5</span>)  <span class="cm"># stronger</span>
+
+<span class="cm"># Add salt-and-pepper noise manually</span>
+noisy = img.copy()
+n     = <span class="fn">int</span>(img.size * <span class="num">0.05</span>)
+flat  = noisy.<span class="fn">reshape</span>(-<span class="num">1</span>, <span class="num">3</span>)
+flat[np.random.<span class="fn">choice</span>(<span class="fn">len</span>(flat), n)] = <span class="num">255</span>
+flat[np.random.<span class="fn">choice</span>(<span class="fn">len</span>(flat), n)] = <span class="num">0</span></code></pre></div>
+          <div class="info-card">
+            <div class="ic-title">⚡ Which filter for which noise?</div>
+            <table class="mini-table">
+              <thead><tr><th>Noise type</th><th>Best filter</th></tr></thead>
+              <tbody>
+                <tr><td>Gaussian (sensor)</td><td class="green-text">Gaussian blur</td></tr>
+                <tr><td>Salt-and-pepper</td><td class="green-text">Median ✓</td></tr>
+                <tr><td>Uniform random</td><td>Box blur</td></tr>
+                <tr><td>Structured stripes</td><td>Bilateral / FFT</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="challenge-card" id="ch-3">
+          <div class="challenge-header"><span class="challenge-badge">🐍 Mini Challenge</span><span class="challenge-title">Implement 1D median filter from scratch</span></div>
+          <div class="challenge-desc">Apply a sliding 3-point median to a 1D signal with salt-and-pepper spikes. After filtering, all 0s and 255s should be gone.</div>
+          <div class="challenge-editor">
+            <div class="editor-tabs"><span class="editor-tab active">solution.py</span></div>
+            <div class="code-editor-wrap"><textarea class="code-editor" id="ce-3" spellcheck="false">import numpy as np
+
+signal = np.array([80, 82, 255, 85, 83, 0, 88, 90, 87, 255, 84],
+                  dtype=np.float32)
+print("Noisy: ", signal.astype(int).tolist())
+
+def median_filter_1d(sig, window=3):
+    pad    = window // 2
+    padded = np.pad(sig, pad, mode='edge')  # replicate edges
+    result = np.zeros_like(sig)
+    for i in range(len(sig)):
+        neighborhood = padded[___:___]   # window of 3 centered at i
+        result[i]    = np.___(___)       # median of neighborhood
+    return result
+
+filtered = median_filter_1d(signal)
+print("Filtered:", filtered.astype(int).tolist())
+
+spikes_before = int(np.sum((signal == 0) | (signal == 255)))
+spikes_after  = int(np.sum((filtered == 0) | (filtered == 255)))
+print(f"Spikes before: {spikes_before}, after: {spikes_after}")
+print("All spikes removed:", spikes_after == 0)</textarea></div>
+            <div class="editor-actions">
+              <button class="run-btn" onclick="runChallenge('ce-3','out-3','check-3')">▶ Run</button>
+              <button class="hint-btn" onclick="toggleHint('hint-3')">💡 Hint</button>
+              <button class="reset-btn" onclick="resetChallenge('ce-3',3)">↺ Reset</button>
+            </div>
+          </div>
+          <div class="hint-box" id="hint-3" style="display:none"><strong>Hints:</strong><br>• After <code>np.pad(sig, 1, 'edge')</code>, index i corresponds to <code>padded[i:i+3]</code><br>• Median: <code>np.median(neighborhood)</code><br>• All 3 spikes (two 255s + one 0) should be removed</div>
+          <div class="output-wrap" id="out-3" style="display:none"><div class="output-label">Output</div><pre class="output-pre" id="out-3-pre"></pre></div>
+          <div class="check-result" id="check-3" style="display:none"></div>
+          <div class="expected-box"><span class="expected-label">Expected:</span><code>Spikes before: 3, after: 0<br>All spikes removed: True</code></div>
+        </div>
+      </section>
+
+      <!-- ─── SEC 4: UNSHARP MASKING ─── -->
+      <section class="lesson-sec" id="sec-sharpen">
+        <div class="sec-header">
+          <span class="sec-num">04</span>
+          <div><h2 class="sec-title">Unsharp Masking</h2><p class="sec-sub">Sharpen by adding back the high-frequency detail you subtracted</p></div>
+        </div>
+        <div class="prose">Despite the name, unsharp masking <em>sharpens</em>. Blur the image → subtract it from the original → what remains is <strong>the detail</strong> (edges, texture) that blur removed. Add that back, amplified. The "mask" is the blurred version used to isolate what to enhance.</div>
+
+        <div class="formula-card">
+          <div class="fc-title">Unsharp Mask Formula</div>
+          <div class="fc-eq">
+            <span class="fce-term accent">output</span>
+            <span class="fce-op">=</span>
+            <span class="fce-term">original</span>
+            <span class="fce-op">+</span>
+            <span class="fce-term blue">amount</span>
+            <span class="fce-op">×</span>
+            <span class="fce-paren">(</span><span class="fce-term">original</span>
+            <span class="fce-op">−</span>
+            <span class="fce-term muted">blurred</span><span class="fce-paren">)</span>
+          </div>
+          <div class="fc-legend">
+            <span><span class="fc-dot muted"></span>blurred = GaussianBlur(original)</span>
+            <span><span class="fc-dot blue"></span>amount = sharpening strength (0.5–2.0)</span>
+            <span><span class="fc-dot accent"></span>(original − blurred) = the detail mask</span>
+          </div>
+        </div>
+
+        <div class="widget-card">
+          <div class="widget-label">Interactive · Tune blur radius and amount — watch detail mask and sharpened result</div>
+          <div class="unsharp-demo">
+            <div class="ud-controls">
+              <div class="ud-ctrl-row"><label>Blur σ = <span id="unsharpSigmaVal">1.0</span></label><input type="range" min="1" max="40" value="10" id="unsharpSigma" oninput="updateUnsharp()"></div>
+              <div class="ud-ctrl-row"><label>Amount = <span id="unsharpAmountVal">1.0</span></label><input type="range" min="1" max="40" value="10" id="unsharpAmount" oninput="updateUnsharp()"></div>
+            </div>
+            <div class="ud-canvases">
+              <div class="ud-item"><canvas id="udOriginal"  width="148" height="111"></canvas><span class="ud-lbl">Original</span></div>
+              <div class="ud-item"><canvas id="udMask"      width="148" height="111"></canvas><span class="ud-lbl">Detail mask (orig−blur)</span></div>
+              <div class="ud-item"><canvas id="udSharpened" width="148" height="111"></canvas><span class="ud-lbl">Sharpened</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="two-col">
+          <div class="code-block"><div class="cb-label">unsharp masking</div>
+<pre><code><span class="cm"># Manual (most readable)</span>
+blur   = cv2.<span class="fn">GaussianBlur</span>(img, (<span class="num">0</span>,<span class="num">0</span>), sigmaX=<span class="num">2</span>)
+mask   = img.astype(np.float32) - blur
+amount = <span class="num">1.5</span>
+sharp  = np.<span class="fn">clip</span>(img + amount * mask,
+                 <span class="num">0</span>, <span class="num">255</span>).<span class="fn">astype</span>(np.uint8)
+
+<span class="cm"># addWeighted shortcut:</span>
+sharp = cv2.<span class="fn">addWeighted</span>(
+    img,  <span class="num">1</span> + amount,
+    blur, -amount, <span class="num">0</span>
+)</code></pre></div>
+          <div class="info-card">
+            <div class="ic-title">🎚 Amount vs Radius guide</div>
+            <ul class="ic-list">
+              <li><strong>Small σ + high amount</strong> → crisp edges, but adds texture noise</li>
+              <li><strong>Large σ + low amount</strong> → wider contrast boost, fewer artifacts</li>
+              <li><strong>amount &gt; 2.0</strong> → halos appear around edges</li>
+              <li><strong>Typical:</strong> σ = 1–2, amount = 0.5–1.5</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="challenge-card" id="ch-4">
+          <div class="challenge-header"><span class="challenge-badge">🐍 Mini Challenge</span><span class="challenge-title">Implement unsharp masking on a 1D signal</span></div>
+          <div class="challenge-desc">Apply the unsharp formula to a 1D step edge. Verify that the sharpened signal is more extreme at the edge transition than the original.</div>
+          <div class="challenge-editor">
+            <div class="editor-tabs"><span class="editor-tab active">solution.py</span></div>
+            <div class="code-editor-wrap"><textarea class="code-editor" id="ce-4" spellcheck="false">import numpy as np
+
+signal = np.array([50, 50, 52, 50, 100, 150, 150, 148, 150, 150],
+                  dtype=np.float32)
+
+def box_blur_1d(s, k=3):
+    padded = np.pad(s, k//2, mode='edge')
+    return np.array([padded[i:i+k].mean() for i in range(len(s))])
+
+blurred = box_blur_1d(signal)
+print("Original:", signal.astype(int).tolist())
+print("Blurred: ", blurred.round(1).tolist())
+
+# Step 1: detail mask
+mask = ___ - ___        # signal - blurred
+
+# Step 2: add amplified mask
+amount    = 1.5
+sharpened = ___ + ___ * ___   # signal + amount * mask
+
+# Step 3: clip
+sharpened = np.clip(sharpened, ___, ___)
+
+print("Sharpened:", sharpened.astype(int).tolist())
+# Index 4 (dark side of edge) should drop lower; index 5 should go higher
+print("Edge amplified:", sharpened[4] <= signal[4] and sharpened[5] >= signal[5])</textarea></div>
+            <div class="editor-actions">
+              <button class="run-btn" onclick="runChallenge('ce-4','out-4','check-4')">▶ Run</button>
+              <button class="hint-btn" onclick="toggleHint('hint-4')">💡 Hint</button>
+              <button class="reset-btn" onclick="resetChallenge('ce-4',4)">↺ Reset</button>
+            </div>
+          </div>
+          <div class="hint-box" id="hint-4" style="display:none"><strong>Hints:</strong><br>• mask = signal - blurred<br>• sharpened = signal + amount * mask<br>• np.clip(..., 0, 255)<br>• At the step edge, blur smooths → mask amplifies the contrast</div>
+          <div class="output-wrap" id="out-4" style="display:none"><div class="output-label">Output</div><pre class="output-pre" id="out-4-pre"></pre></div>
+          <div class="check-result" id="check-4" style="display:none"></div>
+          <div class="expected-box"><span class="expected-label">Expected:</span><code>Edge amplified: True<br>Values clipped to [0, 255]</code></div>
+        </div>
+      </section>
+
+      <!-- ─── SEC 5: OTSU ─── -->
+      <section class="lesson-sec" id="sec-otsu">
+        <div class="sec-header">
+          <span class="sec-num">05</span>
+          <div><h2 class="sec-title">Otsu's Adaptive Binarization</h2><p class="sec-sub">Let the histogram find the optimal threshold automatically</p></div>
+        </div>
+        <div class="prose">Binary thresholding turns grayscale → black/white: pixels above threshold T become 255, below become 0. The problem: which T? A fixed T breaks under different lighting. <strong>Otsu's method</strong> scans all 256 T values, computes how well each separates the histogram into two clusters, and picks the T that minimizes intra-class variance.</div>
+
+        <div class="callout info"><span class="callout-icon">📊</span><div><strong>Otsu works best on bimodal histograms</strong> — two clear peaks (dark background + bright foreground). For uneven lighting, use <code>cv2.adaptiveThreshold()</code> which computes a local T per region.</div></div>
+
+        <div class="widget-card">
+          <div class="widget-label">Interactive · Drag the manual threshold — see how Otsu's automatic choice compares</div>
+          <div class="otsu-demo">
+            <div class="otsu-left">
+              <div class="otsu-scene-btns">
+                <button class="otsu-btn active" onclick="setOtsuScene(this,'bimodal')">Bimodal</button>
+                <button class="otsu-btn"        onclick="setOtsuScene(this,'skewed')">Skewed</button>
+                <button class="otsu-btn"        onclick="setOtsuScene(this,'flat')">Flat</button>
+              </div>
+              <canvas id="otsuHistCanvas" width="280" height="160"></canvas>
+              <div class="otsu-ctrl-row">
+                <label>Manual T = <span id="manualThreshVal">128</span></label>
+                <input type="range" min="0" max="255" value="128" id="manualThresh" oninput="updateOtsu()">
+              </div>
+            </div>
+            <div class="otsu-right">
+              <div class="otsu-scores">
+                <div class="os-row"><span class="os-label">Otsu threshold</span>   <span class="os-val accent"      id="otsuThreshDisplay">—</span></div>
+                <div class="os-row"><span class="os-label">Otsu score (↓ better)</span><span class="os-val green-text" id="otsuScoreDisplay">—</span></div>
+                <div class="os-row"><span class="os-label">Manual score</span>      <span class="os-val"             id="manualScoreDisplay">—</span></div>
+              </div>
+              <div class="otsu-canvases">
+                <div class="otsu-c"><canvas id="otsuImgOrig"   width="116" height="87"></canvas><span class="md-lbl">Original</span></div>
+                <div class="otsu-c"><canvas id="otsuImgOtsu"   width="116" height="87"></canvas><span class="md-lbl">Otsu binary</span></div>
+                <div class="otsu-c"><canvas id="otsuImgManual" width="116" height="87"></canvas><span class="md-lbl">Manual binary</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="step-walkthrough">
+          <div class="sw-title">Otsu's algorithm — three steps</div>
+          <div class="sw-steps">
+            <div class="sw-step"><div class="sw-num">1</div><div class="sw-body"><div class="sw-label">Build normalized histogram: p[i] = fraction of pixels at intensity i</div><div class="sw-code">hist, _ = np.histogram(gray.ravel(), 256, [0,256])<br>p = hist / hist.sum()   # sum = 1.0</div></div></div>
+            <div class="sw-step"><div class="sw-num">2</div><div class="sw-body"><div class="sw-label">For each t, compute between-class variance (higher = better separation)</div><div class="sw-code">w0 = p[:t].sum() &nbsp;&nbsp;&nbsp;&nbsp;w1 = 1 − w0<br>μ0 = (i·p[:t]).sum()/w0 &nbsp;&nbsp;&nbsp;&nbsp;μ1 = (i·p[t:]).sum()/w1<br>σ²_between = w0 · w1 · (μ0 − μ1)²</div></div></div>
+            <div class="sw-step"><div class="sw-num">3</div><div class="sw-body"><div class="sw-label">Pick t* = argmax σ²_between — OpenCV does this in one call</div><div class="sw-code">t, binary = cv2.threshold(gray, 0, 255,<br>&nbsp;&nbsp;&nbsp;cv2.THRESH_BINARY + cv2.THRESH_OTSU)</div></div></div>
+          </div>
+        </div>
+
+        <div class="two-col">
+          <div class="code-block"><div class="cb-label">cv2 · Otsu threshold</div>
+<pre><code>gray = cv2.<span class="fn">cvtColor</span>(img, cv2.COLOR_BGR2GRAY)
+
+<span class="cm"># Fixed threshold</span>
+_, b_fixed = cv2.<span class="fn">threshold</span>(
+    gray, <span class="num">127</span>, <span class="num">255</span>, cv2.THRESH_BINARY)
+
+<span class="cm"># Otsu: T=0 tells OpenCV to auto-find it</span>
+t_otsu, b_otsu = cv2.<span class="fn">threshold</span>(
+    gray, <span class="num">0</span>, <span class="num">255</span>,
+    cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+print(f<span class="str">"Otsu T = {t_otsu}"</span>)
+
+<span class="cm"># Blur first for noisy images</span>
+blr = cv2.<span class="fn">GaussianBlur</span>(gray, (<span class="num">5</span>,<span class="num">5</span>), <span class="num">0</span>)
+t2, b2 = cv2.<span class="fn">threshold</span>(blr, <span class="num">0</span>, <span class="num">255</span>,
+    cv2.THRESH_BINARY + cv2.THRESH_OTSU)</code></pre></div>
+          <div class="code-block"><div class="cb-label">Adaptive threshold (uneven lighting)</div>
+<pre><code><span class="cm"># When Otsu fails (shadows, gradients)</span>
+adaptive = cv2.<span class="fn">adaptiveThreshold</span>(
+    gray,
+    <span class="num">255</span>,
+    cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+    cv2.THRESH_BINARY,
+    blockSize=<span class="num">11</span>,  <span class="cm"># local region (odd)</span>
+    C=<span class="num">2</span>            <span class="cm"># constant subtracted</span>
+)
+<span class="cm"># blockSize: how local the threshold is</span>
+<span class="cm"># C=2 avoids noise becoming foreground</span></code></pre></div>
+        </div>
+
+        <div class="challenge-card" id="ch-5">
+          <div class="challenge-header"><span class="challenge-badge">🐍 Mini Challenge</span><span class="challenge-title">Implement Otsu's threshold search from scratch</span></div>
+          <div class="challenge-desc">Iterate over all 256 possible thresholds, maximize between-class variance, and find the optimal T. Verify it falls between the two intensity peaks.</div>
+          <div class="challenge-editor">
+            <div class="editor-tabs"><span class="editor-tab active">solution.py</span></div>
+            <div class="code-editor-wrap"><textarea class="code-editor" id="ce-5" spellcheck="false">import numpy as np
+
+np.random.seed(0)
+dark   = np.random.normal(60,  15, 3000).clip(0,255).astype(np.uint8)
+bright = np.random.normal(180, 20, 2000).clip(0,255).astype(np.uint8)
+pixels = np.concatenate([dark, bright])
+
+hist, _ = np.histogram(pixels, bins=256, range=(0, 256))
+p = hist / hist.sum()
+
+best_t   = 0
+best_var = 0.0
+
+for t in range(1, 256):
+    w0 = p[:t].sum()
+    w1 = ___                            # 1 - w0
+    if w0 == 0 or w1 == 0: continue
+
+    ix  = np.arange(256)
+    mu0 = (ix[:t] * p[:t]).sum() / w0  # mean of class 0
+    mu1 = ___                           # mean of class 1
+
+    between_var = ___ * ___ * (mu0 - mu1)**2   # w0 * w1 * (mu0-mu1)^2
+
+    if between_var > best_var:
+        best_var = between_var
+        best_t   = t
+
+print(f"Otsu threshold: {best_t}")
+print(f"Dark mean:  {dark.mean():.1f}")
+print(f"Bright mean:{bright.mean():.1f}")
+print(f"T between peaks: {float(dark.mean()) < best_t < float(bright.mean())}")</textarea></div>
+            <div class="editor-actions">
+              <button class="run-btn" onclick="runChallenge('ce-5','out-5','check-5')">▶ Run</button>
+              <button class="hint-btn" onclick="toggleHint('hint-5')">💡 Hint</button>
+              <button class="reset-btn" onclick="resetChallenge('ce-5',5)">↺ Reset</button>
+            </div>
+          </div>
+          <div class="hint-box" id="hint-5" style="display:none"><strong>Hints:</strong><br>• w1 = 1 - w0<br>• mu1 = (ix[t:] * p[t:]).sum() / w1<br>• between_var = w0 * w1 * (mu0 - mu1)**2<br>• Expect T around 110–130 (between 60 and 180)</div>
+          <div class="output-wrap" id="out-5" style="display:none"><div class="output-label">Output</div><pre class="output-pre" id="out-5-pre"></pre></div>
+          <div class="check-result" id="check-5" style="display:none"></div>
+          <div class="expected-box"><span class="expected-label">Expected:</span><code>Otsu threshold: ~110–130<br>T between peaks: True</code></div>
+        </div>
+      </section>
+
+      <!-- ─── SEC 6: PLAYGROUND ─── -->
+      <section class="lesson-sec" id="sec-playground">
+        <div class="sec-header">
+          <span class="sec-num">06</span>
+          <div><h2 class="sec-title">Full Python Playground</h2><p class="sec-sub">Eksplorasi bebas — gabungkan semua filter yang sudah dipelajari</p></div>
+        </div>
+        <div class="prose">Python 3.11 + NumPy langsung di browser via <strong>Pyodide</strong>. Coba pipeline lengkap denoising → sharpening → binarization, atau uji kernel buatanmu sendiri.</div>
+
+        <div class="playground-card">
+          <div class="playground-toolbar">
+            <div class="pg-toolbar-left">
+              <span class="pg-title">🐍 Python 3.11 · NumPy ready</span>
+              <span class="py-ready-dot" id="pgReadyDot"></span>
+            </div>
+            <div class="pg-toolbar-right">
+              <button class="pg-snippet-btn" onclick="loadSnippet('gaussian')">gaussian</button>
+              <button class="pg-snippet-btn" onclick="loadSnippet('median')">median</button>
+              <button class="pg-snippet-btn" onclick="loadSnippet('unsharp')">unsharp</button>
+              <button class="pg-snippet-btn" onclick="loadSnippet('otsu')">otsu</button>
+              <button class="pg-snippet-btn" onclick="loadSnippet('pipeline')">full pipeline</button>
+            </div>
+          </div>
+          <div class="code-editor-wrap">
+            <textarea class="code-editor playground-editor" id="playground-editor" spellcheck="false">import numpy as np
+
+# ── Simulate a noisy grayscale image ───────────────────────────
+np.random.seed(42)
+img = np.random.randint(40, 200, (64, 64), dtype=np.uint8)
+
+# Add 5% salt-and-pepper noise
+noisy = img.copy()
+n = int(img.size * 0.05)
+noisy.flat[np.random.choice(img.size, n, replace=False)] = 255
+noisy.flat[np.random.choice(img.size, n, replace=False)] = 0
+print("Noise spikes:", int(np.sum((noisy==0)|(noisy==255))))
+
+# ── Gaussian 3×3 blur ────────────────────────────────────────
+def gaussian_3x3(image):
+    k = np.array([[1,2,1],[2,4,2],[1,2,1]], dtype=np.float32) / 16
+    p = np.pad(image.astype(float), 1, mode='reflect')
+    return np.array([[
+        (p[y:y+3,x:x+3]*k).sum()
+        for x in range(image.shape[1])]
+        for y in range(image.shape[0])]).clip(0,255).astype(np.uint8)
+
+# ── Median 3×3 filter ────────────────────────────────────────
+def median_3x3(image):
+    p = np.pad(image.astype(float), 1, mode='reflect')
+    return np.array([[
+        np.median(p[y:y+3,x:x+3])
+        for x in range(image.shape[1])]
+        for y in range(image.shape[0])]).astype(np.uint8)
+
+gauss  = gaussian_3x3(noisy)
+median = median_3x3(noisy)
+print("After Gaussian — spikes:", int(np.sum((gauss==0)|(gauss==255))))
+print("After Median   — spikes:", int(np.sum((median==0)|(median==255))))
+
+# ── Unsharp mask on denoised image ───────────────────────────
+blurred   = gaussian_3x3(median)
+mask      = median.astype(float) - blurred
+sharpened = np.clip(median + 1.2 * mask, 0, 255).astype(np.uint8)
+print(f"\nStd before sharpen: {median.std():.2f}")
+print(f"Std after  sharpen: {sharpened.std():.2f}  (higher = more contrast)")
+
+# ── Otsu threshold ────────────────────────────────────────────
+hist, _ = np.histogram(sharpened.ravel(), 256, [0,256])
+p_h = hist / hist.sum()
+best_t, best_v = 0, 0.0
+for t in range(1, 256):
+    w0 = p_h[:t].sum(); w1 = 1-w0
+    if w0==0 or w1==0: continue
+    ix = np.arange(256)
+    mu0 = (ix[:t]*p_h[:t]).sum()/w0
+    mu1 = (ix[t:]*p_h[t:]).sum()/w1
+    bv  = w0*w1*(mu0-mu1)**2
+    if bv>best_v: best_v,best_t=bv,t
+
+binary = (sharpened >= best_t).astype(np.uint8) * 255
+print(f"\nOtsu T = {best_t}")
+print(f"Foreground pixels: {int((binary==255).sum())} / {binary.size}")
+</textarea>
+          </div>
+          <div class="playground-actions">
+            <button class="run-btn large" onclick="runPlayground()">▶ Run Code</button>
+            <button class="reset-btn" onclick="resetPlayground()">↺ Reset</button>
+            <span class="pg-note">Ctrl+Enter to run</span>
+          </div>
+          <div class="output-wrap" id="pg-output" style="display:none"><div class="output-label">Output</div><pre class="output-pre" id="pg-output-pre"></pre></div>
+        </div>
+      </section>
+
+      <!-- ─── SEC 7: QUIZ ─── -->
+      <section class="lesson-sec" id="sec-quiz">
+        <div class="sec-header">
+          <span class="sec-num">07</span>
+          <div><h2 class="sec-title">Quiz + Coding Challenge</h2><p class="sec-sub">Teori + praktik — selesaikan keduanya untuk lulus</p></div>
+        </div>
+
+        <div class="quiz-block-title">Part A · Multiple Choice</div>
+        <div id="quizContainer"></div>
+
+        <div class="quiz-block-title" style="margin-top:40px">Part B · Coding Challenge</div>
+        <div class="prose" style="margin-bottom:20px">3 soal coding — fix the bug, fill in blanks, dan full pipeline.</div>
+
+        <div class="challenge-card" id="cq-1">
+          <div class="challenge-header"><span class="challenge-badge quiz-badge">📝 Coding Quiz 1 · Fix the bug</span><span class="challenge-title">Gaussian kernel doesn't sum to 1 — brightness will shift</span></div>
+          <div class="challenge-desc">Kode ini membuat kernel 3×3 tapi lupa normalisasi. Tambahkan satu baris: bagi kernel dengan jumlah semua elemennya sehingga <code>kernel.sum() == 1.0</code>.</div>
+          <div class="challenge-editor">
+            <div class="editor-tabs"><span class="editor-tab active">buggy.py</span></div>
+            <div class="code-editor-wrap"><textarea class="code-editor" id="cq-1-editor" spellcheck="false">import numpy as np
+
+# BUG: kernel is not normalized — fix it so kernel.sum() == 1.0
+kernel = np.array([[1, 2, 1],
+                   [2, 4, 2],
+                   [1, 2, 1]], dtype=np.float32)
+# Add one line here to normalize ↓
+
+patch  = np.full((3, 3), 100.0)  # flat patch, all pixels = 100
+result = float(np.sum(patch * kernel))
+
+print("Kernel sum:", round(float(kernel.sum()), 4))  # must be 1.0
+print("Output on flat patch:", round(result, 2))      # must be 100.0
+print("Correct:", abs(result - 100.0) < 0.01)</textarea></div>
+            <div class="editor-actions">
+              <button class="run-btn" onclick="runChallenge('cq-1-editor','cq-1-out','cq-1-check')">▶ Run &amp; Check</button>
+              <button class="reset-btn" onclick="resetCodingQuiz(1)">↺ Reset</button>
+            </div>
+          </div>
+          <div class="output-wrap" id="cq-1-out" style="display:none"><div class="output-label">Output</div><pre class="output-pre" id="cq-1-out-pre"></pre></div>
+          <div class="check-result" id="cq-1-check" style="display:none"></div>
+          <div class="expected-box"><span class="expected-label">Expected:</span><code>Kernel sum: 1.0 &nbsp; Output on flat patch: 100.0 &nbsp; Correct: True</code></div>
+        </div>
+
+        <div class="challenge-card" id="cq-2">
+          <div class="challenge-header"><span class="challenge-badge quiz-badge">📝 Coding Quiz 2 · Fill in the blank</span><span class="challenge-title">Denoise with median, then sharpen with unsharp mask</span></div>
+          <div class="challenge-desc">Complete the two-stage pipeline: median filter to remove salt-and-pepper, then unsharp mask to recover sharpness.</div>
+          <div class="challenge-editor">
+            <div class="editor-tabs"><span class="editor-tab active">solution.py</span></div>
+            <div class="code-editor-wrap"><textarea class="code-editor" id="cq-2-editor" spellcheck="false">import numpy as np
+np.random.seed(5)
+
+img = np.random.randint(30, 220, (20, 20), dtype=np.uint8)
+
+# Add 10% salt-and-pepper noise
+noisy = img.copy().ravel().astype(float)
+n = int(len(noisy) * 0.1)
+noisy[np.random.choice(len(noisy), n, replace=False)] = 255
+noisy[np.random.choice(len(noisy), n, replace=False)] = 0
+noisy = noisy.reshape(20, 20).astype(np.uint8)
+print("Spikes in noisy:", int(np.sum((noisy==0)|(noisy==255))))
+
+# Stage 1: median filter (per-row 3-point sliding window)
+def median_rows(image, w=3):
+    p   = np.pad(image.astype(float), ((0,0),(w//2,w//2)), mode='edge')
+    out = np.array([[np.median(p[y, x:x+w])
+                     for x in range(image.shape[1])]
+                    for y in range(image.shape[0])])
+    return out.astype(np.uint8)
+
+denoised = median_rows(noisy)
+print("Spikes after median:", int(np.sum((denoised==0)|(denoised==255))))
+
+# Stage 2: unsharp mask
+def row_blur(img, k=3):
+    p = np.pad(img.astype(float), ((0,0),(k//2,k//2)), mode='edge')
+    return np.array([[p[y,x:x+k].mean()
+                      for x in range(img.shape[1])]
+                     for y in range(img.shape[0])])
+
+blurred   = row_blur(denoised)
+mask      = denoised.astype(float) - ___          # detail mask
+amount    = 1.2
+sharpened = np.clip(denoised.astype(float) + ___ * mask, 0, 255).astype(np.uint8)
+
+print("Std before sharpen:", round(float(denoised.std()), 2))
+print("Std after  sharpen:", round(float(sharpened.std()), 2))
+print("Sharpening worked:", sharpened.std() >= denoised.std() * 0.98)</textarea></div>
+            <div class="editor-actions">
+              <button class="run-btn" onclick="runChallenge('cq-2-editor','cq-2-out','cq-2-check')">▶ Run &amp; Check</button>
+              <button class="reset-btn" onclick="resetCodingQuiz(2)">↺ Reset</button>
+            </div>
+          </div>
+          <div class="output-wrap" id="cq-2-out" style="display:none"><div class="output-label">Output</div><pre class="output-pre" id="cq-2-out-pre"></pre></div>
+          <div class="check-result" id="cq-2-check" style="display:none"></div>
+          <div class="expected-box"><span class="expected-label">Expected:</span><code>Spikes after median: 0 &nbsp; Sharpening worked: True</code></div>
+        </div>
+
+        <div class="challenge-card" id="cq-3">
+          <div class="challenge-header"><span class="challenge-badge quiz-badge">📝 Coding Quiz 3 · Full pipeline</span><span class="challenge-title">Noise → median → Otsu binarization</span></div>
+          <div class="challenge-desc">Complete the full pipeline: add noise, median denoise, then Otsu binarization. Verify the threshold lands between the two peaks and the foreground block is classified correctly.</div>
+          <div class="challenge-editor">
+            <div class="editor-tabs"><span class="editor-tab active">solution.py</span></div>
+            <div class="code-editor-wrap"><textarea class="code-editor" id="cq-3-editor" spellcheck="false">import numpy as np
+np.random.seed(7)
+
+img = np.random.randint(40, 80, (30, 30), dtype=np.uint8)
+img[10:20, 10:20] = np.random.randint(160, 200, (10,10), dtype=np.uint8)
+
+# Step 1: add 6% salt-and-pepper
+noisy = img.copy().ravel().astype(float)
+n = int(len(noisy) * 0.06)
+noisy[np.random.choice(len(noisy), n, replace=False)] = 255
+noisy[np.random.choice(len(noisy), n, replace=False)] = 0
+noisy = noisy.reshape(30,30).astype(np.uint8)
+
+# Step 2: 3×3 median denoise
+p = np.pad(noisy.astype(float), 1, mode='reflect')
+denoised = np.array([[np.median(p[y:y+3, x:x+3])
+                      for x in range(30)]
+                     for y in range(30)]).astype(np.uint8)
+print("Spikes after median:", int(np.sum((denoised==0)|(denoised==255))))
+
+# Step 3: Otsu threshold search
+hist, _ = np.histogram(denoised.ravel(), 256, [0,256])
+p_h = hist / hist.sum()
+best_t, best_v = 0, 0.0
+for t in range(1, 256):
+    w0 = p_h[:t].sum()
+    w1 = ___                              # fill: 1 - w0
+    if w0==0 or w1==0: continue
+    ix  = np.arange(256)
+    mu0 = (ix[:t]*p_h[:t]).sum()/w0
+    mu1 = ___                             # fill: (ix[t:]*p_h[t:]).sum()/w1
+    bv  = w0*w1*(mu0-mu1)**2
+    if bv>best_v: best_v,best_t=bv,t
+
+# Step 4: apply threshold
+binary = (denoised >= ___).astype(np.uint8) * 255   # fill: best_t
+
+dark_mean   = float(img[img < 120].mean())
+bright_mean = float(img[img >= 120].mean())
+print(f"Otsu T: {best_t}")
+print(f"T between peaks: {dark_mean < best_t < bright_mean}")
+fg_white = (binary[10:20, 10:20] == 255).mean()
+print(f"Foreground white: {fg_white:.0%}  (expect ≥90%)")</textarea></div>
+            <div class="editor-actions">
+              <button class="run-btn" onclick="runChallenge('cq-3-editor','cq-3-out','cq-3-check')">▶ Run &amp; Check</button>
+              <button class="reset-btn" onclick="resetCodingQuiz(3)">↺ Reset</button>
+            </div>
+          </div>
+          <div class="output-wrap" id="cq-3-out" style="display:none"><div class="output-label">Output</div><pre class="output-pre" id="cq-3-out-pre"></pre></div>
+          <div class="check-result" id="cq-3-check" style="display:none"></div>
+          <div class="expected-box"><span class="expected-label">Expected:</span><code>Spikes after median: 0 &nbsp; T between peaks: True &nbsp; Foreground white: ≥90%</code></div>
+        </div>
+
+        <div class="final-score-card" id="finalScore" style="display:none">
+          <div class="fs-title">Lesson Complete! 🎉</div>
+          <div class="fs-scores" id="fsScores"></div>
+          <div class="fs-msg" id="fsMsg"></div>
+        </div>
+        <div class="next-lesson-cta" id="nextLesson" style="display:none">
+          <div class="nlc-inner">
+            <span class="nlc-label">Next lesson</span>
+            <h3 class="nlc-title">Morphological Transforms →</h3>
+            <p class="nlc-desc">Erosion, dilation, opening, closing — structural operations that reshape binary masks.</p>
+            <a href="#" class="nlc-btn">Continue</a>
+          </div>
+        </div>
+      </section>
+
+      <div class="lesson-pagination">
+        <a href="image-processing-opencv.html" class="lpag-btn prev">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 8H3M7 4L3 8l4 4"/></svg>
+          Image Processing with OpenCV
+        </a>
+        <span class="lpag-label">Module 1 · 3 of 4</span>
+        <a href="#" class="lpag-btn next disabled">
+          Morphological Transforms
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+        </a>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div id="footer-placeholder"></div>
+<script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
+<script src="/js/shared.js"></script>
+<script src="/js/lang.js"></script>
+<script src="/js/filtering-kernels.js"></script>
+</body>
+</html>

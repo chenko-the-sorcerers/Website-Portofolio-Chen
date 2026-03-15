@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tokenisasi — NLP | AI Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/shared.css">
+<link rel="stylesheet" href="/css/tokenization.css">
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-follower" id="cursor-follower"></div>
+<div id="nav-placeholder"></div>
+<div class="read-progress"><div id="readBar"></div></div>
+
+<div class="lesson-layout">
+
+  <!-- ═══ SIDEBAR ═══ -->
+  <aside class="lesson-sidebar" id="lessonSidebar">
+    <div class="sb-top">
+      <a href="/ai-lab/nlp.html" class="sb-back">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 3L5 8l5 5"/></svg>
+        Natural Language Processing
+      </a>
+      <div class="sb-studying">
+        <div class="sb-studying-label">Sedang belajar</div>
+        <div class="sb-studying-path">
+          <span class="sbp-item">AI Lab</span>
+          <span class="sbp-sep">›</span>
+          <span class="sbp-item">NLP</span>
+          <span class="sbp-sep">›</span>
+          <span class="sbp-item active">Tokenisasi</span>
+        </div>
+      </div>
+      <div class="sb-chapter">Modul 1 · Text Fundamentals</div>
+      <div class="sb-lesson-title">Tokenisasi</div>
+      <div class="sb-tags">
+        <span class="sb-tag">Fondasi</span>
+        <span class="sb-tag">Bahasa Indonesia</span>
+        <span class="sb-tag interactive">✂️ Interaktif</span>
+      </div>
+    </div>
+
+    <nav class="lesson-nav">
+      <div class="nav-section-label">Dalam lesson ini</div>
+      <a href="#sec-konsep" class="lnav-item active" data-sec="sec-konsep">
+        <span class="lnav-dot"></span><span class="lnav-text">Apa itu Token?</span><span class="lnav-num">01</span>
+      </a>
+      <a href="#sec-strategi" class="lnav-item" data-sec="sec-strategi">
+        <span class="lnav-dot"></span><span class="lnav-text">Empat Strategi</span><span class="lnav-num">02</span>
+      </a>
+      <a href="#sec-indonesia" class="lnav-item" data-sec="sec-indonesia">
+        <span class="lnav-dot"></span><span class="lnav-text">Tantangan Bahasa Indonesia</span><span class="lnav-num">03</span>
+      </a>
+      <a href="#sec-modern" class="lnav-item" data-sec="sec-modern">
+        <span class="lnav-dot"></span><span class="lnav-text">Tokenizer Modern</span><span class="lnav-num">04</span>
+      </a>
+      <a href="#sec-lab" class="lnav-item" data-sec="sec-lab">
+        <span class="lnav-dot"></span><span class="lnav-text">🧪 Lab Interaktif</span><span class="lnav-num">05</span>
+      </a>
+    </nav>
+
+    <div class="sb-progress">
+      <div class="sb-prog-label"><span>Progress</span><span id="progPct">0%</span></div>
+      <div class="sb-prog-track"><div class="sb-prog-fill" id="progFill"></div></div>
+    </div>
+
+    <div class="sb-module-nav">
+      <div class="nav-section-label" style="padding:0 8px;margin-bottom:8px">Modul 1 · Text Fundamentals</div>
+      <a href="/pages/ai-lab/tokenization.html" class="smn-item current"><span class="smn-dot"></span><span>Tokenisasi</span></a>
+      <a href="/pages/ai-lab/preprocessing.html" class="smn-item locked"><span class="smn-dot"></span><span>Basic Preprocessing</span><span class="smn-lock">🔒</span></a>
+      <a href="/ai-lab/nlp/pos-ner.html" class="smn-item locked"><span class="smn-dot"></span><span>POS &amp; NER</span><span class="smn-lock">🔒</span></a>
+    </div>
+  </aside>
+
+  <!-- ═══ MAIN ═══ -->
+  <main class="lesson-main">
+    <div class="lesson-topbar">
+      <div class="ltb-left">
+        <button class="ltb-menu" id="menuBtn" onclick="toggleSidebar()">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg>
+        </button>
+        <span class="ltb-crumb">Tokenisasi</span>
+      </div>
+      <div class="ltb-right">
+        <a href="/ai-lab/nlp.html" class="ltb-btn">← NLP</a>
+        <a href="/pages/ai-lab/preprocessing.html" class="ltb-btn primary">Preprocessing →</a>
+      </div>
+    </div>
+
+    <div class="lesson-body">
+
+      <!-- ══════════ SEC 1: APA ITU TOKEN ══════════ -->
+      <section class="lesson-sec" id="sec-konsep">
+        <div class="sec-header">
+          <span class="sec-num">01</span>
+          <div>
+            <h2 class="sec-title">Apa itu Token?</h2>
+            <p class="sec-sub">Langkah pertama setiap pipeline NLP — memotong teks menjadi unit yang bisa diproses mesin</p>
+          </div>
+        </div>
+
+        <div class="prose">
+          Komputer tidak bisa langsung membaca string teks. Sebelum model bisa "memahami" kalimat, teks harus dipecah menjadi unit-unit kecil yang disebut <strong>token</strong>. Token bisa berupa kata, potongan kata (subkata), karakter tunggal, atau bahkan byte — tergantung strategi yang dipilih.
+        </div>
+
+        <div class="problem-overview">
+          <div class="prob-card">
+            <div class="prob-icon">🧩</div>
+            <div class="prob-num">Definisi</div>
+            <div class="prob-title">Token = Unit Terkecil</div>
+            <div class="prob-desc">Token adalah potongan teks paling kecil yang dikenali model. Setiap token dikonversi menjadi angka (Token ID), lalu dipetakan ke vektor berdimensi tinggi melalui embedding layer.</div>
+          </div>
+          <div class="prob-arrow">→</div>
+          <div class="prob-card">
+            <div class="prob-icon">🔢</div>
+            <div class="prob-num">Dampak</div>
+            <div class="prob-title">Pilihan Token = Pilihan Model</div>
+            <div class="prob-desc">Ukuran vocabulary, panjang sekuens, dan kemampuan menangani kata baru — semuanya ditentukan oleh strategi tokenisasi. Keputusan ini tidak bisa diubah setelah pre-training.</div>
+          </div>
+        </div>
+
+        <div class="worked-box">
+          <div class="wb-badge">📐 Pipeline Teks → Angka</div>
+          <div class="wb-title">Tiga Tahap Tokenisasi</div>
+          <div class="calc-chain">
+            <div class="calc-step">
+              <div class="cs-num-circle">1</div>
+              <div class="cs-content">
+                <div class="cs-label">Normalisasi</div>
+                <div class="math-line">
+                  <span class="math-term">"Saya Beli BAKSO."</span>
+                  <span class="math-op">→</span>
+                  <span class="math-result green">"saya beli bakso."</span>
+                  <span class="math-comment">// lowercase, strip whitespace</span>
+                </div>
+              </div>
+            </div>
+            <div class="calc-step">
+              <div class="cs-num-circle">2</div>
+              <div class="cs-content">
+                <div class="cs-label">Pre-tokenisasi</div>
+                <div class="math-line">
+                  <span class="math-term">"saya beli bakso."</span>
+                  <span class="math-op">→</span>
+                  <span class="math-result green">["saya", "beli", "bakso", "."]</span>
+                  <span class="math-comment">// pisah spasi & tanda baca</span>
+                </div>
+              </div>
+            </div>
+            <div class="calc-step">
+              <div class="cs-num-circle">3</div>
+              <div class="cs-content">
+                <div class="cs-label">Tokenisasi Final → Token IDs</div>
+                <div class="math-line">
+                  <span class="math-term">["saya", "beli", "bakso", "."]</span>
+                  <span class="math-op">→</span>
+                  <span class="math-result purple">[2, 12, 534, 1823, 18, 3]</span>
+                  <span class="math-comment">// termasuk [CLS]=2, [SEP]=3</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="prose">
+          Ukuran <strong>vocabulary (vocab size)</strong> adalah salah satu keputusan terpenting dalam desain model. Vocab kecil memaksa kata-kata dipecah menjadi subunit — kalimat jadi lebih panjang, komputasi lebih mahal. Vocab besar lebih ekspresif tapi membutuhkan memori embedding masif.
+        </div>
+
+        <div class="comparison-table-wrap">
+          <table class="comparison-table">
+            <thead>
+              <tr>
+                <th>Model</th>
+                <th>Tokenizer</th>
+                <th>Vocab Size</th>
+                <th>Strategi</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>IndoBERT</td>
+                <td>WordPiece</td>
+                <td class="tc-mid">32.000</td>
+                <td>Subkata — spesifik Bahasa Indonesia</td>
+              </tr>
+              <tr>
+                <td>BERT Base</td>
+                <td>WordPiece</td>
+                <td class="tc-mid">30.522</td>
+                <td>Subkata — dominan Bahasa Inggris</td>
+              </tr>
+              <tr>
+                <td>XLM-R</td>
+                <td>SentencePiece (BPE)</td>
+                <td class="tc-good">250.000</td>
+                <td>Multilingual — 100+ bahasa</td>
+              </tr>
+              <tr>
+                <td>GPT-4</td>
+                <td>tiktoken (BPE)</td>
+                <td class="tc-good">~100.000</td>
+                <td>BPE efisien untuk bahasa Inggris + code</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="info-box">
+          <strong>IndoBERT</strong> dilatih dari Wikipedia Bahasa Indonesia dan artikel berita. Vocab 32.000-nya sudah mencakup kata-kata formal dengan baik, tapi masih kesulitan dengan slang, kata daerah, dan nama entitas lokal yang tidak ada di data latih.
+        </div>
+
+      </section>
+
+      <!-- ══════════ SEC 2: EMPAT STRATEGI ══════════ -->
+      <section class="lesson-sec" id="sec-strategi">
+        <div class="sec-header">
+          <span class="sec-num">02</span>
+          <div>
+            <h2 class="sec-title">Empat Strategi Tokenisasi</h2>
+            <p class="sec-sub">Setiap pendekatan punya karakteristik dan trade-off — pilihan tergantung tugas, bahasa, dan ukuran vocabulary</p>
+          </div>
+        </div>
+
+        <div class="prose">
+          Tidak ada satu strategi terbaik. Pemilihan tokenizer bergantung pada bahasa target, ukuran dataset, dan task yang akan diselesaikan. Model modern hampir semuanya menggunakan pendekatan <strong>subkata (subword)</strong> karena keseimbangan antara efisiensi dan coverage-nya.
+        </div>
+
+        <div class="strategy-grid">
+          <div class="strategy-card">
+            <div class="sc-header">
+              <span class="sc-icon">🔤</span>
+              <div>
+                <div class="sc-name">Berbasis Kata</div>
+                <div class="sc-level">Word-level</div>
+              </div>
+            </div>
+            <p class="sc-desc">Pisahkan berdasarkan spasi dan tanda baca. Paling intuitif — satu kata = satu token. Tapi vocab sangat besar dan tidak bisa menangani kata di luar daftar (OOV).</p>
+            <div class="sc-pros-cons">
+              <ul class="sc-pros"><li>Intuitif</li><li>Cepat</li></ul>
+              <ul class="sc-cons"><li>OOV tinggi</li><li>Vocab besar</li></ul>
+            </div>
+          </div>
+          <div class="strategy-card">
+            <div class="sc-header">
+              <span class="sc-icon">🔬</span>
+              <div>
+                <div class="sc-name">Subkata</div>
+                <div class="sc-level">Subword (BPE / WordPiece)</div>
+              </div>
+            </div>
+            <p class="sc-desc">Kata langka dipecah menjadi subunit yang lebih sering muncul. Kata umum tetap utuh. Standar industri — dipakai BERT, GPT, dan hampir semua LLM modern.</p>
+            <div class="sc-pros-cons">
+              <ul class="sc-pros"><li>Vocab efisien</li><li>Minim OOV</li></ul>
+              <ul class="sc-cons"><li>Kurang intuitif</li><li>Sekuens lebih panjang</li></ul>
+            </div>
+          </div>
+          <div class="strategy-card">
+            <div class="sc-header">
+              <span class="sc-icon">🔡</span>
+              <div>
+                <div class="sc-name">Karakter</div>
+                <div class="sc-level">Character-level</div>
+              </div>
+            </div>
+            <p class="sc-desc">Setiap karakter adalah token. Vocab sangat kecil (26+ huruf), nol OOV. Tapi sekuens sangat panjang dan hubungan semantik jauh lebih sulit dipelajari model.</p>
+            <div class="sc-pros-cons">
+              <ul class="sc-pros"><li>Nol OOV</li><li>Vocab minimal</li></ul>
+              <ul class="sc-cons"><li>Sekuens panjang</li><li>Komputasi mahal</li></ul>
+            </div>
+          </div>
+          <div class="strategy-card">
+            <div class="sc-header">
+              <span class="sc-icon">📝</span>
+              <div>
+                <div class="sc-name">Kalimat</div>
+                <div class="sc-level">Sentence-level</div>
+              </div>
+            </div>
+            <p class="sc-desc">Pisahkan berdasarkan batas kalimat (titik, tanda seru, tanya). Berguna untuk analisis diskursus, terjemahan paragraf, dan chunking dokumen untuk RAG pipeline.</p>
+            <div class="sc-pros-cons">
+              <ul class="sc-pros"><li>Konteks penuh</li><li>Ideal RAG</li></ul>
+              <ul class="sc-cons"><li>Granular rendah</li><li>Batas ambigu</li></ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="worked-box">
+          <div class="wb-badge">🔬 BPE — Byte Pair Encoding</div>
+          <div class="wb-title">Bagaimana BPE Membangun Vocabulary</div>
+          <div class="prose" style="margin-bottom:16px;">
+            BPE mulai dari karakter individual, lalu berulang kali menggabungkan pasangan yang paling sering muncul bersama. Proses ini diulangi ribuan kali hingga vocabulary target tercapai.
+          </div>
+          <div class="calc-chain">
+            <div class="calc-step">
+              <div class="cs-num-circle">1</div>
+              <div class="cs-content">
+                <div class="cs-label">Mulai dari karakter individual</div>
+                <div class="math-line">
+                  <span class="math-term">"bakso"</span><span class="math-op">→</span>
+                  <span class="math-term blue">b</span><span class="math-term blue">a</span>
+                  <span class="math-term blue">k</span><span class="math-term blue">s</span>
+                  <span class="math-term blue">o</span>
+                  <span class="math-comment">// 5 token</span>
+                </div>
+              </div>
+            </div>
+            <div class="calc-step">
+              <div class="cs-num-circle">2</div>
+              <div class="cs-content">
+                <div class="cs-label">Merge pasangan "ba" paling sering (iterasi 1)</div>
+                <div class="math-line">
+                  <span class="math-term blue">ba</span>
+                  <span class="math-term blue">k</span><span class="math-term blue">s</span>
+                  <span class="math-term blue">o</span>
+                  <span class="math-comment">// 4 token</span>
+                </div>
+              </div>
+            </div>
+            <div class="calc-step">
+              <div class="cs-num-circle">3</div>
+              <div class="cs-content">
+                <div class="cs-label">Setelah ribuan merge — kata umum jadi satu token</div>
+                <div class="math-line">
+                  <span class="math-result green">"bakso"</span>
+                  <span class="math-comment">// 1 token — sudah cukup sering di korpus</span>
+                </div>
+                <div class="math-line" style="margin-top:6px;">
+                  <span class="math-term purple">"mempertanggungjawabkan"</span>
+                  <span class="math-op">→</span>
+                  <span class="math-result">"me"</span><span class="math-op">+</span>
+                  <span class="math-result">"##mper"</span><span class="math-op">+</span>
+                  <span class="math-result">"##tanggung"</span><span class="math-op">+</span>
+                  <span class="math-result">"##jawab"</span><span class="math-op">+</span>
+                  <span class="math-result">"##kan"</span>
+                  <span class="math-comment">// 5 token</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="three-props">
+          <div class="prop-card">
+            <div class="prop-num">BPE</div>
+            <div class="prop-title">Byte Pair Encoding</div>
+            <div class="prop-desc">Merge berdasarkan frekuensi pasangan. Dipakai GPT-2, GPT-4, RoBERTa. Tidak butuh pre-tokenisasi bahasa spesifik.</div>
+            <div class="prop-note">✓ GPT, RoBERTa</div>
+          </div>
+          <div class="prop-card">
+            <div class="prop-num">WP</div>
+            <div class="prop-title">WordPiece</div>
+            <div class="prop-desc">Merge berdasarkan likelihood, bukan frekuensi. Token lanjutan ditandai dengan <code style="color:#bf5af2">##</code>. Dipakai BERT dan IndoBERT.</div>
+            <div class="prop-note">✓ BERT, IndoBERT</div>
+          </div>
+          <div class="prop-card">
+            <div class="prop-num">SP</div>
+            <div class="prop-title">SentencePiece</div>
+            <div class="prop-desc">Bekerja langsung dari teks mentah tanpa pre-tokenisasi. Gunakan <code style="color:#bf5af2">▁</code> untuk tanda awal kata. Ideal untuk bahasa non-Latin.</div>
+            <div class="prop-note">✓ T5, mBERT, XLM-R</div>
+          </div>
+        </div>
+
+        <div class="insight-callout">
+          <div class="ic-icon">🔑</div>
+          <div class="ic-body">
+            <strong>Aturan praktis:</strong> Untuk Bahasa Indonesia, IndoBERT (WordPiece, 32K) adalah pilihan terbaik untuk teks formal. Untuk konten media sosial atau multilingual, XLM-R (SentencePiece, 250K) lebih kuat karena vocab yang jauh lebih besar memberikan coverage yang lebih luas termasuk slang dan campuran bahasa.
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ══════════ SEC 3: TANTANGAN BAHASA INDONESIA ══════════ -->
+      <section class="lesson-sec" id="sec-indonesia">
+        <div class="sec-header">
+          <span class="sec-num">03</span>
+          <div>
+            <h2 class="sec-title">Tantangan Bahasa Indonesia</h2>
+            <p class="sec-sub">Karakteristik unik yang membuat tokenisasi Bahasa Indonesia lebih rumit dari Bahasa Inggris</p>
+          </div>
+        </div>
+
+        <div class="prose">
+          Bahasa Inggris relatif "mudah" untuk tokenizer karena strukturnya relatif sederhana — satu kata, satu unit makna. Bahasa Indonesia jauh lebih kompleks karena sifatnya yang <strong>aglutinatif</strong> — makna dibentuk dengan menempelkan awalan, akhiran, dan konfiks pada kata dasar.
+        </div>
+
+        <div class="worked-box">
+          <div class="wb-badge">🌿 Morfologi Aglutinatif</div>
+          <div class="wb-title">Satu Akar, Puluhan Derivasi</div>
+          <div class="prose" style="margin-bottom:16px;">
+            Kata dasar <strong>"kerja"</strong> bisa menghasilkan puluhan bentuk hanya dengan afiksasi. Tokenizer perlu memutuskan apakah setiap bentuk adalah token tersendiri atau dipecah berdasarkan morfem.
+          </div>
+          <div class="morpho-demo">
+            <div class="morpho-word-card">
+              <div class="morpho-original">bekerja</div>
+              <div class="morpho-breakdown">
+                <div class="morpho-piece m-prefix"><div class="morpho-value">ber-</div><div class="morpho-type">awalan</div></div>
+                <div class="morpho-sep">+</div>
+                <div class="morpho-piece m-root"><div class="morpho-value">kerja</div><div class="morpho-type">akar</div></div>
+              </div>
+            </div>
+            <div class="morpho-word-card">
+              <div class="morpho-original">mengerjakan</div>
+              <div class="morpho-breakdown">
+                <div class="morpho-piece m-prefix"><div class="morpho-value">me-</div><div class="morpho-type">awalan</div></div>
+                <div class="morpho-sep">+</div>
+                <div class="morpho-piece m-root"><div class="morpho-value">ngerja</div><div class="morpho-type">akar</div></div>
+                <div class="morpho-sep">+</div>
+                <div class="morpho-piece m-suffix"><div class="morpho-value">-kan</div><div class="morpho-type">akhiran</div></div>
+              </div>
+            </div>
+            <div class="morpho-word-card">
+              <div class="morpho-original">pekerjaan</div>
+              <div class="morpho-breakdown">
+                <div class="morpho-piece m-prefix"><div class="morpho-value">pe-</div><div class="morpho-type">awalan</div></div>
+                <div class="morpho-sep">+</div>
+                <div class="morpho-piece m-root"><div class="morpho-value">kerja</div><div class="morpho-type">akar</div></div>
+                <div class="morpho-sep">+</div>
+                <div class="morpho-piece m-suffix"><div class="morpho-value">-an</div><div class="morpho-type">akhiran</div></div>
+              </div>
+            </div>
+            <div class="morpho-word-card">
+              <div class="morpho-original">mempekerjakan</div>
+              <div class="morpho-breakdown">
+                <div class="morpho-piece m-prefix"><div class="morpho-value">memper-</div><div class="morpho-type">awalan</div></div>
+                <div class="morpho-sep">+</div>
+                <div class="morpho-piece m-root"><div class="morpho-value">kerja</div><div class="morpho-type">akar</div></div>
+                <div class="morpho-sep">+</div>
+                <div class="morpho-piece m-suffix"><div class="morpho-value">-kan</div><div class="morpho-type">akhiran</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="prose">
+          Tiga tantangan lain yang sering diabaikan tapi sangat berdampak pada kualitas NLP untuk konten Indonesia:
+        </div>
+
+        <div class="worked-box">
+          <div class="wb-badge">📱 Slang Digital &amp; Code-Switching</div>
+          <div class="wb-title">Bahasa Indonesia "Sungguhan" vs Bahasa Kamus</div>
+
+          <div style="margin-bottom:20px;">
+            <div style="font-size:13px;color:var(--text-2);margin-bottom:10px;line-height:1.65;">
+              Media sosial Indonesia penuh dengan singkatan, kreasi linguistik baru, dan campuran bahasa. Tokenizer berbasis Wikipedia saja akan menghasilkan fragmentasi yang tidak bermakna.
+            </div>
+            <div class="example-block">
+              <span class="ex-label">Input: "Gaskeun aja deh, gapapa belum perfect"</span>
+              <div style="margin-bottom:8px;font-size:11px;color:var(--text-3);font-family:var(--font-mono);">Tokenizer global (kurang tepat):</div>
+              <div class="ex-tokens">
+                <span class="ex-token" style="background:rgba(255,55,95,.1);border:1px solid rgba(255,55,95,.3);color:#ff375f;">Gas</span>
+                <span class="ex-token" style="background:rgba(255,55,95,.1);border:1px solid rgba(255,55,95,.3);color:#ff375f;">##keun</span>
+                <span class="ex-token tok-word">aja</span>
+                <span class="ex-token tok-word">deh</span>
+                <span class="ex-token tok-punct">,</span>
+                <span class="ex-token" style="background:rgba(255,55,95,.1);border:1px solid rgba(255,55,95,.3);color:#ff375f;">ga</span>
+                <span class="ex-token" style="background:rgba(255,55,95,.1);border:1px solid rgba(255,55,95,.3);color:#ff375f;">##papa</span>
+                <span class="ex-token tok-word">belum</span>
+                <span class="ex-token tok-word">perfect</span>
+              </div>
+              <div style="margin-top:10px;font-size:11px;color:var(--text-3);font-family:var(--font-mono);">Tokenizer lokal yang lebih baik:</div>
+              <div class="ex-tokens" style="margin-top:6px;">
+                <span class="ex-token tok-word">gaskeun</span>
+                <span class="ex-token tok-word">aja</span>
+                <span class="ex-token tok-word">deh</span>
+                <span class="ex-token tok-punct">,</span>
+                <span class="ex-token tok-word">gapapa</span>
+                <span class="ex-token tok-word">belum</span>
+                <span class="ex-token tok-special">perfect</span>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div style="font-size:13px;color:var(--text-2);margin-bottom:10px;line-height:1.65;">
+              <strong style="color:var(--text);">Code-switching</strong> — mencampur Bahasa Indonesia dan Inggris dalam satu kalimat — adalah fenomena alami di kalangan profesional Indonesia.
+            </div>
+            <div class="example-block">
+              <span class="ex-label">Input: "Fix aja yang urgent, meeting-nya reschedule ke besok"</span>
+              <div class="ex-tokens">
+                <span class="ex-token tok-word">Fix</span>
+                <span class="ex-token tok-word">aja</span>
+                <span class="ex-token tok-word">yang</span>
+                <span class="ex-token tok-special">urgent</span>
+                <span class="ex-token tok-punct">,</span>
+                <span class="ex-token tok-word">meeting</span>
+                <span class="ex-token tok-suffix">##-nya</span>
+                <span class="ex-token tok-prefix">re</span>
+                <span class="ex-token tok-suffix">##schedule</span>
+                <span class="ex-token tok-word">ke</span>
+                <span class="ex-token tok-word">besok</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="worked-box">
+          <div class="wb-badge">📍 Entitas Lokal</div>
+          <div class="wb-title">Nama Tempat &amp; Merek Indonesia</div>
+          <div class="prose" style="margin-bottom:14px;">
+            Indonesia punya ribuan nama tempat unik dan ekosistem startup lokal yang besar. Nama-nama ini sering tidak ada di vocab tokenizer global dan dipecah tidak bermakna — berdampak langsung pada kualitas NER.
+          </div>
+          <div class="example-block">
+            <span class="ex-label">Tokenizer global vs lokal</span>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+              <div>
+                <div style="font-size:10px;font-family:var(--font-mono);color:var(--text-3);margin-bottom:6px;">GLOBAL (kurang tepat)</div>
+                <div class="ex-tokens" style="flex-direction:column;align-items:flex-start;gap:4px;">
+                  <div class="ex-tokens">
+                    <span class="ex-token" style="background:rgba(255,55,95,.1);border:1px solid rgba(255,55,95,.3);color:#ff375f;">To</span>
+                    <span class="ex-token" style="background:rgba(255,55,95,.1);border:1px solid rgba(255,55,95,.3);color:#ff375f;">##ko</span>
+                    <span class="ex-token" style="background:rgba(255,55,95,.1);border:1px solid rgba(255,55,95,.3);color:#ff375f;">##pedia</span>
+                  </div>
+                  <div class="ex-tokens">
+                    <span class="ex-token" style="background:rgba(255,55,95,.1);border:1px solid rgba(255,55,95,.3);color:#ff375f;">Tan</span>
+                    <span class="ex-token" style="background:rgba(255,55,95,.1);border:1px solid rgba(255,55,95,.3);color:#ff375f;">##jung</span>
+                    <span class="ex-token" style="background:rgba(255,55,95,.1);border:1px solid rgba(255,55,95,.3);color:#ff375f;">##sari</span>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div style="font-size:10px;font-family:var(--font-mono);color:var(--text-3);margin-bottom:6px;">LOKAL (lebih baik)</div>
+                <div class="ex-tokens" style="flex-direction:column;align-items:flex-start;gap:4px;">
+                  <div class="ex-tokens"><span class="ex-token tok-special">Tokopedia</span></div>
+                  <div class="ex-tokens"><span class="ex-token tok-special">Tanjungsari</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ══════════ SEC 4: TOKENIZER MODERN ══════════ -->
+      <section class="lesson-sec" id="sec-modern">
+        <div class="sec-header">
+          <span class="sec-num">04</span>
+          <div>
+            <h2 class="sec-title">Tokenizer di Era Transformer</h2>
+            <p class="sec-sub">Token khusus, padding, attention mask, dan teknik yang membuat tokenizer modern bekerja efisien</p>
+          </div>
+        </div>
+
+        <div class="prose">
+          Tokenizer modern bukan hanya memecah teks — mereka juga menambahkan <strong>token khusus</strong>, mengelola panjang sekuens, dan menghasilkan <strong>attention mask</strong> yang memberitahu model mana yang data nyata dan mana yang padding.
+        </div>
+
+        <div class="worked-box">
+          <div class="wb-badge">🏷️ Special Tokens</div>
+          <div class="wb-title">Token yang Bukan dari Teks Input</div>
+          <div class="calc-chain">
+            <div class="calc-step">
+              <div class="cs-num-circle" style="background:#00c7be;">[C]</div>
+              <div class="cs-content">
+                <div class="cs-label">[CLS] — Classification Token</div>
+                <div class="math-line">
+                  <span class="math-comment">// Ditambahkan di awal setiap sekuens. Representasinya dipakai untuk klasifikasi.</span>
+                </div>
+              </div>
+            </div>
+            <div class="calc-step">
+              <div class="cs-num-circle" style="background:#2997ff;">[S]</div>
+              <div class="cs-content">
+                <div class="cs-label">[SEP] — Separator Token</div>
+                <div class="math-line">
+                  <span class="math-comment">// Memisahkan dua kalimat dalam task QA/NLI. Ditambahkan di akhir setiap kalimat.</span>
+                </div>
+              </div>
+            </div>
+            <div class="calc-step">
+              <div class="cs-num-circle" style="background:#ff9f0a;">[P]</div>
+              <div class="cs-content">
+                <div class="cs-label">[PAD] — Padding Token</div>
+                <div class="math-line">
+                  <span class="math-comment">// Mengisi sekuens agar sama panjang dalam batch. Attention mask = 0 di posisi ini.</span>
+                </div>
+              </div>
+            </div>
+            <div class="calc-step">
+              <div class="cs-num-circle" style="background:#ef4444;">[M]</div>
+              <div class="cs-content">
+                <div class="cs-label">[MASK] — Mask Token</div>
+                <div class="math-line">
+                  <span class="math-comment">// Dipakai saat pre-training MLM — mengganti 15% token secara acak untuk diprediksi model.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="code-block">
+<pre><code><span class="c-kw">from</span> transformers <span class="c-kw">import</span> AutoTokenizer
+
+tok <span class="c-op">=</span> AutoTokenizer.<span class="c-fn">from_pretrained</span>(<span class="c-str">"indolem/indobert-base-uncased"</span>)
+
+<span class="c-cmt"># Tokenisasi dua kalimat untuk NLI</span>
+out <span class="c-op">=</span> tok(
+    <span class="c-str">"Toko ini sangat bagus."</span>,
+    <span class="c-str">"Saya suka belanja di sini."</span>,
+    padding<span class="c-op">=</span><span class="c-kw">True</span>,
+    truncation<span class="c-op">=</span><span class="c-kw">True</span>,
+    max_length<span class="c-op">=</span><span class="c-num">512</span>,
+    return_tensors<span class="c-op">=</span><span class="c-str">"pt"</span>
+)
+
+<span class="c-cmt"># [CLS] toko ini sangat bagus . [SEP] saya suka belanja di sini . [SEP]</span>
+<span class="c-cmt"># attention_mask: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]</span>
+<span class="c-cmt"># (semua 1 karena tidak ada padding di contoh ini)</span></code></pre>
+        </div>
+
+        <div class="insight-callout">
+          <div class="ic-icon">⚡</div>
+          <div class="ic-body">
+            <strong>Fast Tokenizer (Rust backend)</strong>: Hugging Face merilis tokenizer dengan backend Rust yang bisa memproses jutaan token per detik. Selain kecepatan, fast tokenizer mendukung <em>offset mapping</em> — melacak posisi setiap token dalam string asli, sangat penting untuk NER agar label bisa dipetakan kembali ke span teks yang tepat.
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ══════════ SEC 5: PLAYGROUND ══════════ -->
+      <section class="lesson-sec" id="sec-lab">
+        <div class="sec-header">
+          <span class="sec-num">05</span>
+          <div>
+            <h2 class="sec-title">Lab Interaktif — Coba Sendiri</h2>
+            <p class="sec-sub">Ketik teks Bahasa Indonesia apa saja dan lihat cara mesin memecahnya menjadi token secara real-time</p>
+          </div>
+        </div>
+
+        <div class="prose">
+          Eksplorasi tiga mode tokenisasi yang berbeda. Mode <strong>Subkata</strong> juga akan menganalisis struktur morfologi kata-kata berafiks secara otomatis.
+        </div>
+
+        <!-- PLAYGROUND BOX -->
+        <div class="playground-box">
+          <div class="pgb-header">
+            <div class="pgb-badge">🧪 Laboratorium Tokenisasi</div>
+            <div class="pgb-title">Tokenizer Interaktif</div>
+            <div class="pgb-sub">Hasil berubah real-time saat kamu mengetik</div>
+          </div>
+
+          <!-- Mode tabs -->
+          <div class="mode-tabs">
+            <button class="mode-tab active" data-mode="word">🔤 Berbasis Kata</button>
+            <button class="mode-tab" data-mode="subword">🔬 Subkata (BPE)</button>
+            <button class="mode-tab" data-mode="char">🔡 Karakter</button>
+          </div>
+
+          <!-- Input | Output -->
+          <div class="pg-panels">
+            <div class="pg-panel">
+              <div class="panel-header">
+                <span class="panel-label">Input Teks</span>
+                <div class="panel-actions">
+                  <button class="panel-btn" id="btnClear">Hapus</button>
+                </div>
+              </div>
+              <textarea class="play-textarea" id="inputText" placeholder="Ketik atau paste teks Bahasa Indonesia di sini…" spellcheck="false">Ojek online telah mengubah cara orang bepergian di Jakarta.</textarea>
+              <div class="example-chips">
+                <span class="example-chip" data-text="Ojek online telah mengubah cara orang bepergian di Jakarta.">Ojek online...</span>
+                <span class="example-chip" data-text="Saya sudah mempertanggungjawabkan semua kesalahan yang saya buat.">mempertanggung...</span>
+                <span class="example-chip" data-text="Gaskeun aja deh, gapapa kalau belum perfect, yang penting progress.">Gaskeun slang...</span>
+                <span class="example-chip" data-text="Fix aja yang urgent, meeting-nya reschedule ke besok pagi ya.">Code-switching...</span>
+                <span class="example-chip" data-text="Pemerintah Kabupaten Tanjungsari mengadakan musyawarah pembangunan.">Nama tempat...</span>
+              </div>
+              <div class="mode-description" id="modeDesc">
+                <strong>Berbasis Kata:</strong> Pisahkan teks berdasarkan spasi dan tanda baca. Satu kata = satu token.
+              </div>
+            </div>
+
+            <div class="pg-panel">
+              <div class="panel-header">
+                <span class="panel-label">Hasil Token</span>
+                <div class="panel-actions">
+                  <span class="token-count-badge" id="tokenCountBadge">0 token</span>
+                </div>
+              </div>
+              <div class="token-output" id="tokenOutput"></div>
+            </div>
+          </div>
+
+          <!-- Stats -->
+          <div class="pg-stats">
+            <div class="pg-stat">
+              <div class="pg-stat-num" id="statTotal">0</div>
+              <div class="pg-stat-label">Total Token</div>
+              <div class="pg-stat-sub">termasuk tanda baca</div>
+            </div>
+            <div class="pg-stat">
+              <div class="pg-stat-num" id="statUnique">0</div>
+              <div class="pg-stat-label">Token Unik</div>
+              <div class="pg-stat-sub">ukuran vocab lokal</div>
+            </div>
+            <div class="pg-stat">
+              <div class="pg-stat-num" id="statAvgLen">0</div>
+              <div class="pg-stat-label">Panjang Rata-rata</div>
+              <div class="pg-stat-sub">karakter per token</div>
+            </div>
+            <div class="pg-stat">
+              <div class="pg-stat-num" id="statCompression">0×</div>
+              <div class="pg-stat-label">Rasio Kompresi</div>
+              <div class="pg-stat-sub">karakter ÷ token</div>
+            </div>
+          </div>
+
+          <!-- Morphology panel -->
+          <div class="morpho-panel" id="morphoPanel">
+            <div class="morpho-panel-header">
+              <span style="font-size:18px;">🌿</span>
+              <div class="morpho-panel-title">Analisis Morfologi Bahasa Indonesia</div>
+              <span class="morpho-panel-sub">Deteksi awalan & akhiran otomatis</span>
+            </div>
+            <div class="morpho-grid-pg" id="morphoGrid">
+              <div class="morpho-empty">Ketik teks untuk melihat analisis morfologi...</div>
+            </div>
+          </div>
+        </div><!-- /playground-box -->
+
+        <!-- Next lesson CTA -->
+        <div class="next-lesson-cta">
+          <span class="nlc-label">Lesson berikutnya</span>
+          <h3 class="nlc-title">Basic Preprocessing →</h3>
+          <p class="nlc-desc">Setelah tokenisasi, teks masih perlu dibersihkan lebih lanjut. Case-folding, stop word removal, stemming Bahasa Indonesia dengan Sastrawi, dan lemmatisasi.</p>
+          <a href="/pages/ai-lab/preprocessing.html" class="nlc-btn">Lanjut ke Preprocessing</a>
+        </div>
+
+      </section>
+
+    </div><!-- /lesson-body -->
+  </main>
+</div><!-- /lesson-layout -->
+
+<div id="footer-placeholder"></div>
+<script src="/js/shared.js"></script>
+<script src="/js/lang.js"></script>
+<script src="/js/tokenization.js"></script>
+</body>
+</html>
